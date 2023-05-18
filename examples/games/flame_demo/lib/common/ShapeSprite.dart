@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 class ShapeSprite extends PositionComponent with HasPaint {
   static final Vector2 initSize = Vector2(50, 50);
 
+  Color? color;
+
   @override
   FutureOr<void> onLoad() {
     add(RectangleHitbox(isSolid: true));
@@ -15,7 +17,7 @@ class ShapeSprite extends PositionComponent with HasPaint {
 
   @override
   void render(Canvas canvas) {
-    paint.color = Colors.lightBlue;
+    paint.color = color ?? Colors.lightBlue;
     double rwidth = width / 3;
     double rheight = height / 2;
     Rect block = Rect.fromLTWH(0, 0, rwidth, rheight);
@@ -27,5 +29,5 @@ class ShapeSprite extends PositionComponent with HasPaint {
     super.render(canvas);
   }
 
-  ShapeSprite({super.angle, super.position}) : super(size: Vector2(50, 50), anchor: Anchor.center);
+  ShapeSprite({this.color, super.angle, super.position}) : super(size: Vector2(50, 50), anchor: Anchor.center);
 }

@@ -4,7 +4,6 @@ import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
 import 'ShapeSprite.dart';
-
 class ShapeSpriteDraggable extends ShapeSprite with DragCallbacks {
   late Vector2 start;
 

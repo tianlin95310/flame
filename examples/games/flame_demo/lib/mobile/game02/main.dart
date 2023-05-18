@@ -1,8 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
+import 'package:flame_demo/common/ShapeSprite.dart';
 import 'package:flutter/material.dart';
 
-import '../common/ShapeSprite.dart';
 import '../common/MapDraggable.dart';
 
 class Game02 extends Component with HasGameRef {

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
@@ -20,36 +19,74 @@ class PathMap extends PositionComponent with HasPaint {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    paint.color = const Color(0xFFFF00FF);
     canvas.drawRect(Rect.fromLTWH(0, 0, width, height), paint);
 
-    paint.color = const Color(0xFFFFFFFF);
     for (var element in points) {
       canvas.drawCircle(
         element.position.toOffset(),
         cSize.x,
         paint,
       );
-      ParagraphBuilder builder = ParagraphBuilder(ParagraphStyle(fontSize: 14))
-        ..addText(element.name);
+      ParagraphBuilder builder = ParagraphBuilder(ParagraphStyle(
+        fontSize: 14,
+      ))
+        ..addText(element.name)
+        ..pushStyle(
+          TextStyle(color: const Color(0xff00ff00)),
+        );
       Paragraph paragraph = builder.build()
         ..layout(ParagraphConstraints(width: cSize.length));
 
+      canvas.drawParagraph(
+        paragraph,
+        Offset(element.position.x - paragraph.width,
+            element.position.y - paragraph.height),
+      );
+
       for (var outer in edgeList) {
-        for(var inner in outer) {
+        for (var inner in outer) {
           if (inner.infinity == false) {
-            canvas.drawLine(inner.from.position.toOffset(), inner.to.position.toOffset(), _paint);
+            canvas.drawLine(inner.from.position.toOffset(),
+                inner.to.position.toOffset(), _paint);
           }
         }
       }
 
-      canvas.drawParagraph(
-        paragraph,
-        Offset(element.position.x - paragraph.width, element.position.y - paragraph.height),
-      );
     }
   }
 
   PathMap(this.points, this.edgeList, {super.size, super.position})
       : super(anchor: Anchor.topLeft);
+}
+
+class Vertex {
+  Vector2 position;
+
+  String name;
+
+  Vertex(this.position, this.name);
+
+  @override
+  String toString() {
+    return name;
+  }
+}
+
+class EdgeVertex {
+  Vertex to;
+  Vertex from;
+  bool? infinity;
+  EdgeVertex(this.to, this.from, {this.infinity = false});
+
+  double get distance {
+    if (infinity == true) {
+      return maxValue;
+    }
+    return to.position.distanceTo(from.position);
+  }
+
+  @override
+  String toString() {
+    return '$from - $to = $distance\t';
+  }
 }

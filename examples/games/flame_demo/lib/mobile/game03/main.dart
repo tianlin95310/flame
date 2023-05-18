@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
+import 'package:flame_demo/common/ScrollComponent.dart';
 import 'package:flutter/rendering.dart';
 
-import '../common/ScrollComponent.dart';
 import '../common/StageMap.dart';
 import 'SkillLoadUtils.dart';
 

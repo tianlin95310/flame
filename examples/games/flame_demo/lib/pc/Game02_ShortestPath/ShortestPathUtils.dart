@@ -13,64 +13,60 @@ import 'package:flame/components.dart';
 
 final double maxValue = pow(2, 50).toDouble();
 
-class Vertex {
-  Vector2 position;
-
-  String name;
-
-  Vertex(this.position, this.name);
-
-  @override
-  String toString() {
-    return name;
-  }
+class ResultInfo {
+  List<double> distances;
+  List<List<int>> paths;
+  ResultInfo(this.distances, this.paths);
 }
+ResultInfo dijkstra(List<List<double>> map, int start, int n) {
+  List<double> dist = List.filled(n, maxValue);
+  Set<int> visit = HashSet<int>();
+  visit.add(start);
+  // 松弛路径
+  List<int> path = List.filled(n, -1);
+  path[start] = start;
 
-class EdgeVertex {
-  Vertex to;
-  Vertex from;
-  bool? infinity;
-  EdgeVertex(this.to, this.from, {this.infinity = false});
-
-  double get distance {
-    if (infinity == true) {
-      return maxValue;
-    }
-    return to.position.distanceTo(from.position);
-  }
-
-  @override
-  String toString() {
-    return '$from - $to = $distance\t';
-  }
-}
-
-void dijkstra(List<List<EdgeVertex>> a, int p, int n) {
-  List<double> d = List.filled(n, maxValue);
-  Set<int> set = HashSet<int>();
-  set.add(p);
+  // 保存i - start的距离值
   for (int i = 0; i < n; i++) {
-    d[i] = a[p][i].distance;
+    dist[i] = map[start][i];
   }
 
-  while (set.length < n) {
+  while (visit.length < n) {
     double minValue = maxValue;
-    int num = 0;
+    int minIndex = 0;
     for (int i = 0; i < n; i++) {
-      if (!set.contains(i) && d[i] < minValue) {
-        minValue = d[i];
-        num = i;
+      if (!visit.contains(i) && dist[i] < minValue) {
+        minValue = dist[i];
+        minIndex = i;
       }
     }
     for (int i = 0; i < n; i++) {
-      if (!set.contains(i)) {
-        d[i] = min(d[i], d[num] + a[num][i].distance);
+      if (!visit.contains(i)) {
+        double temp = dist[minIndex] + map[minIndex][i];
+        if (temp < dist[i] && map[minIndex][i] != maxValue) {
+          dist[i] = min(dist[i], temp);
+          path[i] = minIndex;
+        }
       }
     }
-    set.add(num);
+    visit.add(minIndex);
   }
 
+  List<List<int>> paths = [];
   for (int i = 0; i < n; i++) {
-    print('$p - $i = ${d[i]}');
+    if (dist[i] == maxValue) {
+      continue;
+    }
+    List<int> currentPath = [];
+    currentPath.add(i);
+    int now = path[i];
+    while(now != start && now != -1) {
+      currentPath.add(now);
+      now = path[now];
+    }
+    currentPath.add(start);
+    paths.add(currentPath.reversed.toList());
   }
+
+  return ResultInfo(dist, paths);
 }
