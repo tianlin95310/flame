@@ -45,6 +45,14 @@ class PauseButton extends SimplePathButton with HasGameRef<RouterProvider> {
   void action() => gameRef.router.pushNamed('pause');
 }
 
+/// 暂停按钮
+class TimeScaleButton extends PauseButton {
+  @override
+  void action() {
+    gameRef.timeScale = 0.25;
+  }
+}
+
 class PausePage extends Component
     with TapCallbacks, HasGameRef<RouterProvider> {
   @override

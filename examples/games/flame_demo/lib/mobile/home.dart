@@ -10,12 +10,12 @@ import 'game.dart';
 class MobileGameHome extends Component with HasGameRef<MobileGameEntry> {
   List<List<RouteInfo>> routes = [
     [
-      RouteInfo('01 相机跟随', 'game01'),
-      RouteInfo('02 拖移地图', 'game02'),
-      RouteInfo('03 动画特效', 'game03'),
-      RouteInfo('04 地图平移', 'game04'),
-      RouteInfo('05 可视窗口小', 'game05'),
-      RouteInfo('06 模型与特效', 'game06'),
+      RouteInfo('相机跟随', 'game01'),
+      RouteInfo('大地图拖移', 'game02'),
+      RouteInfo('帧动画特效', 'game03'),
+      RouteInfo('循环地图平移', 'game04'),
+      RouteInfo('可视窗口ViewPort', 'game05'),
+      RouteInfo('帧动画模型', 'game06'),
     ],
     [
       RouteInfo('', 'game07'),

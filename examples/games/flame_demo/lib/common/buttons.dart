@@ -15,9 +15,9 @@ class Button extends PositionComponent with TapCallbacks {
     super.anchor = Anchor.center,
   }) : _textDrawable = TextPaint(
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 16,
             color: Color(0xFF000000),
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
           ),
         ).toTextPainter(text) {
     size = initSize;

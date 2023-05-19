@@ -86,14 +86,14 @@ class DemoGame02 extends Component with HasGameRef {
       // 当前的夹角
       print('angle to ${vertexList[path[i]].name}, angle = $angle');
       effects.add(
-        RotateEffect.to(angle, LinearEffectController(1)),
+        RotateEffect.to(angle, LinearEffectController(2.5)),
       );
       effects.add(
         MoveToEffect(
-            vertexList[path[i]].position, EffectController(duration: 1)),
+            vertexList[path[i]].position, EffectController(duration: 2.5)),
       );
     }
-    shapeSprite.add(SequenceEffect(effects, infinite: true, alternate: true));
+    shapeSprite.add(SequenceEffect(effects, repeatCount: 99));
   }
 
   moveByPath(List<int> path, ShapeSprite shapeSprite, int start) {

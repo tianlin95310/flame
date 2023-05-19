@@ -13,7 +13,12 @@ import 'game06/main.dart';
 import 'game07/main.dart';
 import 'home.dart';
 
-class MobileGameEntry extends FlameGame with HasCollisionDetection, DoubleTapDetector, RouterProvider {
+class MobileGameEntry extends FlameGame
+    with
+        HasCollisionDetection,
+        DoubleTapDetector,
+        RouterProvider,
+        HasTimeScale {
   @override
   void onLoad() {
     print('MobileGameEntry onLoad, size = $size');

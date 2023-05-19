@@ -12,7 +12,7 @@ import 'Game03_FuncCallTest/main.dart';
 import 'home.dart';
 
 class PCGameEntry extends FlameGame
-    with KeyboardEvents, HasCollisionDetection, RouterProvider
+    with KeyboardEvents, HasCollisionDetection, RouterProvider, HasTimeScale
 // , TapCallbacks
 {
   @override
@@ -34,6 +34,8 @@ class PCGameEntry extends FlameGame
         },
       ),
     );
+
+
   }
 
   @override
@@ -46,6 +48,7 @@ class PCGameEntry extends FlameGame
   void onMount() {
     print('PCGameEntry onMount, size = $canvasSize');
     super.onMount();
+    pauseOrResume();
   }
 
   @override

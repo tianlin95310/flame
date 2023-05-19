@@ -10,14 +10,16 @@ import 'game.dart';
 class PCGameHome extends Component with HasGameRef<PCGameEntry> {
   List<List<RouteInfo>> routes = [
     [
-      RouteInfo('01 Tank', 'game01'),
-      RouteInfo('02 最短路径', 'game02'),
-
+      RouteInfo('Tank', 'game01'),
+      RouteInfo('最短路径', 'game02'),
+      RouteInfo('生命方法测试', 'game03'),
     ],
     [
       RouteInfo('', 'game03'),
     ],
-    [RouteInfo('生命方法测试', 'game03'),]
+    [
+      RouteInfo('', 'game03'),
+    ]
   ];
   @override
   FutureOr<void> onLoad() {

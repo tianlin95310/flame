@@ -8,18 +8,23 @@ class PathMap extends PositionComponent with HasPaint {
   List<Vertex> points;
   List<List<EdgeVertex>> edgeList;
 
-  Vector2 cSize = Vector2.all(2);
+  Vector2 cSize = Vector2.all(5);
 
-  final Paint _paint = Paint()
+  final Paint _edgePaint = Paint()
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1
+    ..isAntiAlias = true
     ..color = const Color(0xFF000000);
+
+  final Paint _bgPaint = Paint()
+    ..style = PaintingStyle.fill
+    ..color = const Color(0xFF00cccc);
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
 
-    canvas.drawRect(Rect.fromLTWH(0, 0, width, height), paint);
+    canvas.drawRect(Rect.fromLTWH(0, 0, width, height), _bgPaint);
 
     for (var element in points) {
       canvas.drawCircle(
@@ -28,7 +33,7 @@ class PathMap extends PositionComponent with HasPaint {
         paint,
       );
       ParagraphBuilder builder = ParagraphBuilder(ParagraphStyle(
-        fontSize: 14,
+        fontSize: 16,
       ))
         ..addText(element.name)
         ..pushStyle(
@@ -47,7 +52,7 @@ class PathMap extends PositionComponent with HasPaint {
         for (var inner in outer) {
           if (inner.infinity == false) {
             canvas.drawLine(inner.from.position.toOffset(),
-                inner.to.position.toOffset(), _paint);
+                inner.to.position.toOffset(), _edgePaint);
           }
         }
       }

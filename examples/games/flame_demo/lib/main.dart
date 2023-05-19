@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_demo/mobile/game.dart';
 import 'package:flame_demo/pc/game.dart';
@@ -25,6 +26,39 @@ class MyApp extends StatelessWidget {
 class DemoHome extends StatelessWidget {
   const DemoHome({super.key});
 
+  void onMenuClick<T extends RouterProvider>(BuildContext context, T game,
+      {bool landscape = false}) {
+    if (landscape) {
+      SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async {
+            if (game.router.currentRoute.name == game.router.initialRoute) {
+              if (landscape) {
+                SystemChrome.setPreferredOrientations([
+                  DeviceOrientation.portraitUp,
+                  DeviceOrientation.portraitDown
+                ]);
+              }
+              Navigator.pop(context);
+              return true;
+            } else {
+              game.router.pop();
+              return false;
+            }
+          },
+          child: DemoGameWidget(
+            game: game,
+          ),
+        );
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -36,64 +70,79 @@ class DemoHome extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    PCGameEntry? game;
-                    return WillPopScope(
-                      onWillPop: () async {
-                        if (game?.router.currentRoute.name ==
-                            game?.router.initialRoute) {
-                          Navigator.pop(context);
-                          return true;
-                        } else {
-                          game?.router.pop();
-                          return false;
-                        }
-                      },
-                      child: GameWidget(game: game = PCGameEntry()),
-                    );
-                  },
-                ));
-              },
-              child: const Text('PC Game')),
+            onPressed: () {
+              onMenuClick<PCGameEntry>(context, PCGameEntry());
+            },
+            child: const Text('PC Game'),
+          ),
           ElevatedButton(
-              onPressed: () {
-                SystemChrome.setPreferredOrientations([
-                  DeviceOrientation.landscapeLeft,
-                  DeviceOrientation.landscapeRight
-                ]);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (BuildContext context) {
-                    MobileGameEntry? game;
-                    return WillPopScope(
-                      onWillPop: () async {
-                        if (game?.router.currentRoute.name ==
-                            game?.router.initialRoute) {
-                          SystemChrome.setPreferredOrientations([
-                            DeviceOrientation.portraitUp,
-                            DeviceOrientation.portraitDown
-                          ]);
-                          Navigator.pop(context);
-                          return true;
-                        } else {
-                          game?.router.pop();
-                          return false;
-                        }
-                      },
-                      child: GameWidget(game: game = MobileGameEntry()),
-                    );
-                  }),
-                );
-              },
-              child: const Text('Mobile Game')),
+            onPressed: () {
+              onMenuClick<MobileGameEntry>(context, MobileGameEntry(),
+                  landscape: true);
+            },
+            child: const Text('Mobile Game'),
+          ),
         ],
       ),
     );
   }
 }
 
-mixin RouterProvider on FlameGame{
+mixin RouterProvider on FlameGame {
   late RouterComponent router;
+
+  set timeScale(double value);
+  double get timeScale;
+
+  void pauseOrResume() {
+    if (overlays.isActive('pause')) {
+      overlays.remove('pause');
+      resumeEngine();
+    } else {
+      overlays.add('pause');
+      pauseEngine();
+    }
+  }
+}
+
+class DemoGameWidget extends GameWidget<RouterProvider> {
+  DemoGameWidget({super.key, required super.game})
+      : super(
+            backgroundBuilder: (BuildContext context) {
+              return const Card(color: Colors.lightBlue);
+            },
+            loadingBuilder: (BuildContext context) {
+              return const CircularProgressIndicator();
+            },
+            errorBuilder: (BuildContext context, Object error) {
+              return const Card(
+                color: Colors.red,
+                child: Text('出错了'),
+              );
+            },
+            overlayBuilderMap: {
+              'pause': (BuildContext context, RouterProvider game) {
+                return Center(
+                  child: Container(
+                    width: 160,
+                    height: 160,
+                    decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(32))),
+                    child: Card(
+                      color: Colors.lightBlueAccent,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Text('Engine Paused'),
+                          ElevatedButton(
+                              onPressed: () {
+                                game.pauseOrResume();
+                              },
+                              child: const Text('Resume Engine')),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+            });
 }
