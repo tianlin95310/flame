@@ -46,6 +46,14 @@ class PauseButton extends SimplePathButton with HasGameRef<RouterProvider> {
 }
 
 /// 暂停按钮
+class PauseButtonEngine extends PauseButton {
+  @override
+  void action() {
+    gameRef.pauseOrResume();
+  }
+}
+
+/// 暂停按钮
 class TimeScaleButton extends PauseButton {
   @override
   void action() {

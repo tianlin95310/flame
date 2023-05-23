@@ -21,7 +21,7 @@ class SkillLoadUtils {
   }
 
   static Future<PositionComponent> loadCommon(name, frameCount) async {
-    SkillMulFile skill = SkillMulFile();
+    MulFileSkill skill = MulFileSkill();
     for (int i = 0; i < frameCount; i++) {
       String fileName = (i + 1).toString().padLeft(3, '0');
       skill.frames.add(Sprite(await Flame.images.load('models/mulSkill/' + name + '/s${fileName}.png')));
@@ -127,6 +127,6 @@ class SkillLoadUtils {
   }
 
   static PositionComponent skillSingleFile(file, row, col, startIndex, endIndex, totalCount, double frameWidth, double frameHeight, {filterColor}) {
-    return SkillSprite(filterColor, 'models/singleSkill/' + file, totalCount, col, Vector2(frameWidth, frameHeight));
+    return SingleFileSkill(filterColor, 'models/singleSkill/' + file, totalCount, col, Vector2(frameWidth, frameHeight));
   }
 }

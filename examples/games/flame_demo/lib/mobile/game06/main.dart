@@ -49,8 +49,8 @@ class Game06 extends Component {
           margin: const EdgeInsets.only(left: 60, top: 30),
         ),
         HudMarginComponent(
-          children: [TimeScaleButton()],
-          margin: const EdgeInsets.only(left: 160, top: 30),
+          children: [PauseButtonEngine()],
+          margin: const EdgeInsets.only(left: 110, top: 30),
         ),
         HudButtonComponent(
           button: TextComponent(text: '攻击'),

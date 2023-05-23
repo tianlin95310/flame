@@ -2,14 +2,21 @@ import 'package:flame/components.dart';
 import 'package:flame_demo/utils/utils.dart';
 import 'package:flutter/material.dart';
 
-class SkillSprite extends SpriteAnimationComponent with HasGameRef {
+abstract class BasicSkill {
+  double _skillSpeed = 300;
+
+  double get skillSpeed => _skillSpeed;
+
+  void set(double speed) => _skillSpeed = speed;
+}
+class SingleFileSkill extends SpriteAnimationComponent with HasGameRef, BasicSkill{
   int? filterColor;
   String path;
   int amount;
   int col;
   Vector2 textureSize;
 
-  SkillSprite(
+  SingleFileSkill(
       this.filterColor, this.path, this.amount, this.col, this.textureSize)
       : super(size: Vector2.all(100), anchor: Anchor.center);
 
@@ -54,16 +61,17 @@ class SkillSprite extends SpriteAnimationComponent with HasGameRef {
     }
     canvas.restore();
   }
+
 }
 
-class SkillMulFile extends PositionComponent with HasPaint{
+class MulFileSkill extends PositionComponent with HasPaint, BasicSkill{
   List<Sprite> frames = [];
 
   double flyingSpriteIndex = 0;
 
-  int skillSpeed = 10;
+  int flameSpeed = 10;
 
-  SkillMulFile() : super(size: Vector2.all(100), anchor: Anchor.center);
+  MulFileSkill() : super(size: Vector2.all(100), anchor: Anchor.center);
 
   @override
   void render(Canvas canvas) {
@@ -72,7 +80,7 @@ class SkillMulFile extends PositionComponent with HasPaint{
 
   @override
   void update(double dt) {
-    flyingSpriteIndex += skillSpeed * dt;
+    flyingSpriteIndex += flameSpeed * dt;
     if (flyingSpriteIndex > frames.length) {
       flyingSpriteIndex = 0;
     }

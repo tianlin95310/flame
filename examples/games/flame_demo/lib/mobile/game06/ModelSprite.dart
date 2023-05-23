@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -5,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../game03/SkillLoadUtils.dart';
 
-enum CharAction {
+enum CharBasicAnimation {
   standLeft,
   standRight,
   runLeft,
@@ -14,159 +16,204 @@ enum CharAction {
   attackRight,
 }
 
-class ModelSprite extends SpriteAnimationGroupComponent<CharAction>
-    with HasGameRef, CollisionCallbacks {
-  ModelSprite(Map<CharAction, SpriteAnimation> animations,
-      {Map<CharAction, bool> removeOnFinish = const {}})
-      : super(
-          animations: animations,
-          size: Vector2.all(120),
-          anchor: Anchor.center,
-          removeOnFinish: removeOnFinish,
-        );
+typedef SingleSkill = FutureOr Function();
 
+abstract class ModelSkill {
+  Map<String, SingleSkill> skills = {};
+  FutureOr<void> startSkill(List<String> actions) => null;
+}
+
+class ModelSprite extends SpriteAnimationGroupComponent<CharBasicAnimation>
+    with HasGameRef, CollisionCallbacks, ModelSkill {
   late JoystickComponent joystick;
 
   late JoystickDirection direction;
 
-  List<PositionComponent> skills = [];
-
-  @override
-  Future<void>? onLoad() async {
-    current = CharAction.standRight;
-    direction = JoystickDirection.right;
-  }
-
   double maxSpeed = 300.0;
 
-  bool isAttacking = false;
+  bool keepCurrentAnim = false;
 
-  @override
-  void onCollisionStart(
-      Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollisionStart(intersectionPoints, other);
-    print('ModelSprite onCollisionStart intersectionPoints = ' +
-        intersectionPoints.toString());
-    print('ModelSprite onCollisionStart other = ' + other.toString());
+  ModelSprite({super.animations, super.removeOnFinish})
+      : super(size: Vector2.all(120), anchor: Anchor.center) {
+    skills = {
+      'wait': () async {
+        await Future.delayed(const Duration(milliseconds: 500));
+      },
+      'attack': () async {
+        Completer completer = Completer();
+        keepCurrentAnim = true;
+        if (direction == JoystickDirection.right) {
+          current = CharBasicAnimation.attackRight;
+        } else if (direction == JoystickDirection.left) {
+          current = CharBasicAnimation.attackLeft;
+        }
+        animation?.onComplete = () {
+          completer.complete();
+        };
+        animation?.reset();
+        return completer.future;
+      },
+      'stand': () {
+        if (direction == JoystickDirection.right) {
+          current = CharBasicAnimation.standRight;
+        } else if (direction == JoystickDirection.left) {
+          current = CharBasicAnimation.standLeft;
+        }
+      },
+      'run': () {
+        if (direction == JoystickDirection.right) {
+          current = CharBasicAnimation.runRight;
+        } else if (direction == JoystickDirection.left) {
+          current = CharBasicAnimation.runLeft;
+        }
+      },
+      'rush': () async {
+        keepCurrentAnim = true;
+        double direction = 1.0;
+        if (this.direction == JoystickDirection.right) {
+          direction = 1;
+        } else if (this.direction == JoystickDirection.left) {
+          direction = -1;
+        }
+        Completer completer = Completer();
+        add(
+          MoveEffect.to(
+            position + Vector2(size.x, 0) * direction,
+            EffectController(
+              duration: 0.3,
+              repeatCount: 1,
+              curve: Curves.fastOutSlowIn
+            ),
+          )..onComplete = () {
+              keepCurrentAnim = false;
+              completer.complete();
+            },
+        );
+        return completer.future;
+      },
+      'skill1': () async {
+        Completer completer = Completer();
+        PositionComponent skill = SkillLoadUtils.skillSingleFile(
+            'sk061.png', 2, 5, 0, 7, 8, 192.0, 192.0,
+            filterColor: 0xFF000000)
+          ..position = size / 2;
+
+        double direction = 1.0;
+        if (this.direction == JoystickDirection.right) {
+          direction = 1;
+        } else if (this.direction == JoystickDirection.left) {
+          direction = -1;
+        }
+        if (skill.parent == null) {
+          add(skill
+            ..add(MoveEffect.by(
+              Vector2(size.x * direction, 0),
+              EffectController(
+                duration: 0.4,
+                repeatCount: 1,
+                curve: Curves.decelerate,
+              ),
+            )..onComplete = () {
+                skill.removeFromParent();
+                completer.complete();
+              }));
+        }
+        return completer.future;
+      }
+    };
+  }
+  void onJinAttack() {
+    startSkill(['attack']);
+  }
+
+  void onRunAttack() {
+    startSkill(['run', 'rush', 'attack']);
+  }
+
+  void onYuanAttack() {
+    startSkill(['attack', 'skill1']);
   }
 
   @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    // canvas.drawRect(size.toRect(), paint);
+  FutureOr<void> startSkill(List<String> actions) async {
+    List<SingleSkill> singleSkills =
+        actions.map((e) => skills[e] ?? () {}).toList();
+    for (int i = 0; i < singleSkills.length; i++) {
+      var action = singleSkills[i];
+      await action();
+    }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    // print(isAttacking);
-    // print(current);
-    // print(animation?.done());
-    if ((current == CharAction.attackLeft ||
-            current == CharAction.attackRight) &&
-        (animation?.done() ?? false)) {
-      isAttacking = false;
-    }
-    if (isAttacking) {
+
+    if (animation == null) {
       return;
     }
-    // print('joystick.direction = ' + joystick.direction.toString());
-    // print('joystick.delta = ' + joystick.delta.toString());
-    // print('direction = ' + direction.toString());
-    if (joystick.direction != JoystickDirection.idle &&
-        joystick.direction != direction) {
-      if (joystick.direction == JoystickDirection.up ||
-          joystick.direction == JoystickDirection.down) {
-      } else if (joystick.direction == JoystickDirection.upRight ||
-          joystick.direction == JoystickDirection.downRight) {
-        direction = JoystickDirection.right;
-      } else if (joystick.direction == JoystickDirection.upLeft ||
-          joystick.direction == JoystickDirection.downLeft) {
-        direction = JoystickDirection.left;
+    if (keepCurrentAnim) {
+      if (!animation!.done()) {
+        return;
+      }
+      if (animation!.done()) {
+        keepCurrentAnim = false;
+      }
+    }
+    if (joystick.direction != JoystickDirection.idle) {
+      if (joystick.direction != direction) {
+        if (joystick.direction == JoystickDirection.up ||
+            joystick.direction == JoystickDirection.down) {
+          // up and down
+        } else if (joystick.direction == JoystickDirection.upRight ||
+            joystick.direction == JoystickDirection.downRight) {
+          direction = JoystickDirection.right;
+        } else if (joystick.direction == JoystickDirection.upLeft ||
+            joystick.direction == JoystickDirection.downLeft) {
+          direction = JoystickDirection.left;
+        } else {
+          direction = joystick.direction;
+        }
       } else {
-        direction = joystick.direction;
+        // direction repeat
       }
     } else {
       // joystick idle
     }
+
     if (!joystick.delta.isZero()) {
-      if (direction == JoystickDirection.right) {
-        current = CharAction.runRight;
-      } else if (direction == JoystickDirection.left) {
-        current = CharAction.runLeft;
+      if (keepCurrentAnim) {
+      } else {
+        startSkill(['run']);
       }
       position.add(joystick.relativeDelta * maxSpeed * dt);
     } else {
-      if (direction == JoystickDirection.right) {
-        current = CharAction.standRight;
-      } else if (direction == JoystickDirection.left) {
-        current = CharAction.standLeft;
+      if (keepCurrentAnim) {
+      } else {
+        startSkill(['stand']);
       }
     }
   }
 
-  void onJinAttack() {
-    print('onAttack direction = ' + direction.toString());
-    isAttacking = true;
-    if (direction == JoystickDirection.right) {
-      current = CharAction.attackRight;
-      animation?.reset();
-    } else if (direction == JoystickDirection.left) {
-      current = CharAction.attackLeft;
-      animation?.reset();
-    }
+  @override
+  Future<void> onLoad() async {
+    current = CharBasicAnimation.standRight;
+    direction = JoystickDirection.right;
   }
 
-  void onRunAttack() {
-    isAttacking = true;
-    double direction = 1.0;
-    if (this.direction == JoystickDirection.right) {
-      direction = 1;
-      current = CharAction.runRight;
-    } else if (this.direction == JoystickDirection.left) {
-      direction = -1;
-      current = CharAction.runLeft;
-    }
-
-    add(
-      MoveEffect.to(
-        position + Vector2(size.x, 0) * direction,
-        EffectController(duration: 0.2, repeatCount: 1),
-      )..onComplete = () {
-          print('MoveEffect finish');
-          this.onJinAttack();
-        },
-    );
+  @override
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollisionStart(intersectionPoints, other);
   }
+}
 
-  void onYuanAttack() async {
-    this.onJinAttack();
-    await Future.delayed(Duration(milliseconds: 400));
-    PositionComponent skill = SkillLoadUtils.skillSingleFile(
-        'sk061.png', 2, 5, 0, 7, 8, 192.0, 192.0,
-        filterColor: 0xFF000000)..position = size / 2;
-    double direction = 1.0;
-    if (this.direction == JoystickDirection.right) {
-      direction = 1;
-    } else if (this.direction == JoystickDirection.left) {
-      direction = -1;
-    }
-    if (skill.parent == null) {
-      add(skill
-        ..add(MoveEffect.by(
-          Vector2(size.x * direction, 0),
-          EffectController(
-            duration: 0.4,
-            repeatCount: 1,
-            curve: Curves.decelerate,
-          ),
-        )..onComplete = () {
-            print('onYuanAttack onFinishCallback');
-            remove(skill);
-            skill.removeFromParent();
-          }));
-    } else {
-      print('2222222222222222222222');
-    }
+class ModelSpriteAndroid extends ModelSprite {
+  ModelSpriteAndroid({super.animations});
+
+  @override
+  Future<void> onLoad() async {
+    current = CharBasicAnimation.standLeft;
+    direction = JoystickDirection.right;
+    joystick = JoystickComponent(size: 0, position: Vector2.all(0));
   }
 }
