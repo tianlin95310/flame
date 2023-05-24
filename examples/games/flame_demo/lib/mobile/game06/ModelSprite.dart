@@ -5,7 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 
-import '../game03/SkillLoadUtils.dart';
+import '../utils/SkillLoadUtils.dart';
 
 enum CharBasicAnimation {
   standLeft,

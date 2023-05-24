@@ -33,10 +33,3 @@ final List<BlendMode> blendModeS = [
   BlendMode.srcOver,
   BlendMode.xor
 ];
-
-
-class RouteInfo {
-  String title;
-  String router;
-  RouteInfo(this.title, this.router);
-}

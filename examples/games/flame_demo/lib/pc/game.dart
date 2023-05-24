@@ -1,10 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_demo/gameComponent/RouterProvider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' hide Route;
 
-import '../main.dart';
 import 'Game01_Tank/extensions.dart';
 import 'Game01_Tank/main.dart';
 import 'Game02_ShortestPath/main.dart';

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame_demo/gameComponent/RouterProvider.dart';
 import 'package:flame_demo/mobile/game.dart';
 import 'package:flame_demo/pc/game.dart';
 import 'package:flutter/material.dart' hide Route;
@@ -85,23 +86,6 @@ class DemoHome extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-mixin RouterProvider on FlameGame {
-  late RouterComponent router;
-
-  set timeScale(double value);
-  double get timeScale;
-
-  void pauseOrResume() {
-    if (overlays.isActive('pause')) {
-      overlays.remove('pause');
-      resumeEngine();
-    } else {
-      overlays.add('pause');
-      pauseEngine();
-    }
   }
 }
 

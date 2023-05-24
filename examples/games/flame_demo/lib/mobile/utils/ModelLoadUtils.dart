@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 
-import 'ModelSprite.dart';
+import '../game06/ModelSprite.dart';
 
 class ModelLoadUtils {
   static Future<List<ModelSprite>> loadAllModels() async {

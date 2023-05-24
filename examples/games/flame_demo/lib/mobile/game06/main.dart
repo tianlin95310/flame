@@ -2,12 +2,12 @@ import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
+import 'package:flame_demo/common/Buttons.dart';
+import 'package:flame_demo/common/PauseRoute.dart';
 import 'package:flutter/rendering.dart';
 
-import '../../common/PauseRoute.dart';
-import '../../common/buttons.dart';
 import '../common/StageMap.dart';
-import 'ModelLoadUtils.dart';
+import '../utils/ModelLoadUtils.dart';
 import 'ModelSprite.dart';
 
 class Game06 extends Component {

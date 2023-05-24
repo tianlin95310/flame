@@ -1,7 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/palette.dart';
-import 'package:flutter/material.dart';
 
 import '../common/ShapeSpriteWithJoystick.dart';
 import '../common/StageMap.dart';

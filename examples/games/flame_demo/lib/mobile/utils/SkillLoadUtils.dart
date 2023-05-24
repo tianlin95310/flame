@@ -1,7 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 
-import 'SkillSprite.dart';
+import '../game03/SkillSprite.dart';
+
 
 class SkillLoadUtils {
   static Future<List<PositionComponent>> getAllSkills() async {

@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame_demo/common/GameComponent.dart';
+import 'package:flame_demo/gameComponent/GameComponent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../gameComponent/tank/PositionComponent_ABullet.dart';
-import 'main.dart';
 
 class ATank<T extends GameComponent> extends PositionComponent with HasPaint {
   late TimerComponent _bulletCreate;

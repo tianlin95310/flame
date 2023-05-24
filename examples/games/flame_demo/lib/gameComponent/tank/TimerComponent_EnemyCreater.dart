@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 
-import '../../common/GameComponent.dart';
+import '../GameComponent.dart';
 import 'PositionComponent_Enemy.dart';
 
 class EnemyCreater<T extends GameComponent> extends TimerComponent with HasGameRef {

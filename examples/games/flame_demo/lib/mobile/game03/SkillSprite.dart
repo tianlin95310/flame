@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
-import 'package:flame_demo/utils/utils.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/BlendModeUtils.dart';
 
 abstract class BasicSkill {
   double _skillSpeed = 300;

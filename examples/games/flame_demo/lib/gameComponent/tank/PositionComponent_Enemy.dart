@@ -4,7 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/GameComponent.dart';
+import '../GameComponent.dart';
 import 'PositionComponent_ABullet.dart';
 import 'PositionComponent_CircleBoom.dart';
 

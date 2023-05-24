@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame_demo/common/buttons.dart';
+import 'package:flame_demo/common/Buttons.dart';
+import 'package:flame_demo/utils/simpleObj.dart';
 import 'package:flutter/rendering.dart';
 
-import '../utils/utils.dart';
 import 'game.dart';
 
 class PCGameHome extends Component with HasGameRef<PCGameEntry> {

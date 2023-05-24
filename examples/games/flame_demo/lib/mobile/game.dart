@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame_demo/main.dart';
+import 'package:flame_demo/gameComponent/RouterProvider.dart';
 
 import '../common/PauseRoute.dart';
 import 'game01/main.dart';

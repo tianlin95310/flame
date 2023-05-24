@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flutter/rendering.dart';
 
+/// 可滚动组件
 class ScrollComponent extends PositionComponent with DragCallbacks {
   late Vector2 start;
 

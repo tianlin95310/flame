@@ -6,9 +6,11 @@ import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
-import 'package:flame_demo/main.dart';
-import 'buttons.dart';
+import 'package:flame_demo/gameComponent/RouterProvider.dart';
 
+import 'Buttons.dart';
+
+/// 暂停Route
 class PauseRoute extends Route {
   PauseRoute() : super(PausePage.new, transparent: true);
 
@@ -29,7 +31,7 @@ class PauseRoute extends Route {
   }
 }
 
-/// 暂停按钮
+/// 暂停按钮，进入到暂停界面
 class PauseButton extends SimplePathButton with HasGameRef<RouterProvider> {
   PauseButton()
       : super(Path()
@@ -45,7 +47,7 @@ class PauseButton extends SimplePathButton with HasGameRef<RouterProvider> {
   void action() => gameRef.router.pushNamed('pause');
 }
 
-/// 暂停按钮
+/// 暂停按钮，暂停引擎
 class PauseButtonEngine extends PauseButton {
   @override
   void action() {
@@ -53,14 +55,14 @@ class PauseButtonEngine extends PauseButton {
   }
 }
 
-/// 暂停按钮
+/// 放慢游戏
 class TimeScaleButton extends PauseButton {
   @override
   void action() {
     gameRef.timeScale = 0.25;
   }
 }
-
+/// 暂停界面
 class PausePage extends Component
     with TapCallbacks, HasGameRef<RouterProvider> {
   @override

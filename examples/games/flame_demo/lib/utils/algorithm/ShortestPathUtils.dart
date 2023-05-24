@@ -1,8 +1,6 @@
 import 'dart:collection';
 import 'dart:math';
 
-import 'package:flame/components.dart';
-
 //最短路径算法
 // https://zhuanlan.zhihu.com/p/33162490
 // 0 - 0 = 0

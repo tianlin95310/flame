@@ -1,8 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
+import 'package:flame_demo/gameComponent/RouterProvider.dart';
 import 'package:flutter/rendering.dart';
-
-import '../main.dart';
 
 /// Rect文字button
 class Button extends PositionComponent with TapCallbacks {

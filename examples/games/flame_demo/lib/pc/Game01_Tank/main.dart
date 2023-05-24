@@ -4,9 +4,9 @@ import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/services/keyboard_key.g.dart';
+import 'package:flutter/services.dart';
 
-import '../../common/GameComponent.dart';
+import '../../gameComponent/GameComponent.dart';
 import '../../gameComponent/tank/PositionComponent_ABullet.dart';
 import '../../gameComponent/tank/PositionComponent_Enemy.dart';
 import '../../gameComponent/tank/TimerComponent_EnemyCreater.dart';
