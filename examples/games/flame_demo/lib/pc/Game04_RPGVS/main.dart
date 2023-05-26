@@ -1,5 +1,108 @@
+import 'dart:async';
+
 import 'package:flame/components.dart';
+import 'package:flame/experimental.dart';
+import 'package:flame/input.dart';
+import 'package:flame_demo/component/progress.dart';
+import 'package:flutter/painting.dart';
 
-class DemoGame03 extends Component {
+import 'component.dart';
+import 'model.dart';
+import 'render.dart';
 
+class DemoGame04 extends Component {
+  late World world;
+
+  late CameraComponent camera;
+
+  List<FightModelInfo> fightModels = [
+    FightModelInfo('三藏')
+      ..currentJing = 30
+      ..currentQi = 40
+      ..currentShen = 50,
+    FightModelInfo('悟空')
+      ..currentJing = 50
+      ..currentQi = 60
+      ..currentShen = 70,
+    FightModelInfo('八戒')
+      ..currentJing = 30
+      ..currentQi = 30
+      ..currentShen = 30,
+    FightModelInfo('悟净')
+      ..currentJing = 100
+      ..currentQi = 0
+      ..currentShen = 20,
+  ];
+
+  double headW = 60;
+  double headH = 60;
+  double dividerWidth = 5;
+  double dividerHeight = 5;
+  late double nameHeight = headH / 2;
+  late double proWidth = headH;
+  late double proHeight = (headH - nameHeight - dividerHeight * 2) / 3;
+  late double itemWidth = headW + proWidth;
+
+  Vector2 viewportSize = Vector2(640, 360);
+
+  @override
+  FutureOr<void> onLoad() async {
+    await add(world = World());
+    int index = 0;
+
+    await add(
+      camera = CameraComponent.withFixedResolution(
+        world: world,
+        width: viewportSize.x,
+        height: viewportSize.y,
+        hudComponents: [
+          HudMarginComponent(
+            size: Vector2(itemWidth * 3 + dividerWidth * 2, headH),
+            margin: EdgeInsets.only(bottom: 0, left: dividerWidth),
+            children: fightModels.map(
+              (e) => oneStatus(index++, e),
+            ),
+          )
+        ],
+      ),
+    );
+    camera.viewfinder.anchor = Anchor.topLeft;
+    world.add(
+      Background(size: viewportSize),
+    );
+    Vector2 stageSize = viewportSize - Vector2.all(40);
+    world.add(
+      FightStage(position: viewportSize / 2 - stageSize / 2, size: stageSize),
+    );
+  }
+
+  Component oneStatus(int index, FightModelInfo model) {
+    return PositionComponent(
+      size: Vector2(itemWidth, headH),
+      position: Vector2(itemWidth * index + dividerWidth * index, 0),
+      children: [
+        Header(size: Vector2.all(headW))..position = Vector2(0, 0),
+        TextComponent(
+            text: model.name,
+            position: Vector2(0, headH),
+            anchor: Anchor.bottomLeft,
+            textRenderer: tinyRender),
+        ProgressBar(
+          model.currentJing,
+          model.jing,
+          size: Vector2(proWidth, proHeight),
+        )..position = Vector2(headW, 0),
+        ProgressBar(
+          model.currentQi,
+          model.qi,
+          size: Vector2(proWidth, proHeight),
+        )..position = Vector2(headW, proHeight + dividerHeight),
+        ProgressBar(
+          model.currentShen,
+          model.shen,
+          size: Vector2(proWidth, proHeight),
+        )..position = Vector2(headW, proHeight * 2 + dividerHeight * 2)
+      ],
+    );
+  }
 }

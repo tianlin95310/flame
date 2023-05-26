@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame_demo/common/Buttons.dart';
-import 'package:flame_demo/utils/simpleObj.dart';
+import 'package:flame_demo/basic/simpleObj.dart';
+import 'package:flame_demo/component/buttons.dart';
 import 'package:flutter/rendering.dart';
 
 import 'game.dart';
@@ -13,6 +13,7 @@ class PCGameHome extends Component with HasGameRef<PCGameEntry> {
       RouteInfo('Tank', 'game01'),
       RouteInfo('最短路径', 'game02'),
       RouteInfo('生命方法测试', 'game03'),
+      RouteInfo('RPG VS', 'game04'),
     ],
     [
       RouteInfo('', 'game03'),

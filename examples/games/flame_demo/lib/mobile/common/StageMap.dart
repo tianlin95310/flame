@@ -1,11 +1,10 @@
-
 import 'package:flame/components.dart';
 
-class StageMap extends SpriteComponent with HasGameRef{
-
+class StageMap extends SpriteComponent with HasGameRef {
+  String? path;
   @override
   Future<void>? onLoad() async {
-    sprite = await Sprite.load('bg/map/stage001.jpg');
+    sprite = await Sprite.load(path ?? 'bg/map/stage001.jpg');
     sizeByX();
   }
 
@@ -19,5 +18,5 @@ class StageMap extends SpriteComponent with HasGameRef{
     size.y = sprite!.originalSize.y / (sprite!.originalSize.x / size.x);
   }
 
-  StageMap(): super(anchor: Anchor.topLeft);
+  StageMap({this.path}) : super(anchor: Anchor.topLeft);
 }

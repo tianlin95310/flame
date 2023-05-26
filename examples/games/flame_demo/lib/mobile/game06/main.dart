@@ -2,13 +2,12 @@ import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
-import 'package:flame_demo/common/Buttons.dart';
-import 'package:flame_demo/common/PauseRoute.dart';
+import 'package:flame_demo/component/buttons.dart';
+import 'package:flame_demo/component/pause.dart';
 import 'package:flutter/rendering.dart';
 
 import '../common/StageMap.dart';
-import '../utils/ModelLoadUtils.dart';
-import 'ModelSprite.dart';
+import 'models.dart';
 
 class Game06 extends Component {
   late List<ModelSprite> sprites;

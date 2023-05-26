@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import 'package:flame_demo/gameComponent/GameComponent.dart';
+import 'package:flame_demo/interface/GameComponent.dart';
 import 'package:flame_demo/gameComponent/tank/PositionComponent_ABullet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

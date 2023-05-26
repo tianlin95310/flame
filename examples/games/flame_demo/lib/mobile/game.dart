@@ -1,9 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame_demo/gameComponent/RouterProvider.dart';
+import 'package:flame_demo/component/pause.dart';
+import 'package:flame_demo/mixins/RouterProvider.dart';
 
-import '../common/PauseRoute.dart';
 import 'game01/main.dart';
 import 'game02/main.dart';
 import 'game03/main.dart';

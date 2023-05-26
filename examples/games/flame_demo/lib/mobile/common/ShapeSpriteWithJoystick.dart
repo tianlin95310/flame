@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame_demo/common/ShapeSprite.dart';
-
+import 'package:flame_demo/component/ShapeSprite.dart';
 
 class PathSpriteWithJoystick extends ShapeSprite {
   final JoystickComponent joystick;

@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
-import 'package:flame_demo/gameComponent/RouterProvider.dart';
+import 'package:flame_demo/mixins/RouterProvider.dart';
 import 'package:flutter/rendering.dart';
 
 /// Rect文字button

@@ -6,9 +6,9 @@ import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
-import 'package:flame_demo/gameComponent/RouterProvider.dart';
+import 'package:flame_demo/mixins/RouterProvider.dart';
 
-import 'Buttons.dart';
+import 'buttons.dart';
 
 /// 暂停Route
 class PauseRoute extends Route {

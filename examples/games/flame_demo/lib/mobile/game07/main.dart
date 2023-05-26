@@ -6,7 +6,7 @@ import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 
-import '../../gameComponent/GameComponent.dart';
+import '../../interface/GameComponent.dart';
 import '../../gameComponent/tank/PositionComponent_ABullet.dart';
 import '../../gameComponent/tank/PositionComponent_Enemy.dart';
 import '../../gameComponent/tank/TimerComponent_EnemyCreater.dart';

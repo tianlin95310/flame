@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame_demo/gameComponent/RouterProvider.dart';
+import 'package:flame_demo/mixins/RouterProvider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' hide Route;
 
@@ -9,16 +9,17 @@ import 'Game01_Tank/extensions.dart';
 import 'Game01_Tank/main.dart';
 import 'Game02_ShortestPath/main.dart';
 import 'Game03_FuncCallTest/main.dart';
+import 'Game04_RPGVS/main.dart';
 import 'home.dart';
 
 class PCGameEntry extends FlameGame
     with KeyboardEvents, HasCollisionDetection, RouterProvider, HasTimeScale
 // , TapCallbacks
 {
-  @override
-  Color backgroundColor() {
-    return const Color(0x33440000);
-  }
+  // @override
+  // Color backgroundColor() {
+  //   return const Color(0x33440000);
+  // }
 
   @override
   void onLoad() {
@@ -31,11 +32,10 @@ class PCGameEntry extends FlameGame
           'game01': Route(DemoGame01.new),
           'game02': Route(DemoGame02.new),
           'game03': Route(DemoGame03.new),
+          'game04': Route(DemoGame04.new),
         },
       ),
     );
-
-
   }
 
   @override
@@ -48,7 +48,6 @@ class PCGameEntry extends FlameGame
   void onMount() {
     print('PCGameEntry onMount, size = $canvasSize');
     super.onMount();
-    pauseOrResume();
   }
 
   @override

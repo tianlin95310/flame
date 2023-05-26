@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame_demo/common/Buttons.dart';
-import 'package:flame_demo/utils/simpleObj.dart';
+import 'package:flame_demo/basic/simpleObj.dart';
+import 'package:flame_demo/component/buttons.dart';
 import 'package:flutter/rendering.dart';
 
 import 'game.dart';

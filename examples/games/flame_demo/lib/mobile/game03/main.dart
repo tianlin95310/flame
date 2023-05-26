@@ -1,9 +1,9 @@
 import 'package:flame/components.dart';
-import 'package:flame_demo/common/ScrollComponent.dart';
+import 'package:flame_demo/component/scroll.dart';
 import 'package:flutter/rendering.dart';
 
 import '../common/StageMap.dart';
-import '../utils/SkillLoadUtils.dart';
+import 'skills.dart';
 
 class Game03 extends Component {
   late List<PositionComponent> skills = [];

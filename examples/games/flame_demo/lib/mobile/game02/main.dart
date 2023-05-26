@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
-import 'package:flame_demo/common/ShapeSprite.dart';
+import 'package:flame_demo/component/ShapeSprite.dart';
 import 'package:flutter/material.dart';
 
 import '../common/MapDraggable.dart';

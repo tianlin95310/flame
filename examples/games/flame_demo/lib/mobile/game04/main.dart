@@ -3,8 +3,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
-
-import '../../common/ShapeSpriteDraggable.dart';
+import 'package:flame_demo/component/ShapeSpriteDraggable.dart';
 
 class Game04 extends Component with HasGameRef {
   final bgLayers = {
