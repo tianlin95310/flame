@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 import '../common/StageMap.dart';
 import 'models.dart';
 
-class Game06 extends Component {
+class Game06 extends Component with TapCallbacks{
   late List<ModelSprite> sprites;
 
   late JoystickComponent joystickComponent;
@@ -18,15 +18,26 @@ class Game06 extends Component {
 
   late ModelSprite currentSprite;
 
+  late CameraComponent camera;
+
   late World world;
 
-  late CameraComponent camera;
+  int index = 0;
 
   @override
   void onMount() {
     super.onMount();
-    camera.setBounds(
-        Rectangle.fromRect((map5.size - camera.viewport.size).toRect()));
+    camera.setBounds(Rectangle.fromRect((map5.size - camera.viewport.size).toRect()));
+  }
+
+  @override
+  bool containsLocalPoint(Vector2 point) {
+    return true;
+  }
+ @override
+  void onLongTapDown(TapDownEvent event) {
+    super.onLongTapDown(event);
+    currentSprite = sprites[(++index) % sprites.length];
   }
 
   @override
@@ -34,7 +45,6 @@ class Game06 extends Component {
     final knobPaint = BasicPalette.blue.withAlpha(200).paint();
     final backgroundPaint = BasicPalette.blue.withAlpha(100).paint();
     sprites = await ModelLoadUtils.loadAllModels();
-    currentSprite = sprites[0];
 
     await add(world = World());
     await add(
@@ -50,6 +60,28 @@ class Game06 extends Component {
         HudMarginComponent(
           children: [PauseButtonEngine()],
           margin: const EdgeInsets.only(left: 110, top: 30),
+        ),
+        HudButtonComponent(
+          button: TextComponent(text: '上'),
+          onPressed: () {
+            Vector2 position = currentSprite.position.clone();
+            world.remove(currentSprite);
+            currentSprite = sprites[(--index) % sprites.length];
+            currentSprite.position = position;
+            updateCurrent();
+          },
+          margin: const EdgeInsets.only(left: 160 + 30, top: 30),
+        ),
+        HudButtonComponent(
+          button: TextComponent(text: '下'),
+          onPressed: () {
+            Vector2 position = currentSprite.position.clone();
+            world.remove(currentSprite);
+            currentSprite = sprites[(++index) % sprites.length];
+            currentSprite.position = position;
+            updateCurrent();
+          },
+          margin: const EdgeInsets.only(left: 210 + 30, top: 30),
         ),
         HudButtonComponent(
           button: TextComponent(text: '攻击'),
@@ -82,13 +114,19 @@ class Game06 extends Component {
     );
 
     await world.add(map5 = StageMap()..position = -camera.viewport.size / 2);
-
-    world.add(currentSprite);
-
     world.add(await ModelLoadUtils.loadAndroidModel('jian02', 3, 8, 16, 23, 8, 1400 / 8, 1400 / 8));
 
+    currentSprite = sprites[0];
+    updateCurrent(isFirst: true);
+  }
+
+  updateCurrent({isFirst = false}) {
+    world.add(currentSprite);
     currentSprite.joystick = joystickComponent;
-    currentSprite.position = Vector2(-camera.viewport.size.x / 2 + currentSprite.size.x / 2, 0);
+    if (isFirst) {
+      currentSprite.position = Vector2(-camera.viewport.size.x / 2 + currentSprite.size.x / 2, 0);
+    }
     camera.follow(currentSprite);
   }
+
 }

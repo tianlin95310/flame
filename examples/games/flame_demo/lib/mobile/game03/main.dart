@@ -24,7 +24,7 @@ class Game03 extends Component {
     add(ScrollComponent(
       Axis.horizontal,
         skills2,
-      size: Vector2(300, 100),
+      size: Vector2(600, 100),
       position: Vector2(200, 50),
     ));
   }

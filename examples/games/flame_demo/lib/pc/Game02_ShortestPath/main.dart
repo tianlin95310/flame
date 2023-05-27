@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame_demo/component/ShapeSprite.dart';
-import 'package:flame_demo/utils/algorithm/ShortestPathUtils.dart';
+import 'package:flame_demo/utils/algorithm/shortest_path.dart';
 
 import 'PositionComponent_PathMap.dart';
 

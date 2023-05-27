@@ -4,10 +4,12 @@ import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/input.dart';
 import 'package:flame_demo/component/progress.dart';
+import 'package:flame_demo/pc/Game04_RPGVS/model.dart';
 import 'package:flutter/painting.dart';
 
-import 'component.dart';
-import 'model.dart';
+import 'common.dart';
+import 'stage.dart';
+import 'vo.dart';
 import 'render.dart';
 
 class DemoGame04 extends Component {
@@ -47,6 +49,12 @@ class DemoGame04 extends Component {
 
   @override
   FutureOr<void> onLoad() async {
+    fightModels[0].model = await loadModel('kongshou04', 3, 8, 16, 23, 8, 1560.0 / 8, 1560.0 / 8);
+    fightModels[1].model = await loadModel('kongshou06', 3, 8, 16, 23, 8, 1440.0 / 8, 1440.0 / 8);
+    fightModels[2].model = await loadModel('jian02', 3, 8, 16, 23, 8, 1400.0 / 8, 1400.0 / 8);
+    fightModels[3].model = await loadModel('jian10', 3, 8, 16, 23, 8, 1440.0 / 8, 1440.0 / 8);
+    // await loadModel('shanzi03', 3, 8, 16, 23, 8, 1120.0 / 8, 1120.0 / 8);
+
     await add(world = World());
     int index = 0;
 
@@ -72,7 +80,7 @@ class DemoGame04 extends Component {
     );
     Vector2 stageSize = viewportSize - Vector2.all(40);
     world.add(
-      FightStage(position: viewportSize / 2 - stageSize / 2, size: stageSize),
+      FightStage(fightModels, position: viewportSize / 2 - stageSize / 2, size: stageSize),
     );
   }
 

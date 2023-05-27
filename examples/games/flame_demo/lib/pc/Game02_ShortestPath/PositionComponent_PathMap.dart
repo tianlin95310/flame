@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-
-import '../../utils/algorithm/ShortestPathUtils.dart';
+import 'package:flame_demo/utils/algorithm/shortest_path.dart';
 
 class PathMap extends PositionComponent with HasPaint {
   List<Vertex> points;
