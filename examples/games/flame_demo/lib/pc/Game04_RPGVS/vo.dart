@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 
 import 'common.dart';
+import 'model.dart';
 
 class BaseModelInfo {
   String name;
@@ -8,7 +9,7 @@ class BaseModelInfo {
   double qi = 100;
   double shen = 100;
 
-  late PositionComponent model;
+  late RPGModel model;
   late Header header;
 
   BaseModelInfo(this.name);

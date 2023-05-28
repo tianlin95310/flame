@@ -116,6 +116,83 @@ class SpriteButton extends SpriteComponent with TapCallbacks {
   }
 }
 
+/// Rect文字button
+class TextButtonRect extends PositionComponent with TapCallbacks {
+  static final Vector2 initSize = Vector2(50, 50);
+  TextButtonRect({
+    required this.text,
+    required this.action,
+    required Color color,
+    required Color borderColor,
+    super.anchor = Anchor.center,
+  }) : _textDrawable = TextPaint(
+    style: const TextStyle(
+      fontSize: 16,
+      color: Color(0xFF000000),
+      fontWeight: FontWeight.w700,
+    ),
+  ).toTextPainter(text) {
+    size = initSize;
+    _textOffset = Offset(
+      (size.x - _textDrawable.width) / 2,
+      (size.y - _textDrawable.height) / 2,
+    );
+    initBg();
+    _bgPaint = Paint()..color = color;
+    _borderPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = borderColor;
+  }
+
+  final String text;
+  final void Function() action;
+  final TextPainter _textDrawable;
+  late final Offset _textOffset;
+  late final Rect _rect;
+  late final Paint _borderPaint;
+  late final Paint _bgPaint;
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    // position.x = position.x - this.size.x / 2;
+    // position.x = size.x / 2;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    drawBg(canvas);
+    _textDrawable.paint(canvas, _textOffset);
+  }
+
+  @override
+  void onTapDown(TapDownEvent event) {
+    scale = Vector2.all(1.05);
+    priority = 9999;
+  }
+
+  @override
+  void onTapUp(TapUpEvent event) {
+    scale = Vector2.all(1.0);
+    action();
+  }
+
+  @override
+  void onTapCancel(TapCancelEvent event) {
+    scale = Vector2.all(1.0);
+  }
+
+  initBg() {
+    _rect = Rect.fromLTRB(0, 0, size.x, size.y);
+  }
+
+  void drawBg(Canvas canvas) {
+    canvas.drawRect(_rect, _bgPaint);
+    canvas.drawRect(_rect, _borderPaint);
+  }
+}
+
 
 /// 简单path路径button
 abstract class SimplePathButton extends PositionComponent with TapCallbacks {
