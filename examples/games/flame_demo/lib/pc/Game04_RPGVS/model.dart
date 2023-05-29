@@ -6,31 +6,80 @@ import 'package:flame/experimental.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_demo/mixins/paint.dart';
-import 'package:flame_demo/pc/Game04_RPGVS/stage.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/painting.dart';
 
 import 'skill.dart';
+import 'stage.dart';
 
 /// 校色模型
-class BaseModel extends PositionComponent with ShapePaint, BgPaint {
+class BaseRPGModel extends PositionComponent with ShapePaint, BgPaint, RPGModelSkill, TapCallbacks {
+  static final Vector2 modelSize = Vector2(60, 60);
   Color? color;
 
-  BaseModel({this.color}) : super(size: Vector2(40, 60), anchor: Anchor.topLeft);
+  bool keepCurrentAnim = false;
 
+  BaseRPGModel({this.color, Vector2? size}) : super(anchor: Anchor.center) {
+    super.size = (size ?? modelSize);
+    skills = {
+      'attack': ({Map? argument}) async {},
+      'stand': ({Map? argument}) {},
+      'run': ({Map? argument}) {},
+      'rush': ({Map? argument}) async {
+        Vector2 to = argument?['to'];
+        keepCurrentAnim = true;
+        Completer completer = Completer();
+        // Vector2 toPosition = position + Vector2(size.x, 0) * direction;
+        Vector2 toPosition = to;
+        add(
+          MoveEffect.to(
+            toPosition,
+            EffectController(duration: 0.3, repeatCount: 1, curve: Curves.fastOutSlowIn),
+          )..onComplete = () {
+              keepCurrentAnim = false;
+              completer.complete();
+            },
+        );
+        return completer.future;
+      },
+    };
+  }
   @override
   void render(Canvas canvas) {
-    canvas.drawCircle((Vector2(width / 2, 10)).toOffset(), 7, shapePaint);
+    canvas.drawRect(size.toRect(), shapePaint);
 
-    canvas.drawRRect(
-        RRect.fromRectAndRadius(Rect.fromCenter(center: center.toOffset(), width: 20, height: 25), const Radius.circular(5)), shapePaint);
-    canvas.drawLine(const Offset(15, 40), const Offset(15, 55), shapePaint);
-    canvas.drawLine(const Offset(25, 40), const Offset(25, 55), shapePaint);
+    // draw body
+    Rect bodyRect = Rect.fromCenter(center: (size / 2).toOffset(), width: width / 3.5, height: height /3);
+    canvas.drawRRect(RRect.fromRectAndRadius(bodyRect, const Radius.circular(5)), shapePaint);
 
-    canvas.drawLine(const Offset(10, 20), const Offset(3, 36), shapePaint);
-    canvas.drawLine(const Offset(30, 20), const Offset(37, 36), shapePaint);
+    // draw head
+    canvas.drawCircle(bodyRect.topCenter - Offset(0, bodyRect.height / 2), bodyRect.height / 2, shapePaint);
 
-    canvas.drawCircle(center.toOffset(), 2, bgPaint);
+    // draw hands
+    canvas.drawLine(bodyRect.topLeft, bodyRect.bottomLeft - Offset(bodyRect.width / 2, 0), shapePaint);
+    canvas.drawLine(bodyRect.topRight, bodyRect.bottomRight + Offset(bodyRect.width / 2, 0), shapePaint);
+
+    // draw legs
+    canvas.drawLine(bodyRect.bottomLeft, bodyRect.bottomLeft + Offset(0, bodyRect.height), shapePaint);
+    canvas.drawLine(bodyRect.bottomRight, bodyRect.bottomRight + Offset(0, bodyRect.height), shapePaint);
+  }
+
+  @override
+  FutureOr<void> oAttack(RPGModelSkill enemy) {
+    print('oAttack = $enemy');
+    Vector2 currentPosition = position.clone();
+    return startSkill([
+      Action('run'),
+      Action('rush', argument: {'to': enemy.position - Vector2(size.x / 2, 0)}),
+      Action('attack'),
+      Action('rush', argument: {'to': currentPosition})
+    ]);
+  }
+
+  @override
+  void onTapUp(TapUpEvent event) {
+    FightStage? stage = findParent();
+    stage?.onModelSelect(this);
   }
 }
 
@@ -45,12 +94,25 @@ enum RPGBasicAction {
 
 typedef BasicSkill = FutureOr Function({Map? argument});
 
-var defaultBasicSkill = ({Map? argument}) {};
+BasicSkill defaultBasicSkill = ({Map? argument}) {};
 
-abstract class RPGModelSkill {
+mixin RPGModelSkill on PositionComponent {
   Map<String, BasicSkill> skills = {};
 
-  FutureOr<void> startSkill(List<Action> actions) => null;
+  FutureOr<void> oAttack(RPGModelSkill enemy);
+
+  FutureOr<void> startSkill(List<Action> actions) async {
+    List<BasicSkill> singleSkills = actions.map((e) => skills[e.name] ?? defaultBasicSkill).toList();
+    List<Map?> arguments = actions.map((e) => e.argument).toList();
+    for (int i = 0; i < singleSkills.length; i++) {
+      var action = singleSkills[i];
+      if (arguments[i] != null) {
+        await action(argument: arguments[i]);
+      } else {
+        await action();
+      }
+    }
+  }
 }
 
 class Action {
@@ -60,9 +122,8 @@ class Action {
   Action(this.name, {this.argument});
 }
 
-class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with HasGameRef, RPGModelSkill, ShapePaint, TapCallbacks {
-  double maxSpeed = 300.0;
-
+class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction>
+    with HasGameRef, RPGModelSkill, ShapePaint, TapCallbacks {
   bool keepCurrentAnim = false;
 
   RPGModel({super.animations, super.removeOnFinish}) : super(size: Vector2.all(100), anchor: Anchor.center) {
@@ -85,10 +146,7 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with HasGam
       },
       'rush': ({Map? argument}) async {
         Vector2 to = argument?['to'];
-
         keepCurrentAnim = true;
-        double direction = 1.0;
-        direction = 1;
         Completer completer = Completer();
         // Vector2 toPosition = position + Vector2(size.x, 0) * direction;
         Vector2 toPosition = to;
@@ -103,49 +161,10 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with HasGam
         );
         return completer.future;
       },
-      'skill1': ({Map? argument}) async {
-        Completer completer = Completer();
-        PositionComponent skill = skillSingleFile('sk061.png', 2, 5, 0, 7, 8, 192.0, 192.0, filterColor: 0xFF000000)..position = size / 2;
-
-        double direction = 1.0;
-        // if (this.direction == JoystickDirection.right) {
-        //   direction = 1;
-        // } else if (this.direction == JoystickDirection.left) {
-        //   direction = -1;
-        // }
-        if (skill.parent == null) {
-          add(skill
-            ..add(MoveEffect.by(
-              Vector2(size.x * direction, 0),
-              EffectController(
-                duration: 0.4,
-                repeatCount: 1,
-                curve: Curves.decelerate,
-              ),
-            )..onComplete = () {
-                skill.removeFromParent();
-                completer.complete();
-              }));
-        }
-        return completer.future;
-      }
     };
   }
-
-  void onJinAttack() {
-    startSkill([Action('attack')]);
-  }
-
-  void onRunAttack() {
-    startSkill([Action('run'), Action('rush'), Action('attack')]);
-  }
-
-  void onYuanAttack() {
-    startSkill([Action('attack'), Action('skill1')]);
-  }
-
-  FutureOr oAttack(RPGModel enemy) {
-    print('oAttack = $enemy');
+  @override
+  FutureOr oAttack(RPGModelSkill enemy) {
     Vector2 currentPosition = position.clone();
     return startSkill([
       Action('run'),
@@ -165,20 +184,6 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with HasGam
   void onTapUp(TapUpEvent event) {
     FightStage? stage = findParent();
     stage?.onModelSelect(this);
-  }
-
-  @override
-  FutureOr<void> startSkill(List<Action> actions) async {
-    List<BasicSkill> singleSkills = actions.map((e) => skills[e.name] ?? defaultBasicSkill).toList();
-    List<Map?> arguments = actions.map((e) => e.argument).toList();
-    for (int i = 0; i < singleSkills.length; i++) {
-      var action = singleSkills[i];
-      if (arguments[i] != null) {
-        await action(argument: arguments[i]);
-      } else {
-        await action();
-      }
-    }
   }
 
   @override
@@ -248,7 +253,8 @@ class EnemyRPGModel extends RPGModel {
       },
       'skill1': ({Map? argument}) async {
         Completer completer = Completer();
-        PositionComponent skill = skillSingleFile('sk061.png', 2, 5, 0, 7, 8, 192.0, 192.0, filterColor: 0xFF000000)..position = size / 2;
+        PositionComponent skill = skillSingleFile('sk061.png', 2, 5, 0, 7, 8, 192.0, 192.0, filterColor: 0xFF000000)
+          ..position = size / 2;
 
         double direction = 1.0;
         // if (this.direction == JoystickDirection.right) {
@@ -281,13 +287,14 @@ class EnemyRPGModel extends RPGModel {
   }
 }
 
-Future<RPGModel> loadModel(name, imgRow, imgColumn, startIndex, endIndex, frameCount, double frameWidth, double frameHeight) async {
-  final spriteSheetStand =
-      SpriteSheet(image: await Flame.images.load('models/singleModel/$name/stand.png'), srcSize: Vector2(frameWidth, frameHeight));
-  final spriteSheetRun =
-      SpriteSheet(image: await Flame.images.load('models/singleModel/$name/run.png'), srcSize: Vector2(frameWidth, frameHeight));
-  final spriteSheetAttack =
-      SpriteSheet(image: await Flame.images.load('models/singleModel/$name/attack.png'), srcSize: Vector2(frameWidth, frameHeight));
+Future<RPGModel> loadModel(
+    name, imgRow, imgColumn, startIndex, endIndex, frameCount, double frameWidth, double frameHeight) async {
+  final spriteSheetStand = SpriteSheet(
+      image: await Flame.images.load('models/singleModel/$name/stand.png'), srcSize: Vector2(frameWidth, frameHeight));
+  final spriteSheetRun = SpriteSheet(
+      image: await Flame.images.load('models/singleModel/$name/run.png'), srcSize: Vector2(frameWidth, frameHeight));
+  final spriteSheetAttack = SpriteSheet(
+      image: await Flame.images.load('models/singleModel/$name/attack.png'), srcSize: Vector2(frameWidth, frameHeight));
   Map<RPGBasicAction, SpriteAnimation> sprites = {
     RPGBasicAction.standLeft: spriteSheetStand.createAnimation(row: 1, to: 7, stepTime: 0.1),
     RPGBasicAction.standRight: spriteSheetStand.createAnimation(row: 2, to: 7, stepTime: 0.1),
@@ -302,12 +309,12 @@ Future<RPGModel> loadModel(name, imgRow, imgColumn, startIndex, endIndex, frameC
 
 Future<EnemyRPGModel> loadEnemyModel(
     name, imgRow, imgColumn, startIndex, endIndex, frameCount, double frameWidth, double frameHeight) async {
-  final spriteSheetStand =
-      SpriteSheet(image: await Flame.images.load('models/singleModel/$name/stand.png'), srcSize: Vector2(frameWidth, frameHeight));
-  final spriteSheetRun =
-      SpriteSheet(image: await Flame.images.load('models/singleModel/$name/run.png'), srcSize: Vector2(frameWidth, frameHeight));
-  final spriteSheetAttack =
-      SpriteSheet(image: await Flame.images.load('models/singleModel/$name/attack.png'), srcSize: Vector2(frameWidth, frameHeight));
+  final spriteSheetStand = SpriteSheet(
+      image: await Flame.images.load('models/singleModel/$name/stand.png'), srcSize: Vector2(frameWidth, frameHeight));
+  final spriteSheetRun = SpriteSheet(
+      image: await Flame.images.load('models/singleModel/$name/run.png'), srcSize: Vector2(frameWidth, frameHeight));
+  final spriteSheetAttack = SpriteSheet(
+      image: await Flame.images.load('models/singleModel/$name/attack.png'), srcSize: Vector2(frameWidth, frameHeight));
   Map<RPGBasicAction, SpriteAnimation> sprites = {
     RPGBasicAction.standLeft: spriteSheetStand.createAnimation(row: 1, to: 7, stepTime: 0.1),
     RPGBasicAction.standRight: spriteSheetStand.createAnimation(row: 2, to: 7, stepTime: 0.1),

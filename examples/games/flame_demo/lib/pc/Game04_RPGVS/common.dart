@@ -1,15 +1,13 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
-import 'package:flame/palette.dart';
-import 'package:flame_demo/component/buttons.dart';
+import 'package:flame_demo/component/progress.dart';
 import 'package:flame_demo/mixins/paint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-import 'main.dart';
-import 'model.dart';
+import 'style.dart';
+import 'vo.dart';
 
 /// 头像
 class Header extends PositionComponent with BgPaint {
@@ -32,52 +30,55 @@ class Background extends PositionComponent with BgPaint {
   }
 }
 
-class Menu extends PositionComponent with BgPaint {
-  static final menuSize = Vector2(150, 150);
-  Vector2 buttonSize = TextButtonRect.initSize;
+class CharInfo extends PositionComponent {
+  List<FightModelInfo> fightModels;
 
-  Menu() : super(size: menuSize);
+  static Vector2 infoSize = Vector2((headWidth + proWidth) * 3 + dividerWidth * 2, headHeight);
+
+  static double headWidth = 60;
+  static double headHeight = 60;
+  static double dividerWidth = 5;
+  static double dividerHeight = 5;
+
+  // 进度条长宽
+  static double proWidth = 60;
+
+  late double nameHeight = headHeight / 2;
+
+  late double proHeight = (headHeight - nameHeight - dividerHeight * 2) / 3;
+
+  CharInfo(this.fightModels);
 
   @override
-  FutureOr<void> onLoad() async {
-    addAll([
-      getButton('击', () {
-        onMenuClick(0);
-      })
-        ..position = center,
-      getButton('技', () {
-        onMenuClick(1);
-      })
-        ..position = center - Vector2(0, buttonSize.y),
-      getButton('术', () {
-        onMenuClick(2);
-      })
-        ..position = center + Vector2(buttonSize.x, 0),
-      getButton('物', () {
-        onMenuClick(3);
-      })
-        ..position = center - Vector2(buttonSize.x, 0),
-      getButton('避', () {
-        onMenuClick(4);
-      })
-        ..position = center + Vector2(0, buttonSize.y),
-    ]);
-    bgPaint.color = const Color(0x7FA52A2A);
+  FutureOr<void> onLoad() async{
+    int index = 0;
+    addAll(fightModels.map((e) => oneStatus(index++, e)));
   }
 
-  PositionComponent getButton(String text, void Function() action) {
-    return TextButtonRect(text: text, action: action, color: const Color(0xFF00FFFF), borderColor: const Color(0xFF00FFFF));
-  }
-
-  void onMenuClick(int menu) {
-    DemoGame04? game = findParent();
-    game?.onMenuClick(menu);
-    scale = Vector2(0, 0);
-  }
-  @override
-  void render(Canvas canvas) {
-    canvas.drawRRect(RRect.fromRectAndRadius(menuSize.toRect(), Radius.circular(buttonSize.x / 4)), bgPaint);
+  PositionComponent oneStatus(int index, FightModelInfo model) {
+    return PositionComponent(
+      size: Vector2(headWidth + proWidth, headHeight),
+      position: Vector2((headWidth + proWidth) * index + dividerWidth * index, 0),
+      children: [
+        Header(size: Vector2.all(headWidth))..position = Vector2(0, 0),
+        TextComponent(
+            text: model.name, position: Vector2(0, headHeight), anchor: Anchor.bottomLeft, textRenderer: tinyRender),
+        ProgressBar(
+          model.currentJing,
+          model.jing,
+          size: Vector2(proWidth, proHeight),
+        )..position = Vector2(headWidth, 0),
+        ProgressBar(
+          model.currentQi,
+          model.qi,
+          size: Vector2(proWidth, proHeight),
+        )..position = Vector2(headWidth, proHeight + dividerHeight),
+        ProgressBar(
+          model.currentShen,
+          model.shen,
+          size: Vector2(proWidth, proHeight),
+        )..position = Vector2(headWidth, proHeight * 2 + dividerHeight * 2)
+      ],
+    );
   }
 }
-
-class SecondMenu extends PositionComponent {}

@@ -9,7 +9,7 @@ class BaseModelInfo {
   double qi = 100;
   double shen = 100;
 
-  late RPGModel model;
+  late RPGModelSkill model;
   late Header header;
 
   BaseModelInfo(this.name);
