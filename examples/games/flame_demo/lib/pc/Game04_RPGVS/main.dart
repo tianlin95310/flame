@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/input.dart';
-import 'package:flame_demo/component/progress.dart';
 import 'package:flame_demo/pc/Game04_RPGVS/model.dart';
 import 'package:flutter/painting.dart';
 
@@ -11,12 +10,13 @@ import 'common.dart';
 import 'menu.dart';
 import 'stage.dart';
 import 'vo.dart';
-import 'style.dart';
 
 class DemoGame04 extends Component {
   late World world;
 
   late CameraComponent camera;
+
+  late BaseRPGModel currentModel;
 
   List<FightModelInfo> fightModels = [
     // FightModelInfo('三藏')
@@ -51,12 +51,58 @@ class DemoGame04 extends Component {
 
   late SecondMenu secondMenu;
 
+  int current = 0;
+
   @override
   FutureOr<void> onLoad() async {
-    fightModels[0].model = BaseRPGModel();
-    fightModels[1].model = BaseRPGModel(size: Vector2.all(80));
-    fightModels[2].model = BaseRPGModel(size: Vector2.all(100));
-    enemyModels[0].model = BaseRPGModel(size: Vector2.all(120));
+    fightModels[0].model = SimpleRPGModel(skills: [
+      Skill('横扫千军', [
+        Action('run'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
+        }),
+        Action('attack'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': hit.position.clone()};
+        }),
+      ]),
+      Skill('当头一击', [
+        Action('run'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
+        }),
+        Action('attack'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': hit.position.clone()};
+        }),
+      ])
+    ]);
+    fightModels[1].model = SimpleRPGModel(size: Vector2.all(80), skills: [
+      Skill('九齿钉耙击', [
+        Action('run'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
+        }),
+        Action('attack'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': hit.position.clone()};
+        }),
+      ])
+    ]);
+    fightModels[2].model = SimpleRPGModel(size: Vector2.all(100), skills: [
+      Skill('杖击', [
+        Action('run'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
+        }),
+        Action('attack'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': hit.position.clone()};
+        }),
+      ])
+    ]);
+    enemyModels[0].model = SimpleRPGModel(size: Vector2.all(120));
+    currentModel = fightModels[current].model;
     // fightModels[1].model = await loadModel('kongshou06', 3, 8, 16, 23, 8, 1440.0 / 8, 1440.0 / 8);
     // fightModels[2].model = await loadModel('jian02', 3, 8, 16, 23, 8, 1400.0 / 8, 1400.0 / 8);
     // fightModels[3].model = await loadModel('jian10', 3, 8, 16, 23, 8, 1440.0 / 8, 1440.0 / 8);
@@ -76,13 +122,15 @@ class DemoGame04 extends Component {
             children: [CharInfo(fightModels)],
           ),
           HudMarginComponent(
-              size: Menu.menuSize,
-              position: viewportSize / 2 - Vector2(0, Menu.menuSize.y / 2),
-              children: [menu = Menu()]),
+            size: Menu.menuSize,
+            position: viewportSize / 2 - Menu.menuSize / 2,
+            children: [menu = Menu()],
+          ),
           HudMarginComponent(
-              size: Menu.menuSize,
-              position: viewportSize / 2 - Vector2(0, Menu.menuSize.y / 2),
-              children: [secondMenu = SecondMenu()])
+            size: SecondMenu.menuSize,
+            position: viewportSize / 2 - SecondMenu.menuSize / 2,
+            children: [secondMenu = SecondMenu(currentModel, viewportSize)],
+          )
         ],
       ),
     );
@@ -90,34 +138,39 @@ class DemoGame04 extends Component {
     world.add(Background(size: viewportSize));
     Vector2 stageSize = viewportSize - Vector2.all(40);
     world.add(
-      fightStage = FightStage(fightModels, enemyModels, position: viewportSize / 2 - stageSize / 2, size: stageSize),
+      fightStage =
+          FightStage(this, fightModels, enemyModels, position: viewportSize / 2 - stageSize / 2, size: stageSize),
     );
   }
 
   void onMenuClick(int menu) {
     if (menu == 0) {
       hideMenu();
+      FutureOr futureOr = currentModel.basicAttack(enemyModels[0].model);
+      if (futureOr is Future) {
+        futureOr.then((value) {
+          currentModel = fightModels[++current % fightModels.length].model;
+          resetMenu();
+        });
+      }
     } else if (menu == 1) {
       // hideMenu();
-      resetSecondMenu();
+      secondMenu.showMenu();
     } else if (menu == 2) {
     } else if (menu == 3) {
     } else if (menu == 4) {}
-    FutureOr futureOr = fightStage.onMenuClick(menu);
-    if (futureOr is Future) {
-      futureOr.then((value) {
-        fightStage.changeActor();
-        resetMenu();
-      });
-    }
   }
 
-  resetSecondMenu() {}
   void resetMenu() {
     menu.scale = Vector2(1, 1);
   }
 
   void hideMenu() {
     menu.scale = Vector2(0, 0);
+  }
+
+  void onModelSelect(BaseRPGModel rpgModel) {
+    currentModel = rpgModel;
+    secondMenu.updateCurrentModel(rpgModel);
   }
 }

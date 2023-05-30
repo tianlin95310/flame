@@ -41,7 +41,7 @@ class MobileGameHome extends Component with HasGameRef<MobileGameEntry> {
           action: () => gameRef.router.pushNamed(element.router),
           color: const Color(0xffadde6c),
           borderColor: const Color(0xffedffab),
-        )..position = Vector2(Button.initSize.x * (i - 1) + Button.initSize.x / 2 , 50.0 * j));
+        )..position = Vector2(RectButton.initSize.x * (i - 1) + RectButton.initSize.x / 2 , 50.0 * j));
       }
     }
   }

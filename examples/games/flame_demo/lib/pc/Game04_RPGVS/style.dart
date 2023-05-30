@@ -6,6 +6,7 @@ final _regularTextStyle = TextStyle(
   fontSize: 18,
   color: BasicPalette.white.color,
 );
+
 final regularRender = TextPaint(style: _regularTextStyle);
 
 final tinyRender = TextPaint(

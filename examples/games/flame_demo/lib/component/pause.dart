@@ -35,14 +35,10 @@ class PauseRoute extends Route {
 class PauseButton extends SimplePathButton with HasGameRef<RouterProvider> {
   PauseButton()
       : super(Path()
-          ..moveTo(8, 8)
-          ..lineTo(14, 8)
-          ..lineTo(14, 32)
-          ..lineTo(8, 32)
-          ..moveTo(26, 8)
-          ..lineTo(32, 8)
-          ..lineTo(32, 32)
-          ..lineTo(26, 32));
+          ..moveTo(12, 8)
+          ..lineTo(12, 32)
+          ..moveTo(28, 8)
+          ..lineTo(28, 32));
   @override
   void action() => gameRef.router.pushNamed('pause');
 }

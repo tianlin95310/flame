@@ -6,22 +6,204 @@ import 'package:flame/experimental.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_demo/mixins/paint.dart';
+import 'package:flame_demo/pc/Game04_RPGVS/main.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/painting.dart';
 
-import 'skill.dart';
 import 'stage.dart';
 
+enum RPGBasicAction {
+  standLeft,
+  standRight,
+  runLeft,
+  runRight,
+  attackLeft,
+  attackRight,
+}
+
+typedef BasicModelAction = FutureOr Function({Map? argument});
+
+BasicModelAction defaultAction = ({Map? argument}) {};
+
+class Action {
+  String name;
+  Map? argument;
+
+  // translate other to argument
+  Function? translate;
+
+  Action(this.name, {this.argument, this.translate});
+}
+
+class Skill {
+  String name;
+  List<Action> actions;
+
+  Skill(this.name, this.actions);
+}
+
+mixin BaseRPGModel on PositionComponent {
+  // 基本动作
+  Map<String, BasicModelAction> basicActions = {};
+
+  // 法术动作
+  Map<String, BasicModelAction> spellActions = {};
+
+  // 普通攻击
+  late Skill basic;
+
+  // 技能
+  List<Skill> skills = [];
+
+  // 普通攻击
+  // FutureOr<void> basicAttack(BaseRPGModel enemy);
+
+  // 普通攻击
+  // FutureOr<void> skillAttack(String name, BaseRPGModel enemy);
+
+  FutureOr<void> doAction(List<Action> actions) async {
+    List<BasicModelAction> singleSkills =
+        actions.map((Action action) => basicActions[action.name] ?? defaultAction).toList();
+    List<Map?> arguments = actions.map((e) => e.argument).toList();
+    for (int i = 0; i < singleSkills.length; i++) {
+      var action = singleSkills[i];
+      if (arguments[i] != null) {
+        await action(argument: arguments[i]);
+      } else {
+        await action();
+      }
+    }
+  }
+
+  FutureOr<void> basicAttack(BaseRPGModel enemy) {
+    for (var element in basic.actions) {
+      if (element.translate != null) {
+        element.argument = element.translate!(this, enemy);
+      }
+    }
+    return doAction(basic.actions);
+  }
+
+  FutureOr<void> skillAttack(String name, BaseRPGModel enemy) {
+    Skill skill = skills.firstWhere((element) => name == element.name);
+    for (var element in skill.actions) {
+      if (element.translate != null) {
+        element.argument = element.translate!(this, enemy);
+      }
+    }
+    return doAction(skill.actions);
+  }
+}
+
+class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with BaseRPGModel, ShapePaint, TapCallbacks {
+  bool keepCurrentAnim = false;
+
+  RPGModel({super.animations, super.removeOnFinish}) : super(size: Vector2.all(100), anchor: Anchor.center) {
+    basicActions = {
+      'attack': ({Map? argument}) async {
+        Completer completer = Completer();
+        keepCurrentAnim = true;
+        current = RPGBasicAction.attackRight;
+        animation?.onComplete = () {
+          completer.complete();
+        };
+        animation?.reset();
+        return completer.future;
+      },
+      'stand': ({Map? argument}) {
+        current = RPGBasicAction.standRight;
+      },
+      'run': ({Map? argument}) {
+        current = RPGBasicAction.runRight;
+      },
+      'rush': ({Map? argument}) async {
+        Vector2 to = argument?['to'];
+        keepCurrentAnim = true;
+        Completer completer = Completer();
+        Vector2 toPosition = to;
+        add(
+          MoveEffect.to(toPosition, EffectController(duration: 0.3, repeatCount: 1, curve: Curves.fastOutSlowIn))
+            ..onComplete = () {
+              keepCurrentAnim = false;
+              completer.complete();
+            },
+        );
+        return completer.future;
+      },
+    };
+    basic = Skill('普通攻击', [
+      Action('run'),
+      Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+        return {'to': takeHit.position - Vector2(size.x / 2, 0)};
+      }),
+      Action('attack'),
+      Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+        return {'to': hit.position.clone()};
+      }),
+    ]);
+    skills = [
+      Skill('横扫千军', [
+        Action('run'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': takeHit.position - Vector2(size.x / 2, 0)};
+        }),
+        Action('attack'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': hit.position.clone()};
+        }),
+      ])
+    ];
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    canvas.drawRect(size.toRect(), shapePaint);
+  }
+
+  @override
+  void onTapUp(TapUpEvent event) {
+    DemoGame04? game = findParent();
+    game?.onModelSelect(this);
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    if (animation == null) {
+      return;
+    }
+    if (keepCurrentAnim) {
+      if (!animation!.done()) {
+        return;
+      }
+      if (animation!.done()) {
+        keepCurrentAnim = false;
+      }
+    }
+    if (keepCurrentAnim) {
+    } else {
+      doAction([Action('stand')]);
+    }
+  }
+
+  @override
+  Future<void> onLoad() async {
+    current = RPGBasicAction.standRight;
+  }
+}
+
 /// 校色模型
-class BaseRPGModel extends PositionComponent with ShapePaint, BgPaint, RPGModelSkill, TapCallbacks {
+class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPGModel, TapCallbacks {
   static final Vector2 modelSize = Vector2(60, 60);
   Color? color;
 
   bool keepCurrentAnim = false;
 
-  BaseRPGModel({this.color, Vector2? size}) : super(anchor: Anchor.center) {
+  SimpleRPGModel({List<Skill>? skills, this.color, Vector2? size}) : super(anchor: Anchor.center) {
     super.size = (size ?? modelSize);
-    skills = {
+    basicActions = {
       'attack': ({Map? argument}) async {},
       'stand': ({Map? argument}) {},
       'run': ({Map? argument}) {},
@@ -43,13 +225,36 @@ class BaseRPGModel extends PositionComponent with ShapePaint, BgPaint, RPGModelS
         return completer.future;
       },
     };
+    basic = Skill('普通攻击', [
+      Action('run'),
+      Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+        return {'to': takeHit.position - Vector2(this.size.x / 2, 0)};
+      }),
+      Action('attack'),
+      Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+        return {'to': hit.position.clone()};
+      }),
+    ]);
+    this.skills = (skills ?? [
+      Skill('普通攻击', [
+        Action('run'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': takeHit.position - Vector2(this.size.x / 2, 0)};
+        }),
+        Action('attack'),
+        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+          return {'to': hit.position.clone()};
+        }),
+      ])
+    ]);
   }
+
   @override
   void render(Canvas canvas) {
     canvas.drawRect(size.toRect(), shapePaint);
 
     // draw body
-    Rect bodyRect = Rect.fromCenter(center: (size / 2).toOffset(), width: width / 3.5, height: height /3);
+    Rect bodyRect = Rect.fromCenter(center: (size / 2).toOffset(), width: width / 3.5, height: height / 3);
     canvas.drawRRect(RRect.fromRectAndRadius(bodyRect, const Radius.circular(5)), shapePaint);
 
     // draw head
@@ -65,157 +270,15 @@ class BaseRPGModel extends PositionComponent with ShapePaint, BgPaint, RPGModelS
   }
 
   @override
-  FutureOr<void> oAttack(RPGModelSkill enemy) {
-    print('oAttack = $enemy');
-    Vector2 currentPosition = position.clone();
-    return startSkill([
-      Action('run'),
-      Action('rush', argument: {'to': enemy.position - Vector2(size.x / 2, 0)}),
-      Action('attack'),
-      Action('rush', argument: {'to': currentPosition})
-    ]);
-  }
-
-  @override
   void onTapUp(TapUpEvent event) {
-    FightStage? stage = findParent();
-    stage?.onModelSelect(this);
-  }
-}
-
-enum RPGBasicAction {
-  standLeft,
-  standRight,
-  runLeft,
-  runRight,
-  attackLeft,
-  attackRight,
-}
-
-typedef BasicSkill = FutureOr Function({Map? argument});
-
-BasicSkill defaultBasicSkill = ({Map? argument}) {};
-
-mixin RPGModelSkill on PositionComponent {
-  Map<String, BasicSkill> skills = {};
-
-  FutureOr<void> oAttack(RPGModelSkill enemy);
-
-  FutureOr<void> startSkill(List<Action> actions) async {
-    List<BasicSkill> singleSkills = actions.map((e) => skills[e.name] ?? defaultBasicSkill).toList();
-    List<Map?> arguments = actions.map((e) => e.argument).toList();
-    for (int i = 0; i < singleSkills.length; i++) {
-      var action = singleSkills[i];
-      if (arguments[i] != null) {
-        await action(argument: arguments[i]);
-      } else {
-        await action();
-      }
-    }
-  }
-}
-
-class Action {
-  String name;
-  Map? argument;
-
-  Action(this.name, {this.argument});
-}
-
-class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction>
-    with HasGameRef, RPGModelSkill, ShapePaint, TapCallbacks {
-  bool keepCurrentAnim = false;
-
-  RPGModel({super.animations, super.removeOnFinish}) : super(size: Vector2.all(100), anchor: Anchor.center) {
-    skills = {
-      'attack': ({Map? argument}) async {
-        Completer completer = Completer();
-        keepCurrentAnim = true;
-        current = RPGBasicAction.attackRight;
-        animation?.onComplete = () {
-          completer.complete();
-        };
-        animation?.reset();
-        return completer.future;
-      },
-      'stand': ({Map? argument}) {
-        current = RPGBasicAction.standRight;
-      },
-      'run': ({Map? argument}) {
-        current = RPGBasicAction.runRight;
-      },
-      'rush': ({Map? argument}) async {
-        Vector2 to = argument?['to'];
-        keepCurrentAnim = true;
-        Completer completer = Completer();
-        // Vector2 toPosition = position + Vector2(size.x, 0) * direction;
-        Vector2 toPosition = to;
-        add(
-          MoveEffect.to(
-            toPosition,
-            EffectController(duration: 0.3, repeatCount: 1, curve: Curves.fastOutSlowIn),
-          )..onComplete = () {
-              keepCurrentAnim = false;
-              completer.complete();
-            },
-        );
-        return completer.future;
-      },
-    };
-  }
-  @override
-  FutureOr oAttack(RPGModelSkill enemy) {
-    Vector2 currentPosition = position.clone();
-    return startSkill([
-      Action('run'),
-      Action('rush', argument: {'to': enemy.position - Vector2(size.x / 2, 0)}),
-      Action('attack'),
-      Action('rush', argument: {'to': currentPosition})
-    ]);
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    canvas.drawRect(size.toRect(), shapePaint);
-  }
-
-  @override
-  void onTapUp(TapUpEvent event) {
-    FightStage? stage = findParent();
-    stage?.onModelSelect(this);
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-
-    if (animation == null) {
-      return;
-    }
-    if (keepCurrentAnim) {
-      if (!animation!.done()) {
-        return;
-      }
-      if (animation!.done()) {
-        keepCurrentAnim = false;
-      }
-    }
-    if (keepCurrentAnim) {
-    } else {
-      startSkill([Action('stand')]);
-    }
-  }
-
-  @override
-  Future<void> onLoad() async {
-    current = RPGBasicAction.standRight;
+    DemoGame04? game = findParent();
+    game?.onModelSelect(this);
   }
 }
 
 class EnemyRPGModel extends RPGModel {
   EnemyRPGModel({super.animations}) {
-    skills = {
+    basicActions = {
       'wait': ({Map? argument}) async {
         await Future.delayed(const Duration(milliseconds: 500));
       },
@@ -251,33 +314,6 @@ class EnemyRPGModel extends RPGModel {
         );
         return completer.future;
       },
-      'skill1': ({Map? argument}) async {
-        Completer completer = Completer();
-        PositionComponent skill = skillSingleFile('sk061.png', 2, 5, 0, 7, 8, 192.0, 192.0, filterColor: 0xFF000000)
-          ..position = size / 2;
-
-        double direction = 1.0;
-        // if (this.direction == JoystickDirection.right) {
-        //   direction = 1;
-        // } else if (this.direction == JoystickDirection.left) {
-        //   direction = -1;
-        // }
-        if (skill.parent == null) {
-          add(skill
-            ..add(MoveEffect.by(
-              Vector2(size.x * direction, 0),
-              EffectController(
-                duration: 0.4,
-                repeatCount: 1,
-                curve: Curves.decelerate,
-              ),
-            )..onComplete = () {
-                skill.removeFromParent();
-                completer.complete();
-              }));
-        }
-        return completer.future;
-      }
     };
   }
 

@@ -15,13 +15,13 @@ class Game03 extends Component {
     skills = await SkillLoadUtils.getAllSkills();
     List<PositionComponent> skills2 = await SkillLoadUtils.getAllSkills();
     add(StageMap());
-    add(ScrollComponent(
+    add(ScrollComponentAnchorCenter(
       Axis.vertical,
       skills,
       size: Vector2(100, 300),
       position: Vector2(50, 50),
     ));
-    add(ScrollComponent(
+    add(ScrollComponentAnchorCenter(
       Axis.horizontal,
         skills2,
       size: Vector2(600, 100),
