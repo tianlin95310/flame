@@ -18,7 +18,8 @@ class Svg {
   /// Creates an [Svg] with the received [pictureInfo].
   /// Default [pixelRatio] is the device pixel ratio.
   Svg(this.pictureInfo, {double? pixelRatio})
-      : pixelRatio = pixelRatio ?? window.devicePixelRatio;
+      : pixelRatio = pixelRatio ??
+            PlatformDispatcher.instance.views.first.devicePixelRatio;
 
   final MemoryCache<Size, Image> _imageCache = MemoryCache();
 
@@ -48,8 +49,8 @@ class Svg {
     Vector2 size, {
     Paint? overridePaint,
   }) {
-    final _size = size.toSize();
-    final image = _getImage(_size);
+    final localSize = size.toSize();
+    final image = _getImage(localSize);
 
     if (image != null) {
       canvas.save();
@@ -58,7 +59,7 @@ class Svg {
       canvas.drawImage(image, Offset.zero, drawPaint);
       canvas.restore();
     } else {
-      _render(canvas, _size);
+      _render(canvas, localSize);
     }
   }
 
@@ -80,16 +81,15 @@ class Svg {
       final recorder = PictureRecorder();
       final canvas = Canvas(recorder);
       _render(canvas, size);
-      final _picture = recorder.endRecording();
-      _picture
-          .toImage(
+      final picture = recorder.endRecording();
+      picture
+          .toImageSafe(
         (size.width * pixelRatio).ceil(),
         (size.height * pixelRatio).ceil(),
       )
           .then((image) {
         _imageCache.setValue(size, image);
         _lock.remove(size);
-        _picture.dispose();
       });
     }
 

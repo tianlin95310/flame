@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/src/events/flame_game_mixins/has_tappable_components.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -275,16 +276,15 @@ void main() {
 }
 
 class _GameWithDualTappableComponents extends FlameGame
-    with HasTappablesBridge // ignore: deprecated_member_use_from_same_package
-{
+    with HasTappablesBridge {
   _GameWithDualTappableComponents({super.children});
 }
 
 class _TapCallbacksComponent extends PositionComponent with TapCallbacks {
   _TapCallbacksComponent({
-    super.children,
     required Vector2 super.position,
     required Vector2 super.size,
+    super.children,
     void Function(TapDownEvent)? onTapDown,
     void Function(TapDownEvent)? onLongTapDown,
     void Function(TapUpEvent)? onTapUp,

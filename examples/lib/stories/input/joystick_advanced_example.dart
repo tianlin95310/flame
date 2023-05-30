@@ -25,8 +25,14 @@ class JoystickAdvancedExample extends FlameGame with HasCollisionDetection {
   late final TextComponent speedText;
   late final TextComponent directionText;
 
+  final world = World();
+  late final CameraComponent cameraComponent;
+
   @override
   Future<void> onLoad() async {
+    cameraComponent = CameraComponent(world: world);
+    addAll([cameraComponent, world]);
+
     final image = await images.load('joystick.png');
     final sheet = SpriteSheet.fromColumnsAndRows(
       image: image,
@@ -152,17 +158,17 @@ class JoystickAdvancedExample extends FlameGame with HasCollisionDetection {
       ),
     );
 
-    final _regular = TextPaint(
+    final regular = TextPaint(
       style: TextStyle(color: BasicPalette.white.color),
     );
     speedText = TextComponent(
       text: 'Speed: 0',
-      textRenderer: _regular,
-    )..positionType = PositionType.viewport;
+      textRenderer: regular,
+    );
     directionText = TextComponent(
       text: 'Direction: idle',
-      textRenderer: _regular,
-    )..positionType = PositionType.viewport;
+      textRenderer: regular,
+    );
 
     final speedWithMargin = HudMarginComponent(
       margin: const EdgeInsets.only(
@@ -185,8 +191,8 @@ class JoystickAdvancedExample extends FlameGame with HasCollisionDetection {
     add(buttonComponent);
     add(spriteButtonComponent);
     add(shapeButton);
-    add(speedWithMargin);
-    add(directionWithMargin);
+    cameraComponent.viewport.add(speedWithMargin);
+    cameraComponent.viewport.add(directionWithMargin);
   }
 
   @override

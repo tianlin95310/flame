@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
@@ -60,9 +60,9 @@ class _ComponentsNotifierExampleWidgetState
 
 class GameHud extends StatelessWidget {
   const GameHud({
-    super.key,
     required this.remainingEnemies,
     required this.onReplay,
+    super.key,
   });
 
   final int remainingEnemies;

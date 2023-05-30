@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:math';
 
 import 'package:examples/stories/bridge_libraries/forge2d/utils/balls.dart';
@@ -26,9 +28,9 @@ class RevoluteJointWithMotorExample extends Forge2DGame with TapDetector {
   }
 
   @override
-  void onTapDown(TapDownInfo details) {
-    super.onTapDown(details);
-    final tapPosition = details.eventPosition.game;
+  void onTapDown(TapDownInfo info) {
+    super.onTapDown(info);
+    final tapPosition = info.eventPosition.game;
     final random = Random();
     List.generate(15, (i) {
       final randomVector = (Vector2.random() - Vector2.all(-0.5)).normalized();

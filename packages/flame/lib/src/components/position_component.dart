@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'dart:ui' hide Offset;
 
 import 'package:collection/collection.dart';
@@ -250,7 +251,7 @@ class PositionComponent extends Component
 
   //#region Coordinate transformations
 
-  /// Test whether the `point` (given in global coordinates) lies within this
+  /// Test whether the `point` (given in local coordinates) lies within this
   /// component. The top and the left borders of the component are inclusive,
   /// while the bottom and the right borders are exclusive.
   @override
@@ -261,6 +262,9 @@ class PositionComponent extends Component
         (point.y < _size.y);
   }
 
+  /// Test whether the `point` (given in global coordinates) lies within this
+  /// component. The top and the left borders of the component are inclusive,
+  /// while the bottom and the right borders are exclusive.
   @override
   bool containsPoint(Vector2 point) {
     return containsLocalPoint(absoluteToLocal(point));

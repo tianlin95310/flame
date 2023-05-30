@@ -1,8 +1,10 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
@@ -50,9 +52,9 @@ class GestureHitboxesExample extends FlameGame
   }
 
   @override
-  void onTapDown(TapDownEvent info) {
-    super.onTapDown(info);
-    final tapPosition = info.localPosition;
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
+    final tapPosition = event.localPosition;
     final component = randomShape(tapPosition);
     add(component);
   }

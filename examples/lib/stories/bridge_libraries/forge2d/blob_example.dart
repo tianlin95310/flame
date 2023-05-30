@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:math' as math;
 
 import 'package:examples/stories/bridge_libraries/forge2d/utils/boundaries.dart';
@@ -31,9 +33,9 @@ class BlobExample extends Forge2DGame with TapDetector {
   }
 
   @override
-  void onTapDown(TapDownInfo details) {
-    super.onTapDown(details);
-    add(FallingBox(details.eventPosition.game));
+  void onTapDown(TapDownInfo info) {
+    super.onTapDown(info);
+    add(FallingBox(info.eventPosition.game));
   }
 }
 

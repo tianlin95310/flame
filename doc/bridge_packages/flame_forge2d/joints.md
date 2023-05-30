@@ -20,14 +20,14 @@ Currently, Forge2D supports the following joints:
 - [`ConstantVolumeJoint`](#constantvolumejoint)
 - [`DistanceJoint`](#distancejoint)
 - [`FrictionJoint`](#frictionjoint)
-- GearJoint
+- [`GearJoint`](#gearjoint)
 - [`MotorJoint`](#motorjoint)
 - [`MouseJoint`](#mousejoint)
-- [`PrismaticJoint`] (#prismaticjoint)
+- [`PrismaticJoint`](#prismaticjoint)
 - [`PulleyJoint`](#pulleyjoint)
 - [`RevoluteJoint`](#revolutejoint)
-- RopeJoint
-- WeldJoint
+- [`RopeJoint`](#ropejoint)
+- [`WeldJoint`](#weldjoint)
 - WheelJoint
 
 
@@ -157,6 +157,56 @@ values:
 
 In other words, the former simulates the friction, when the body is sliding and the latter simulates
 the friction when the body is spinning.
+
+
+### `GearJoint`
+
+The `GearJoint` is used to connect two joints together. Joints are required to be a
+[`RevoluteJoint`](#revolutejoint) or a [`PrismaticJoint`](#prismaticjoint) in any combination.
+
+```{warning}
+The connected joints must attach a dynamic body to a static body. 
+The static body is expected to be a bodyA on those joints
+```
+
+```dart
+final gearJointDef = GearJointDef()
+  ..bodyA = firstJoint.bodyA
+  ..bodyB = secondJoint.bodyA
+  ..joint1 = firstJoint
+  ..joint2 = secondJoint
+  ..ratio = 1;
+
+world.createJoint(GearJoint(gearJointDef));
+```
+
+```{flutter-app}
+:sources: ../../examples
+:page: gear_joint
+:subfolder: stories/bridge_libraries/forge2d/joints
+:show: code popup
+```
+
+- `joint1`, `joint2`: Connected revolute or prismatic joints
+- `bodyA`, `bodyB`: Any bodies form the connected joints, as long as they are not the same body.
+- `ratio`: Gear ratio
+
+Similarly to [`PulleyJoint`](#pulleyjoint), you can specify a gear ratio to bind the motions
+together:
+
+```text
+coordinate1 + ratio * coordinate2 == constant 
+```
+
+The ratio can be negative or positive. If one joint is a `RevoluteJoint` and the other joint is a
+`PrismaticJoint`, then the ratio will have units of length or units of 1/length.
+
+Since the `GearJoint` depends on two other joints, if these are destroyed, the `GearJoint` needs to
+be destroyed as well.
+
+```{warning}
+Manually destroy the `GearJoint` if joint1 or joint2 is destroyed
+```
 
 
 ### `MotorJoint`
@@ -514,3 +564,73 @@ Also, you can get the joint angle and speed using the following methods:
 revoluteJoint.jointAngle();
 revoluteJoint.jointSpeed();
 ```
+
+
+### `RopeJoint`
+
+A `RopeJoint` restricts the maximum distance between two points on two bodies.
+
+`RopeJointDef` requires two body anchor points and the maximum length.
+
+```dart
+final ropeJointDef = RopeJointDef()
+  ..bodyA = firstBody
+  ..localAnchorA.setFrom(firstBody.getLocalCenter())
+  ..bodyB = secondBody
+  ..localAnchorB.setFrom(secondBody.getLocalCenter())
+  ..maxLength = (secondBody.worldCenter - firstBody.worldCenter).length;
+
+world.createJoint(RopeJoint(ropeJointDef));
+```
+
+```{flutter-app}
+:sources: ../../examples
+:page: rope_joint
+:subfolder: stories/bridge_libraries/forge2d/joints
+:show: code popup
+```
+
+- `bodyA`, `bodyB`: Connected bodies
+- `localAnchorA`, `localAnchorB`: Optional parameter, anchor point relative to the body's origin.
+- `maxLength`: The maximum length of the rope. This must be larger than `linearSlop`, or the joint
+will have no effect.
+
+```{warning}
+The joint assumes that the maximum length doesn't change during simulation. 
+See `DistanceJoint` if you want to dynamically control length.
+```
+
+
+### `WeldJoint`
+
+A `WeldJoint` is used to restrict all relative motion between two bodies, effectively joining them
+together.
+
+`WeldJointDef` requires two bodies that will be connected, and a world anchor:
+
+```dart
+final weldJointDef = WeldJointDef()
+  ..initialize(bodyA, bodyB, anchor);
+
+world.createJoint(WeldJoint(weldJointDef));
+```
+
+```{flutter-app}
+:sources: ../../examples
+:page: weld_joint
+:subfolder: stories/bridge_libraries/forge2d/joints
+:show: code popup
+```
+
+- `bodyA`, `bodyB`: Two bodies that will be connected
+
+- `anchor`: Anchor point in world coordinates, at which two bodies will be welded together
+  to 0, the higher the value, the less springy the joint becomes.
+
+
+#### Breakable Bodies and WeldJoint
+
+Since the Forge2D constraint solver is iterative, joints are somewhat flexible. This means that the
+bodies connected by a WeldJoint may bend slightly. If you want to simulate a breakable body, it's
+better to create a single body with multiple fixtures. When the body breaks, you can destroy a
+fixture and recreate it on a new body instead of relying on a `WeldJoint`.

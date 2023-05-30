@@ -1,8 +1,10 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/src/events/flame_game_mixins/has_tappable_components.dart';
 import 'package:flame/src/game/game_render_box.dart';
@@ -111,7 +113,11 @@ void main() {
           await tester.pumpWidget(
             Builder(
               builder: (BuildContext context) {
-                renderBox = GameRenderBox(game, context, true);
+                renderBox = GameRenderBox(
+                  game,
+                  context,
+                  isRepaintBoundary: true,
+                );
                 return GameWidget(game: game);
               },
             ),

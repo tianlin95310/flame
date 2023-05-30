@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:examples/stories/bridge_libraries/forge2d/revolute_joint_with_motor_example.dart';
 import 'package:examples/stories/bridge_libraries/forge2d/utils/balls.dart';
 import 'package:examples/stories/bridge_libraries/forge2d/utils/boundaries.dart';
@@ -30,7 +32,7 @@ class MouseJointExample extends Forge2DGame with MultiTouchDragDetector {
   }
 
   @override
-  bool onDragUpdate(int pointerId, DragUpdateInfo details) {
+  bool onDragUpdate(int pointerId, DragUpdateInfo info) {
     final mouseJointDef = MouseJointDef()
       ..maxForce = 3000 * ball.body.mass * 10
       ..dampingRatio = 0.1
@@ -45,12 +47,12 @@ class MouseJointExample extends Forge2DGame with MultiTouchDragDetector {
       world.createJoint(mouseJoint!);
     }
 
-    mouseJoint?.setTarget(details.eventPosition.game);
+    mouseJoint?.setTarget(info.eventPosition.game);
     return false;
   }
 
   @override
-  bool onDragEnd(int pointerId, DragEndInfo details) {
+  bool onDragEnd(int pointerId, DragEndInfo info) {
     if (mouseJoint == null) {
       return true;
     }

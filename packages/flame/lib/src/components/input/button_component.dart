@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:meta/meta.dart';
 
 /// The [ButtonComponent] bundles two [PositionComponent]s, one that shows while
@@ -52,7 +52,7 @@ class ButtonComponent extends PositionComponent with TapCallbacks {
 
   @override
   @mustCallSuper
-  void onTapDown(TapDownEvent info) {
+  void onTapDown(TapDownEvent event) {
     if (buttonDown != null) {
       button!.removeFromParent();
       buttonDown!.parent = this;
@@ -62,7 +62,7 @@ class ButtonComponent extends PositionComponent with TapCallbacks {
 
   @override
   @mustCallSuper
-  void onTapUp(TapUpEvent info) {
+  void onTapUp(TapUpEvent event) {
     if (buttonDown != null) {
       buttonDown!.removeFromParent();
       button!.parent = this;
@@ -72,7 +72,7 @@ class ButtonComponent extends PositionComponent with TapCallbacks {
 
   @override
   @mustCallSuper
-  void onTapCancel(TapCancelEvent info) {
+  void onTapCancel(TapCancelEvent event) {
     if (buttonDown != null) {
       buttonDown!.removeFromParent();
       button!.parent = this;

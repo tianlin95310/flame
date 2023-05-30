@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart' show CameraComponent;
 import 'package:flame/game.dart';
 import 'package:flutter/widgets.dart' show EdgeInsets;
 import 'package:meta/meta.dart';
@@ -18,6 +17,7 @@ import 'package:meta/meta.dart';
 /// Do note that this only works with the old style camera and not the
 /// [CameraComponent].
 mixin ComponentViewportMargin on PositionComponent, HasGameRef {
+  // TODO(Lukas): Don't use PositionType here and use CameraComponent.
   @override
   PositionType positionType = PositionType.viewport;
 
@@ -67,6 +67,7 @@ mixin ComponentViewportMargin on PositionComponent, HasGameRef {
 
   void _updateMargins() {
     final screenSize = positionType == PositionType.viewport
+        // ignore: deprecated_member_use_from_same_package
         ? gameRef.camera.viewport.effectiveSize
         : gameRef.canvasSize;
     final margin = this.margin!;

@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 
@@ -30,7 +30,7 @@ class Square extends RectangleComponent
         );
 
   @override
-  void onTapDown(TapDownEvent info) {
+  void onTapDown(TapDownEvent event) {
     final topComponent = gameRef.children.last;
     if (topComponent != this) {
       priority = topComponent.priority + 1;

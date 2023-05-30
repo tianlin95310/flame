@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flame/components.dart';
+import 'package:flame/components.dart' hide World;
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame_forge2d/forge2d_game.dart';
@@ -45,6 +45,8 @@ abstract class BodyComponent<T extends Forge2DGame> extends Component
   }
 
   World get world => gameRef.world;
+  // TODO(Lukas): Use CameraComponent here instead.
+  // ignore: deprecated_member_use
   Camera get camera => gameRef.camera;
   Vector2 get center => body.worldCenter;
   double get angle => body.angle;

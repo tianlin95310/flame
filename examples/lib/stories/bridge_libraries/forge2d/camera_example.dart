@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:examples/stories/bridge_libraries/forge2d/domino_example.dart';
 import 'package:examples/stories/bridge_libraries/forge2d/sprite_body_example.dart';
 import 'package:flame/input.dart';
@@ -11,8 +13,8 @@ class CameraExample extends DominoExample {
   ''';
 
   @override
-  void onTapDown(TapDownInfo details) {
-    final position = details.eventPosition.game;
+  void onTapDown(TapDownInfo info) {
+    final position = info.eventPosition.game;
     final pizza = Pizza(position);
     add(pizza);
     pizza.mounted.whenComplete(() => camera.followBodyComponent(pizza));

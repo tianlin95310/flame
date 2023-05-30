@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +24,12 @@ class EmberQuestGame extends FlameGame
   double cloudSpeed = 0.0;
   double objectSpeed = 0.0;
 
+  final world = World();
+  late final CameraComponent cameraComponent;
+
   @override
   Future<void> onLoad() async {
-    //debugMode = true; //Uncomment to see the bounding boxes
+    //debugMode = true; // Uncomment to see the bounding boxes
     await images.loadAll([
       'block.png',
       'ember.png',
@@ -35,7 +39,11 @@ class EmberQuestGame extends FlameGame
       'star.png',
       'water_enemy.png',
     ]);
-    initializeGame(true);
+    cameraComponent = CameraComponent(world: world);
+    cameraComponent.viewfinder.anchor = Anchor.topLeft;
+    addAll([cameraComponent, world]);
+
+    initializeGame(loadHud: true);
   }
 
   @override
@@ -55,7 +63,7 @@ class EmberQuestGame extends FlameGame
     for (final block in segments[segmentIndex]) {
       switch (block.blockType) {
         case GroundBlock:
-          add(
+          world.add(
             GroundBlock(
               gridPosition: block.gridPosition,
               xOffset: xPositionOffset,
@@ -63,7 +71,7 @@ class EmberQuestGame extends FlameGame
           );
           break;
         case PlatformBlock:
-          add(
+          world.add(
             PlatformBlock(
               gridPosition: block.gridPosition,
               xOffset: xPositionOffset,
@@ -71,7 +79,7 @@ class EmberQuestGame extends FlameGame
           );
           break;
         case Star:
-          add(
+          world.add(
             Star(
               gridPosition: block.gridPosition,
               xOffset: xPositionOffset,
@@ -79,7 +87,7 @@ class EmberQuestGame extends FlameGame
           );
           break;
         case WaterEnemy:
-          add(
+          world.add(
             WaterEnemy(
               gridPosition: block.gridPosition,
               xOffset: xPositionOffset,
@@ -90,7 +98,7 @@ class EmberQuestGame extends FlameGame
     }
   }
 
-  void initializeGame(bool loadHud) {
+  void initializeGame({required bool loadHud}) {
     // Assume that size.x < 3200
     final segmentsToLoad = (size.x / 640).ceil();
     segmentsToLoad.clamp(0, segments.length);
@@ -102,15 +110,15 @@ class EmberQuestGame extends FlameGame
     _ember = EmberPlayer(
       position: Vector2(128, canvasSize.y - 128),
     );
-    add(_ember);
+    world.add(_ember);
     if (loadHud) {
-      add(Hud());
+      cameraComponent.viewport.add(Hud());
     }
   }
 
   void reset() {
     starsCollected = 0;
     health = 3;
-    initializeGame(false);
+    initializeGame(loadHud: false);
   }
 }

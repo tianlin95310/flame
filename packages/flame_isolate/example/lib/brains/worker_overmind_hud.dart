@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/rendering.dart';
 
@@ -22,7 +22,6 @@ class WorkerOvermindHud extends PositionComponent with TapCallbacks {
     y = 10;
     width = 210;
     height = 80;
-    positionType = PositionType.viewport;
   }
 
   @override

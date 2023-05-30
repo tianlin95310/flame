@@ -7,6 +7,7 @@ import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/src/flame.dart';
 import 'package:flame/src/sprite_animation.dart';
+import 'package:flame/src/sprite_animation_ticker.dart';
 import 'package:flutter/painting.dart';
 
 extension ParallaxExtension on Game {
@@ -150,7 +151,7 @@ class ParallaxImage extends ParallaxRenderer {
   Image get image => _image;
 
   @override
-  void update(_) {
+  void update(double dt) {
     // noop
   }
 }
@@ -158,19 +159,19 @@ class ParallaxImage extends ParallaxRenderer {
 /// Specifications with a SpriteAnimation and how it should be drawn in
 /// relation to the device screen
 class ParallaxAnimation extends ParallaxRenderer {
-  final SpriteAnimation _animation;
+  final SpriteAnimationTicker _animationTicker;
 
   /// The animation's frames pre-rendered into images so it can be used in the
   /// parallax.
   final List<Image> _prerenderedFrames;
 
   ParallaxAnimation(
-    this._animation,
+    SpriteAnimation animation,
     this._prerenderedFrames, {
     super.repeat,
     super.alignment,
     super.fill,
-  });
+  }) : _animationTicker = animation.ticker();
 
   /// Takes a path of an image, a SpriteAnimationData, and optionally arguments
   /// for how the image should repeat ([repeat]), which edge it should align
@@ -209,11 +210,11 @@ class ParallaxAnimation extends ParallaxRenderer {
   }
 
   @override
-  Image get image => _prerenderedFrames[_animation.currentIndex];
+  Image get image => _prerenderedFrames[_animationTicker.currentIndex];
 
   @override
   void update(double dt) {
-    _animation.update(dt);
+    _animationTicker.update(dt);
   }
 }
 
@@ -223,7 +224,7 @@ class ParallaxLayer {
   final ParallaxRenderer parallaxRenderer;
   late Vector2 velocityMultiplier;
   late Rect _paintArea;
-  late Vector2 _scroll;
+  final Vector2 _scroll = Vector2.zero();
   late Vector2 _imageSize;
   double _scale = 1.0;
 
@@ -269,35 +270,40 @@ class ParallaxLayer {
     final marginX = alignment.x * overflow.x / 2 + overflow.x / 2;
     final marginY = alignment.y * overflow.y / 2 + overflow.y / 2;
 
-    _scroll = Vector2(marginX, marginY);
+    _scroll.setValues(marginX, marginY);
 
     // Size of the area to paint the images on
     final paintSize = count..multiply(_imageSize);
     _paintArea = paintSize.toRect();
   }
 
+  // Used to avoid creating new Vector2 objects in the update-loop.
+  final _delta = Vector2.zero();
+
   void update(Vector2 delta, double dt) {
     parallaxRenderer.update(dt);
     // Scale the delta so that images that are larger don't scroll faster
-    _scroll += delta.clone()..divide(_imageSize);
+    _delta
+      ..setFrom(delta)
+      ..divide(_imageSize);
+    _scroll.add(_delta);
     switch (parallaxRenderer.repeat) {
       case ImageRepeat.repeat:
-        _scroll = Vector2(_scroll.x % 1, _scroll.y % 1);
+        _scroll.setValues(_scroll.x % 1, _scroll.y % 1);
         break;
       case ImageRepeat.repeatX:
-        _scroll = Vector2(_scroll.x % 1, _scroll.y);
+        _scroll.setValues(_scroll.x % 1, _scroll.y);
         break;
       case ImageRepeat.repeatY:
-        _scroll = Vector2(_scroll.x, _scroll.y % 1);
+        _scroll.setValues(_scroll.x, _scroll.y % 1);
         break;
       case ImageRepeat.noRepeat:
         break;
     }
 
-    final scrollPosition = _scroll.clone()..multiply(_imageSize);
     _paintArea = Rect.fromLTWH(
-      -scrollPosition.x,
-      -scrollPosition.y,
+      -_scroll.x * _imageSize.x,
+      -_scroll.y * _imageSize.y,
       _paintArea.width,
       _paintArea.height,
     );
@@ -448,10 +454,16 @@ class Parallax {
     isSized |= true;
   }
 
+  // Used to avoid creating new Vector2 objects in the update-loop.
+  final _delta = Vector2.zero();
+
   void update(double dt) {
     layers.forEach((layer) {
       layer.update(
-        (baseVelocity.clone()..multiply(layer.velocityMultiplier)) * dt,
+        _delta
+          ..setFrom(baseVelocity)
+          ..multiply(layer.velocityMultiplier)
+          ..scale(dt),
         dt,
       );
     });

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:ui';
 
 import 'package:examples/stories/bridge_libraries/forge2d/sprite_body_example.dart';
@@ -39,9 +41,9 @@ class DominoExample extends Forge2DGame with TapDetector {
   }
 
   @override
-  void onTapDown(TapDownInfo details) {
-    super.onTapDown(details);
-    final position = details.eventPosition.game;
+  void onTapDown(TapDownInfo info) {
+    super.onTapDown(info);
+    final position = info.eventPosition.game;
     add(Pizza(position)..renderBody = true);
   }
 }

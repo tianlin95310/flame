@@ -18,6 +18,9 @@ import 'package:meta/meta.dart';
 ///
 /// See [MultiTapGestureRecognizer] for the description of each individual
 /// event.
+@Deprecated(
+  'Will be removed in Flame v2, use TapCallbacks without a game mixin instead',
+)
 mixin HasTappables on FlameGame implements MultiTapListener {
   @mustCallSuper
   void onTapCancel(int pointerId) {
@@ -79,7 +82,16 @@ mixin HasTappables on FlameGame implements MultiTapListener {
   void mount() {
     gestureDetectors.add<MultiTapGestureRecognizer>(
       MultiTapGestureRecognizer.new,
-      (MultiTapGestureRecognizer instance) {},
+      (MultiTapGestureRecognizer instance) {
+        instance.longTapDelay = Duration(
+          milliseconds: (longTapDelay * 1000).toInt(),
+        );
+        instance.onTap = handleTap;
+        instance.onTapDown = handleTapDown;
+        instance.onTapUp = handleTapUp;
+        instance.onTapCancel = handleTapCancel;
+        instance.onLongTapDown = handleLongTapDown;
+      },
     );
     super.mount();
   }

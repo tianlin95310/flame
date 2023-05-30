@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_tiled/src/renderable_tile_map.dart';
@@ -62,8 +63,9 @@ class TiledComponent<T extends FlameGame> extends PositionComponent
   @override
   Future<void>? onLoad() async {
     super.onLoad();
-    // Automatically use the FlameGame camera if it's not already set.
-    tileMap.camera ??= gameRef.camera;
+    // Automatically use the first attached CameraComponent camera if it's not
+    // already set..
+    tileMap.camera ??= gameRef.children.query<CameraComponent>().firstOrNull;
   }
 
   @override
@@ -77,9 +79,9 @@ class TiledComponent<T extends FlameGame> extends PositionComponent
   }
 
   @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    tileMap.handleResize(canvasSize);
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    tileMap.handleResize(size);
   }
 
   /// Loads a [TiledComponent] from a file.

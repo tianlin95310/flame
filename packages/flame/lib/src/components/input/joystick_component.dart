@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/src/components/input/hud_margin_component.dart';
 import 'package:meta/meta.dart';
 
@@ -105,14 +105,14 @@ class JoystickComponent extends HudMarginComponent with DragCallbacks {
   }
 
   @override
-  bool onDragStart(DragStartEvent info) {
-    super.onDragStart(info);
+  bool onDragStart(DragStartEvent event) {
+    super.onDragStart(event);
     return false;
   }
 
   @override
-  bool onDragUpdate(DragUpdateEvent info) {
-    _unscaledDelta.add(info.delta);
+  bool onDragUpdate(DragUpdateEvent event) {
+    _unscaledDelta.add(event.delta);
     return false;
   }
 

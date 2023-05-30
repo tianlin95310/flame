@@ -19,7 +19,7 @@ import 'package:meta/meta.dart';
 ///
 /// Methods [update] and [render] need to be implemented in order to connect
 /// your class with the internal game loop.
-abstract class Game {
+abstract mixin class Game {
   /// The cache of all images loaded into the game. This defaults to the global
   /// [Flame.images] cache, but you can replace it with a new cache instance if
   /// needed.
@@ -305,6 +305,16 @@ abstract class Game {
   void resumeEngine() {
     _paused = false;
     _gameRenderBox?.gameLoop?.start();
+  }
+
+  /// Steps the engine game loop by one frame. Works only if the engine is in
+  /// paused state. By default step time is assumed to be 1/60th of a second.
+  void stepEngine({double stepTime = 1 / 60}) {
+    if (_paused) {
+      _paused = false;
+      _gameRenderBox?.gameLoop?.step(stepTime);
+      _paused = true;
+    }
   }
 
   /// A property that stores an [OverlayManager]

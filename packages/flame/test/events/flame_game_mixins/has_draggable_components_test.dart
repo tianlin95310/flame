@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/src/events/flame_game_mixins/has_draggable_components.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -160,8 +161,7 @@ void main() {
 }
 
 class _GameWithDualDraggableComponents extends FlameGame
-    with HasDraggablesBridge // ignore: deprecated_member_use_from_same_package
-{
+    with HasDraggablesBridge {
   _GameWithDualDraggableComponents({super.children});
 }
 

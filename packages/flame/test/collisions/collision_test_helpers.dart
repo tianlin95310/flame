@@ -1,6 +1,5 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flame_test/flame_test.dart';
@@ -16,7 +15,7 @@ class CollisionDetectionWorld extends World with HasCollisionDetection {}
 @isTest
 Future<void> testCollisionDetectionGame(
   String testName,
-  Future Function(HasCollidablesGame) testBody,
+  Future<void> Function(HasCollidablesGame) testBody,
 ) {
   return testWithGame(testName, HasCollidablesGame.new, testBody);
 }
@@ -24,7 +23,7 @@ Future<void> testCollisionDetectionGame(
 @isTest
 Future<void> testQuadTreeCollisionDetectionGame(
   String testName,
-  Future Function(HasCollisionDetection) testBody,
+  Future<void> Function(HasCollisionDetection) testBody,
 ) {
   return testWithGame(
     testName,
@@ -40,7 +39,7 @@ Future<void> testQuadTreeCollisionDetectionGame(
 }
 
 Future<void> runCollisionTestRegistry(
-  Map<String, Future Function(HasCollisionDetection)> testRegistry,
+  Map<String, Future<void> Function(HasCollisionDetection)> testRegistry,
 ) async {
   for (final entry in testRegistry.entries) {
     final name = entry.key;

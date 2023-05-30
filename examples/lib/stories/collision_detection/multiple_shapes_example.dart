@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
@@ -74,7 +74,7 @@ class MultipleShapesExample extends FlameGame with HasCollisionDetection {
       collidableSize,
       velocity,
       screenHitbox,
-      rng: _rng,
+      random: _rng,
     );
   }
 }
@@ -273,11 +273,11 @@ MyCollidable randomCollidable(
   Vector2 size,
   Vector2 velocity,
   ScreenHitbox screenHitbox, {
-  Random? rng,
+  Random? random,
 }) {
-  final _rng = rng ?? Random();
-  final rotationSpeed = 0.5 - _rng.nextDouble();
-  final shapeType = Shapes.values[_rng.nextInt(Shapes.values.length)];
+  final rng = random ?? Random();
+  final rotationSpeed = 0.5 - rng.nextDouble();
+  final shapeType = Shapes.values[rng.nextInt(Shapes.values.length)];
   switch (shapeType) {
     case Shapes.circle:
       return CollidableCircle(position, size, velocity, screenHitbox)

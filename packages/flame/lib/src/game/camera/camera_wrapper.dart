@@ -9,8 +9,9 @@ import 'package:meta/meta.dart';
 /// using it in any code other than the FlameGame class is unsafe and
 /// not recommended.
 @internal
+@Deprecated('Will be removed in Flame v2')
 class CameraWrapper {
-  // TODO(st-pasha): extend from Component
+  @Deprecated('Will be removed in Flame v2')
   CameraWrapper(this.camera, this.world);
 
   final Camera camera;
@@ -21,12 +22,12 @@ class CameraWrapper {
   }
 
   void render(Canvas canvas) {
-    PositionType? _previousType;
+    PositionType? previousType;
     canvas.save();
     world.forEach((component) {
-      final sameType = component.positionType == _previousType;
+      final sameType = component.positionType == previousType;
       if (!sameType) {
-        if (_previousType != null && _previousType != PositionType.widget) {
+        if (previousType != null && previousType != PositionType.widget) {
           canvas.restore();
           canvas.save();
         }
@@ -42,10 +43,10 @@ class CameraWrapper {
         }
       }
       component.renderTree(canvas);
-      _previousType = component.positionType;
+      previousType = component.positionType;
     });
 
-    if (_previousType != PositionType.widget) {
+    if (previousType != PositionType.widget) {
       canvas.restore();
     }
   }
