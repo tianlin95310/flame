@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 
 class MapDraggable extends SpriteComponent with DragCallbacks {
   CameraComponent camera;

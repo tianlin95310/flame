@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../interface/GameComponent.dart';
 import '../../gameComponent/tank/PositionComponent_ABullet.dart';
 import '../../gameComponent/tank/PositionComponent_Enemy.dart';
 import '../../gameComponent/tank/TimerComponent_EnemyCreater.dart';
+import '../../interface/GameComponent.dart';
 import 'PositionComponent_ATank.dart';
 
 class DemoGame01 extends GameComponent with HasGameRef, TapCallbacks {

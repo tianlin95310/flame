@@ -2,15 +2,13 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_demo/mixins/paint.dart';
 import 'package:flame_demo/pc/Game04_RPGVS/main.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/painting.dart';
-
-import 'stage.dart';
 
 enum RPGBasicAction {
   standLeft,
@@ -104,10 +102,10 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with BaseRP
         Completer completer = Completer();
         keepCurrentAnim = true;
         current = RPGBasicAction.attackRight;
-        animation?.onComplete = () {
+        // animation?.onComplete = () {
           completer.complete();
-        };
-        animation?.reset();
+        // };
+        // animation?.reset();
         return completer.future;
       },
       'stand': ({Map? argument}) {
@@ -174,14 +172,14 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with BaseRP
     if (animation == null) {
       return;
     }
-    if (keepCurrentAnim) {
-      if (!animation!.done()) {
-        return;
-      }
-      if (animation!.done()) {
-        keepCurrentAnim = false;
-      }
-    }
+    // if (keepCurrentAnim) {
+    //   if (!animation!.done()) {
+    //     return;
+    //   }
+    //   if (animation!.done()) {
+    //     keepCurrentAnim = false;
+    //   }
+    // }
     if (keepCurrentAnim) {
     } else {
       doAction([Action('stand')]);
@@ -286,10 +284,10 @@ class EnemyRPGModel extends RPGModel {
         Completer completer = Completer();
         keepCurrentAnim = true;
         current = RPGBasicAction.attackLeft;
-        animation?.onComplete = () {
+        // animation?.onComplete = () {
           completer.complete();
-        };
-        animation?.reset();
+        // };
+        // animation?.reset();
         return completer.future;
       },
       'stand': ({Map? argument}) {

@@ -22,7 +22,7 @@ enum CharBasicAnimation {
 
 typedef SingleSkill = FutureOr Function();
 
-abstract class ModelSkill {
+mixin class ModelSkill {
   Map<String, SingleSkill> skills = {};
   FutureOr<void> startSkill(List<String> actions) => null;
 }
@@ -51,10 +51,10 @@ class ModelSprite extends SpriteAnimationGroupComponent<CharBasicAnimation>
         } else if (direction == JoystickDirection.left) {
           current = CharBasicAnimation.attackLeft;
         }
-        animation?.onComplete = () {
+        // animation?.onComplete = () {
           completer.complete();
-        };
-        animation?.reset();
+        // };
+        // animation?.reset();
         return completer.future;
       },
       'stand': () {
@@ -158,14 +158,14 @@ class ModelSprite extends SpriteAnimationGroupComponent<CharBasicAnimation>
     if (animation == null) {
       return;
     }
-    if (keepCurrentAnim) {
-      if (!animation!.done()) {
-        return;
-      }
-      if (animation!.done()) {
-        keepCurrentAnim = false;
-      }
-    }
+    // if (keepCurrentAnim) {
+    //   if (!animation!.done()) {
+    //     return;
+    //   }
+    //   if (animation!.done()) {
+    //     keepCurrentAnim = false;
+    //   }
+    // }
     if (joystick.direction != JoystickDirection.idle) {
       if (joystick.direction != direction) {
         if (joystick.direction == JoystickDirection.up ||

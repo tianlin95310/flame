@@ -4,7 +4,7 @@ import 'package:flame_demo/utils/blend_mode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
-abstract class BasicSkill {
+mixin class BasicSkill {
   double _skillSpeed = 300;
 
   double get skillSpeed => _skillSpeed;

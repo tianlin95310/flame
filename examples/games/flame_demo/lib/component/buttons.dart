@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame_demo/mixins/RouterProvider.dart';
 import 'package:flutter/rendering.dart';
 
