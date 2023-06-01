@@ -1,20 +1,21 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
-import 'package:flame/input.dart';
-import 'package:flame_demo/pc/Game04_RPGVS/model.dart';
-import 'package:flutter/painting.dart';
+import 'package:flame_demo/pc/game.dart';
 
 import 'common.dart';
 import 'menu.dart';
+import 'model.dart';
 import 'stage.dart';
+import 'util.dart';
 import 'vo.dart';
 
-class DemoGame04 extends Component {
+class DemoGame04 extends Component with HasGameRef<PCGameEntry> {
   late World world;
 
   late CameraComponent camera;
+
+  int currentIndex = 0;
 
   late BaseRPGModel currentModel;
 
@@ -43,7 +44,7 @@ class DemoGame04 extends Component {
       ..currentShen = 100,
   ];
 
-  Vector2 viewportSize = Vector2(640, 360);
+  static Vector2 viewportSize = Vector2(640, 360);
 
   late FightStage fightStage;
 
@@ -51,122 +52,62 @@ class DemoGame04 extends Component {
 
   late SecondMenu secondMenu;
 
-  int current = 0;
-
   @override
   FutureOr<void> onLoad() async {
-    fightModels[0].model = SimpleRPGModel(skills: [
-      Skill('横扫千军', [
-        Action('run'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
-        }),
-        Action('attack'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': hit.position.clone()};
-        }),
-      ]),
-      Skill('当头一击', [
-        Action('run'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
-        }),
-        Action('attack'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': hit.position.clone()};
-        }),
-      ])
-    ]);
-    fightModels[1].model = SimpleRPGModel(size: Vector2.all(80), skills: [
-      Skill('九齿钉耙击', [
-        Action('run'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
-        }),
-        Action('attack'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': hit.position.clone()};
-        }),
-      ])
-    ]);
-    fightModels[2].model = SimpleRPGModel(size: Vector2.all(100), skills: [
-      Skill('杖击', [
-        Action('run'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
-        }),
-        Action('attack'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': hit.position.clone()};
-        }),
-      ])
-    ]);
-    enemyModels[0].model = SimpleRPGModel(size: Vector2.all(120));
-    currentModel = fightModels[current].model;
-    // fightModels[1].model = await loadModel('kongshou06', 3, 8, 16, 23, 8, 1440.0 / 8, 1440.0 / 8);
-    // fightModels[2].model = await loadModel('jian02', 3, 8, 16, 23, 8, 1400.0 / 8, 1400.0 / 8);
-    // fightModels[3].model = await loadModel('jian10', 3, 8, 16, 23, 8, 1440.0 / 8, 1440.0 / 8);
-    // enemyModels[0].model = await loadEnemyModel('shanzi03', 3, 8, 16, 23, 8, 1120.0 / 8, 1120.0 / 8);
+    init(fightModels, enemyModels);
 
     await add(world = World());
-
+    currentModel = fightModels[currentIndex].model;
     await add(
       camera = CameraComponent.withFixedResolution(
         world: world,
         width: viewportSize.x,
         height: viewportSize.y,
-        hudComponents: [
-          HudMarginComponent(
-            size: CharInfo.infoSize,
-            margin: EdgeInsets.only(bottom: 0, left: CharInfo.dividerWidth),
-            children: [CharInfo(fightModels)],
-          ),
-          HudMarginComponent(
-            size: Menu.menuSize,
-            position: viewportSize / 2 - Menu.menuSize / 2,
-            children: [menu = Menu()],
-          ),
-          HudMarginComponent(
-            size: SecondMenu.menuSize,
-            position: viewportSize / 2 - SecondMenu.menuSize / 2,
-            children: [secondMenu = SecondMenu(currentModel, viewportSize)],
-          )
-        ],
+        hudComponents: [],
       ),
     );
     camera.viewfinder.anchor = Anchor.topLeft;
+
     world.add(Background(size: viewportSize));
     Vector2 stageSize = viewportSize - Vector2.all(40);
     world.add(
-      fightStage =
-          FightStage(this, fightModels, enemyModels, position: viewportSize / 2 - stageSize / 2, size: stageSize),
+      fightStage = FightStage(
+        this,
+        fightModels,
+        enemyModels,
+        position: viewportSize / 2 - stageSize / 2,
+        size: stageSize,
+      ),
     );
+    world.add(CharInfo(fightModels));
+    world.add(menu = Menu());
+    world.add(secondMenu = SecondMenu(currentModel)..hideMenu());
   }
 
-  void onMenuClick(int menu) {
-    if (menu == 0) {
-      hideMenu();
+  void onMenuClick(int menuId) {
+    print('onMenuClick, menuId = $menuId');
+    if (menuId == 0) {
+      menu.hideMenu();
       FutureOr futureOr = currentModel.basicAttack(enemyModels[0].model);
       if (futureOr is Future) {
         futureOr.then((value) {
-          currentModel = fightModels[++current % fightModels.length].model;
-          resetMenu();
+          currentModel = fightModels[++currentIndex % fightModels.length].model;
+          menu.showMenu();
         });
+      } else {
+        currentModel = fightModels[++currentIndex % fightModels.length].model;
+        menu.showMenu();
       }
-    } else if (menu == 1) {
-      // hideMenu();
+    } else if (menuId == 1) {
       secondMenu.showMenu();
-    } else if (menu == 2) {
-    } else if (menu == 3) {
-    } else if (menu == 4) {}
-  }
-
-  void resetMenu() {
-    menu.scale = Vector2(1, 1);
-  }
-
-  void hideMenu() {
-    menu.scale = Vector2(0, 0);
+      secondMenu.show(menuId);
+    } else if (menuId == 2) {
+      secondMenu.showMenu();
+      secondMenu.show(menuId);
+    } else if (menuId == 3) {
+      secondMenu.showMenu();
+      secondMenu.show(menuId);
+    } else if (menuId == 4) {}
   }
 
   void onModelSelect(BaseRPGModel rpgModel) {

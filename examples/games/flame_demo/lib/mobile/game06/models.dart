@@ -51,10 +51,10 @@ class ModelSprite extends SpriteAnimationGroupComponent<CharBasicAnimation>
         } else if (direction == JoystickDirection.left) {
           current = CharBasicAnimation.attackLeft;
         }
-        // animation?.onComplete = () {
+        animationTicker?.onComplete = () {
           completer.complete();
-        // };
-        // animation?.reset();
+        };
+        animationTicker?.reset();
         return completer.future;
       },
       'stand': () {
@@ -154,18 +154,14 @@ class ModelSprite extends SpriteAnimationGroupComponent<CharBasicAnimation>
   @override
   void update(double dt) {
     super.update(dt);
-
-    if (animation == null) {
-      return;
+    if (keepCurrentAnim) {
+      if (!animationTicker!.done()) {
+        return;
+      }
+      if (animationTicker!.done()) {
+        keepCurrentAnim = false;
+      }
     }
-    // if (keepCurrentAnim) {
-    //   if (!animation!.done()) {
-    //     return;
-    //   }
-    //   if (animation!.done()) {
-    //     keepCurrentAnim = false;
-    //   }
-    // }
     if (joystick.direction != JoystickDirection.idle) {
       if (joystick.direction != direction) {
         if (joystick.direction == JoystickDirection.up ||

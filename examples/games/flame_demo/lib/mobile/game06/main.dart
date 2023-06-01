@@ -50,6 +50,7 @@ class Game06 extends Component with TapCallbacks{
     await add(world = World());
     await add(
       camera = CameraComponent(world: world, hudComponents: [
+        /// HudMarginComponent不随Viewfinder进行放缩
         HudMarginComponent(
           children: [BackButton()],
           margin: const EdgeInsets.only(left: 10, top: 30),

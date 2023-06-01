@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
+import 'package:flame/input.dart';
 import 'package:flame_demo/component/progress.dart';
 import 'package:flame_demo/mixins/paint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
+import 'main.dart';
 import 'style.dart';
 import 'vo.dart';
 
@@ -47,10 +49,14 @@ class CharInfo extends PositionComponent {
 
   late double proHeight = (headHeight - nameHeight - dividerHeight * 2) / 3;
 
-  CharInfo(this.fightModels);
+  CharInfo(this.fightModels)
+      : super(
+          size: infoSize,
+          position: Vector2(dividerWidth, DemoGame04.viewportSize.y - infoSize.y),
+        );
 
   @override
-  FutureOr<void> onLoad() async{
+  FutureOr<void> onLoad() async {
     int index = 0;
     addAll(fightModels.map((e) => oneStatus(index++, e)));
   }

@@ -23,21 +23,32 @@ typedef BasicModelAction = FutureOr Function({Map? argument});
 
 BasicModelAction defaultAction = ({Map? argument}) {};
 
-class Action {
+class BasicActionVo {
   String name;
   Map? argument;
 
   // translate other to argument
   Function? translate;
 
-  Action(this.name, {this.argument, this.translate});
+  BasicActionVo(this.name, {this.argument, this.translate});
 }
 
-class Skill {
+class SkillVo {
   String name;
-  List<Action> actions;
+  List<BasicActionVo> actions;
+  // type == 1, skill,
+  // type == 2, spell
+  int type = 1;
 
-  Skill(this.name, this.actions);
+  SkillVo(this.name, this.actions, {int? type}) {
+    this.type = (type ?? 1);
+  }
+}
+
+class SpellVo extends SkillVo {
+  /// 1, 2, 3, 4, 5 means 金木水火土
+  String spellType;
+  SpellVo(this.spellType, super.name, super.actions, { super.type });
 }
 
 mixin BaseRPGModel on PositionComponent {
@@ -48,20 +59,19 @@ mixin BaseRPGModel on PositionComponent {
   Map<String, BasicModelAction> spellActions = {};
 
   // 普通攻击
-  late Skill basic;
+  late SkillVo basic;
 
   // 技能
-  List<Skill> skills = [];
+  List<SkillVo> skills = [];
 
-  // 普通攻击
-  // FutureOr<void> basicAttack(BaseRPGModel enemy);
+  // 法术
+  List<SpellVo> spells = [];
 
-  // 普通攻击
-  // FutureOr<void> skillAttack(String name, BaseRPGModel enemy);
-
-  FutureOr<void> doAction(List<Action> actions) async {
-    List<BasicModelAction> singleSkills =
-        actions.map((Action action) => basicActions[action.name] ?? defaultAction).toList();
+  FutureOr<void> doAction(List<BasicActionVo> actions, int type) async {
+    List<BasicModelAction> singleSkills = actions
+        .map((BasicActionVo action) =>
+            type == 1 ? (basicActions[action.name] ?? defaultAction) : (spellActions[action.name] ?? defaultAction))
+        .toList();
     List<Map?> arguments = actions.map((e) => e.argument).toList();
     for (int i = 0; i < singleSkills.length; i++) {
       var action = singleSkills[i];
@@ -73,23 +83,36 @@ mixin BaseRPGModel on PositionComponent {
     }
   }
 
+  // 普通攻击
   FutureOr<void> basicAttack(BaseRPGModel enemy) {
     for (var element in basic.actions) {
       if (element.translate != null) {
         element.argument = element.translate!(this, enemy);
       }
     }
-    return doAction(basic.actions);
+    return doAction(basic.actions, 1);
   }
 
+  // 技能攻击
   FutureOr<void> skillAttack(String name, BaseRPGModel enemy) {
-    Skill skill = skills.firstWhere((element) => name == element.name);
+    SkillVo skill = skills.firstWhere((element) => name == element.name);
     for (var element in skill.actions) {
       if (element.translate != null) {
         element.argument = element.translate!(this, enemy);
       }
     }
-    return doAction(skill.actions);
+    return doAction(skill.actions, skill.type);
+  }
+
+  // 技能攻击
+  FutureOr<void> spellAttack(String name, BaseRPGModel enemy) {
+    SkillVo spell = spells.firstWhere((element) => name == element.name);
+    for (var element in spell.actions) {
+      if (element.translate != null) {
+        element.argument = element.translate!(this, enemy);
+      }
+    }
+    return doAction(spell.actions, spell.type);
   }
 }
 
@@ -102,10 +125,10 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with BaseRP
         Completer completer = Completer();
         keepCurrentAnim = true;
         current = RPGBasicAction.attackRight;
-        // animation?.onComplete = () {
+        animationTicker?.onComplete = () {
           completer.complete();
-        // };
-        // animation?.reset();
+        };
+        animationTicker?.reset();
         return completer.future;
       },
       'stand': ({Map? argument}) {
@@ -129,28 +152,17 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with BaseRP
         return completer.future;
       },
     };
-    basic = Skill('普通攻击', [
-      Action('run'),
-      Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+    basic = SkillVo('普通攻击', [
+      BasicActionVo('run'),
+      BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(size.x / 2, 0)};
       }),
-      Action('attack'),
-      Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+      BasicActionVo('attack'),
+      BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': hit.position.clone()};
       }),
     ]);
-    skills = [
-      Skill('横扫千军', [
-        Action('run'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': takeHit.position - Vector2(size.x / 2, 0)};
-        }),
-        Action('attack'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': hit.position.clone()};
-        }),
-      ])
-    ];
+    skills = [];
   }
 
   @override
@@ -168,21 +180,17 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with BaseRP
   @override
   void update(double dt) {
     super.update(dt);
-
-    if (animation == null) {
-      return;
+    if (keepCurrentAnim) {
+      if (!animationTicker!.done()) {
+        return;
+      }
+      if (animationTicker!.done()) {
+        keepCurrentAnim = false;
+      }
     }
-    // if (keepCurrentAnim) {
-    //   if (!animation!.done()) {
-    //     return;
-    //   }
-    //   if (animation!.done()) {
-    //     keepCurrentAnim = false;
-    //   }
-    // }
     if (keepCurrentAnim) {
     } else {
-      doAction([Action('stand')]);
+      doAction([BasicActionVo('stand')], 1);
     }
   }
 
@@ -199,7 +207,12 @@ class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPG
 
   bool keepCurrentAnim = false;
 
-  SimpleRPGModel({List<Skill>? skills, this.color, Vector2? size}) : super(anchor: Anchor.center) {
+  SimpleRPGModel({
+    List<SkillVo>? skills,
+    List<SpellVo>? spells,
+    this.color,
+    Vector2? size,
+  }) : super(anchor: Anchor.center) {
     super.size = (size ?? modelSize);
     basicActions = {
       'attack': ({Map? argument}) async {},
@@ -223,28 +236,18 @@ class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPG
         return completer.future;
       },
     };
-    basic = Skill('普通攻击', [
-      Action('run'),
-      Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+    basic = SkillVo('普通攻击', [
+      BasicActionVo('run'),
+      BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(this.size.x / 2, 0)};
       }),
-      Action('attack'),
-      Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
+      BasicActionVo('attack'),
+      BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': hit.position.clone()};
       }),
     ]);
-    this.skills = (skills ?? [
-      Skill('普通攻击', [
-        Action('run'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': takeHit.position - Vector2(this.size.x / 2, 0)};
-        }),
-        Action('attack'),
-        Action('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-          return {'to': hit.position.clone()};
-        }),
-      ])
-    ]);
+    this.skills = (skills ?? []);
+    this.spells = (spells ?? []);
   }
 
   @override
@@ -285,7 +288,7 @@ class EnemyRPGModel extends RPGModel {
         keepCurrentAnim = true;
         current = RPGBasicAction.attackLeft;
         // animation?.onComplete = () {
-          completer.complete();
+        completer.complete();
         // };
         // animation?.reset();
         return completer.future;

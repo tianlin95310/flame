@@ -9,6 +9,10 @@ final _regularTextStyle = TextStyle(
 
 final regularRender = TextPaint(style: _regularTextStyle);
 
+final middleRender = TextPaint(
+  style: _regularTextStyle.copyWith(fontSize: 16.0),
+);
+
 final tinyRender = TextPaint(
   style: _regularTextStyle.copyWith(fontSize: 14.0),
 );

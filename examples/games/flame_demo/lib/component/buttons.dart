@@ -110,13 +110,14 @@ class SpriteButton extends SpriteComponent with TapCallbacks {
 
 /// Rect文字button
 class TextButtonRect extends PositionComponent with TapCallbacks {
-  static final Vector2 initSize = Vector2(50, 50);
+  static final Vector2 buttonSize = Vector2(50, 50);
   TextButtonRect({
     required this.text,
     required this.action,
     required Color color,
     required Color borderColor,
     super.anchor = Anchor.center,
+    Vector2? size
   }) : _textDrawable = TextPaint(
           style: const TextStyle(
             fontSize: 16,
@@ -124,13 +125,13 @@ class TextButtonRect extends PositionComponent with TapCallbacks {
             fontWeight: FontWeight.w700,
           ),
         ).toTextPainter(text) {
-    size = initSize;
+    this.size = (size ?? buttonSize);
     _textOffset = Offset(
-      (size.x - _textDrawable.width) / 2,
-      (size.y - _textDrawable.height) / 2,
+      (this.size.x - _textDrawable.width) / 2,
+      (this.size.y - _textDrawable.height) / 2,
     );
     initBg();
-    _bgPaint = Paint()..color = color;
+    _bgPaint = Paint()..color = color..style = PaintingStyle.fill;
     _borderPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
@@ -145,12 +146,10 @@ class TextButtonRect extends PositionComponent with TapCallbacks {
   late final Paint _borderPaint;
   late final Paint _bgPaint;
 
-  @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-    // position.x = position.x - this.size.x / 2;
-    // position.x = size.x / 2;
+  void changeColor(Color color) {
+    _bgPaint.color = color;
   }
+  Color get bgColor => _bgPaint.color;
 
   @override
   void render(Canvas canvas) {
@@ -188,8 +187,14 @@ class TextButtonRect extends PositionComponent with TapCallbacks {
 /// 简单path路径button
 abstract class SimplePathButton extends PositionComponent with TapCallbacks {
   static Vector2 buttonSize = Vector2(40, 40);
-  SimplePathButton(this._iconPath, {super.position, bool? hasBorder}) : super(size: buttonSize) {
+  SimplePathButton(
+    this._iconPath, {
+    super.position,
+    bool? hasBorder,
+    double? strokeWidth,
+  }) : super(size: buttonSize) {
     this.hasBorder = (hasBorder ?? true);
+    _iconPaint.strokeWidth = (strokeWidth ?? 7);
   }
 
   final Paint _borderPaint = Paint()
@@ -254,7 +259,7 @@ class BackButton extends SimplePathButton with HasGameRef<RouterProvider> {
 /// 返回button
 class CloseButton extends SimplePathButton with HasGameRef<RouterProvider> {
   Function onClick;
-  CloseButton(this.onClick, {super.hasBorder})
+  CloseButton(this.onClick, {super.hasBorder, super.strokeWidth})
       : super(Path()
           ..moveTo(5, 5)
           ..lineTo(35, 35)
