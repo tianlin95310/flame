@@ -26,7 +26,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
       }),
     ])
   ], spells: [
-    SpellVo('1', '金技能1', [
+    SpellVo('金', '金技能1', [
       BasicActionVo('run'),
       BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
@@ -36,7 +36,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
         return {'to': hit.position.clone()};
       }),
     ]),
-    SpellVo('1', '金技能2', [
+    SpellVo('金', '金技能2', [
       BasicActionVo('run'),
       BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
@@ -46,7 +46,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
         return {'to': hit.position.clone()};
       }),
     ]),
-    SpellVo('4', '火技能1', [
+    SpellVo('火', '火技能1', [
       BasicActionVo('run'),
       BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
@@ -56,7 +56,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
         return {'to': hit.position.clone()};
       }),
     ]),
-    SpellVo('4', '火技能2', [
+    SpellVo('火', '火技能2', [
       BasicActionVo('run'),
       BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
@@ -66,7 +66,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
         return {'to': hit.position.clone()};
       }),
     ]),
-    SpellVo('4', '火技能3', [
+    SpellVo('火', '火技能3', [
       BasicActionVo('run'),
       BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
@@ -76,7 +76,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
         return {'to': hit.position.clone()};
       }),
     ]),
-    SpellVo('4', '火技能4', [
+    SpellVo('火', '火技能4', [
       BasicActionVo('run'),
       BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
@@ -86,7 +86,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
         return {'to': hit.position.clone()};
       }),
     ]),
-    SpellVo('4', '火技能5', [
+    SpellVo('火', '火技能5', [
       BasicActionVo('run'),
       BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};
@@ -96,7 +96,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
         return {'to': hit.position.clone()};
       }),
     ]),
-    SpellVo('4', '火技能6', [
+    SpellVo('火', '火技能6', [
       BasicActionVo('run'),
       BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
         return {'to': takeHit.position - Vector2(hit.size.x / 2, 0)};

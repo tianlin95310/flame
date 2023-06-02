@@ -286,9 +286,9 @@ class ScrollComponent extends PositionComponent with DragCallbacks {
           1.0 * row * childs[i].size.y,
         );
       }
-
+      bool isInt = childs.length ~/ colOrRowCount == childs.length / colOrRowCount;
       // 实际可以滚动的
-      Vector2 bound = Vector2(size.x, childs.length ~/ colOrRowCount * childs[0].size.y) - camera.viewport.size;
+      Vector2 bound = Vector2(size.x, (isInt ? childs.length ~/ colOrRowCount : childs.length ~/ colOrRowCount + 1) * childs[0].size.y) - camera.viewport.size;
       actSize = bound + camera.viewport.size;
       camera.setBounds(Rectangle.fromRect(bound.toRect()));
     } else {
@@ -302,7 +302,8 @@ class ScrollComponent extends PositionComponent with DragCallbacks {
           1.0 * row * childs[i].size.y,
         );
       }
-      Vector2 bound = Vector2(childs.length ~/ colOrRowCount * childs[0].size.x, size.y) - camera.viewport.size;
+      bool isInt = childs.length ~/ colOrRowCount == childs.length / colOrRowCount;
+      Vector2 bound = Vector2((isInt ? childs.length ~/ colOrRowCount : childs.length ~/ colOrRowCount + 1) * childs[0].size.x, size.y) - camera.viewport.size;
       actSize = bound + camera.viewport.size;
       camera.setBounds(Rectangle.fromRect(bound.toRect()));
     }

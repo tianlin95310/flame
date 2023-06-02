@@ -88,6 +88,7 @@ class DemoGame04 extends Component with HasGameRef<PCGameEntry> {
     print('onMenuClick, menuId = $menuId');
     if (menuId == 0) {
       menu.hideMenu();
+      secondMenu.hideMenu();
       FutureOr futureOr = currentModel.basicAttack(enemyModels[0].model);
       if (futureOr is Future) {
         futureOr.then((value) {

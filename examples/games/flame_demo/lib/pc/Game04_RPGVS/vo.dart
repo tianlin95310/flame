@@ -23,3 +23,12 @@ class FightModelInfo extends BaseModelInfo {
   FightModelInfo(super.name);
 }
 
+class Inventory {
+  String name;
+  int count;
+  String type;
+  String path;
+
+  Inventory(this.name, this.count, this.type, this.path);
+}
+

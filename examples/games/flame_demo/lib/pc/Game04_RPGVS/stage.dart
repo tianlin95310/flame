@@ -8,6 +8,20 @@ import 'main.dart';
 import 'model.dart';
 import 'vo.dart';
 
+class TurnsWho extends PositionComponent with ShapePaint {
+
+  List<FightModelInfo> fightModels;
+
+  List<FightModelInfo> enemyModels;
+
+  TurnsWho(this.fightModels, this.enemyModels);
+
+  @override
+  FutureOr<void> onLoad() async{
+  }
+
+
+}
 class FightStage extends PositionComponent with ShapePaint {
   DemoGame04 game;
 

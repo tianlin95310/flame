@@ -120,7 +120,7 @@ class TextButtonRect extends PositionComponent with TapCallbacks {
     Vector2? size
   }) : _textDrawable = TextPaint(
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             color: Color(0xFF000000),
             fontWeight: FontWeight.w700,
           ),

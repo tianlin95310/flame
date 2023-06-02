@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
 import 'package:flame_demo/component/buttons.dart';
 import 'package:flame_demo/component/scroll.dart';
 import 'package:flame_demo/mixins/paint.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'main.dart';
 import 'model.dart';
 import 'style.dart';
+import 'vo.dart';
 
 class Menu extends PositionComponent with BgPaint {
   static Vector2 menuSize = Vector2(150, 150);
@@ -163,8 +163,134 @@ class SecondMenu extends PositionComponent with BgPaint {
 }
 
 class UserInventory extends Component {
+  late List<Inventory> inventory;
+
+  UserInventory();
+
+  ScrollComponent? scrollComponent;
+
+  late Map<String, List<Inventory>> inventorys = {
+    '丹药': [],
+    '毒药': [],
+    '异果': [],
+  };
+
+  String type = '丹药';
+
+  late List<TextButtonRect> buttons;
+
+  Vector2 buttonSize = Vector2(40, 30);
+
+  TextButtonRect button(String type) {
+    return TextButtonRect(
+        text: type,
+        action: () {
+          changeType(type);
+        },
+        color: this.type == type ? const Color(0xFF008866) : const Color(0x00000000),
+        borderColor: const Color(0x00000000),
+        size: buttonSize);
+  }
+
+  changeType(String type) {
+    if (this.type == type) {
+      return;
+    }
+    this.type = type;
+    updateButton();
+    show();
+  }
+
+  updateButton() {
+    for (var element in buttons) {
+      element.changeColor(type == element.text ? const Color(0xFF008866) : const Color(0x00000000));
+    }
+  }
+
   @override
-  FutureOr<void> onLoad() async {}
+  FutureOr<void> onLoad() async {
+    addAll(buttons = [
+      button('丹药')..position = Vector2(0, 0) + buttonSize / 2,
+      button('毒药')..position = Vector2(40, 0) + buttonSize / 2,
+      button('异果')..position = Vector2(80, 0) + buttonSize / 2,
+    ]);
+    show();
+  }
+
+  show() {
+    loadUserInventory();
+    for (var element in inventory) {
+      inventorys[element.type]!.add(element);
+    }
+
+    if (scrollComponent?.parent != null) {
+      remove(scrollComponent!);
+    }
+    add(
+      scrollComponent = ScrollComponent(
+        Axis.vertical,
+        3,
+        inventorys[type]!.map((e) => InventoryItem(e)).toList(),
+        position: Vector2(0, 30),
+        size: Vector2(SecondMenu.menuSize.x, SecondMenu.menuSize.y - 30),
+      ),
+    );
+  }
+
+  loadUserInventory() {
+    inventory = [
+      Inventory('金疮药', 30, '丹药', ''),
+      Inventory('孔雀胆1', 30, '毒药', ''),
+      Inventory('孔雀胆2', 20, '毒药', ''),
+      Inventory('孔雀胆3', 10, '毒药', ''),
+      Inventory('孔雀胆4', 5, '毒药', ''),
+      Inventory('孔雀胆5', 1, '毒药', ''),
+      Inventory('孔雀胆6', 30, '毒药', ''),
+      Inventory('孔雀胆7', 20, '毒药', ''),
+      Inventory('孔雀胆8', 10, '毒药', ''),
+      Inventory('孔雀胆9', 5, '毒药', ''),
+      Inventory('孔雀胆10', 1, '毒药', ''),
+      Inventory('人参果', 30, '异果', ''),
+    ];
+    inventorys = {
+      '丹药': [],
+      '毒药': [],
+      '异果': [],
+    };
+  }
+}
+
+class InventoryItem extends PositionComponent with BgPaint {
+  Inventory inventory;
+  InventoryItem(this.inventory) : super(size: itemSize);
+  static Vector2 itemSize = Vector2(50, 50);
+
+  @override
+  FutureOr<void> onLoad() async {
+    String name = inventory.name;
+    String count = inventory.count.toString();
+    addAll([
+      TextComponent(
+        text: name,
+        textRenderer: miniRender,
+        anchor: Anchor.center,
+        size: miniRender.measureText(name),
+        position: itemSize / 2,
+      ),
+      TextComponent(
+        text: count,
+        textRenderer: smallRender,
+        anchor: Anchor.bottomRight,
+        size: smallRender.measureText(count),
+        position: itemSize - Vector2.all(1),
+      )
+    ]);
+  }
+
+  @override
+  void render(Canvas canvas) {
+    canvas.drawRect((size - Vector2(1, 1)).toRect(), bgPaint);
+  }
 }
 
 class CharSpell extends Component {
@@ -176,26 +302,19 @@ class CharSpell extends Component {
 
   Vector2 buttonSize = Vector2(30, 30);
 
-  String type = '1';
+  String type = '金';
 
-  late Map<String, List<SpellVo>> spells = {'1': [], '2': [], '3': [], '4': [], '5': []};
-
-  Map dist = {
-    '金': '1',
-    '木': '2',
-    '水': '3',
-    '火': '4',
-    '土': '5',
-  };
+  late Map<String, List<SpellVo>> spells = {'金': [], '木': [], '水': [], '火': [], '土': []};
 
   late List<TextButtonRect> buttons;
-  TextButtonRect button(String text, String type) {
+
+  TextButtonRect button(String type) {
     return TextButtonRect(
-        text: text,
+        text: type,
         action: () {
           changeType(type);
         },
-        color: this.type == dist[text] ? const Color(0xFF008866) : const Color(0x00000000),
+        color: this.type == type ? const Color(0xFF008866) : const Color(0x00000000),
         borderColor: const Color(0x00000000),
         size: buttonSize);
   }
@@ -203,18 +322,18 @@ class CharSpell extends Component {
   @override
   FutureOr<void> onLoad() async {
     addAll(buttons = [
-      button('金', '1')..position = Vector2(0, 0) + buttonSize / 2,
-      button('木', '2')..position = Vector2(30, 0) + buttonSize / 2,
-      button('水', '3')..position = Vector2(60, 0) + buttonSize / 2,
-      button('火', '4')..position = Vector2(90, 0) + buttonSize / 2,
-      button('土', '5')..position = Vector2(120, 0) + buttonSize / 2,
+      button('金')..position = Vector2(0, 0) + buttonSize / 2,
+      button('木')..position = Vector2(30, 0) + buttonSize / 2,
+      button('水')..position = Vector2(60, 0) + buttonSize / 2,
+      button('火')..position = Vector2(90, 0) + buttonSize / 2,
+      button('土')..position = Vector2(120, 0) + buttonSize / 2,
     ]);
     show();
   }
 
   updateButton() {
     for (var element in buttons) {
-      element.changeColor(type == dist[element.text] ? const Color(0xFF008866) : const Color(0x00000000));
+      element.changeColor(type == element.text ? const Color(0xFF008866) : const Color(0x00000000));
     }
   }
 
@@ -227,12 +346,8 @@ class CharSpell extends Component {
     show();
   }
 
-  resetSpells() {
-    spells = {'1': [], '2': [], '3': [], '4': [], '5': []};
-  }
-
   show() {
-    resetSpells();
+    spells = {'金': [], '木': [], '水': [], '火': [], '土': []};
     for (var element in model.spells) {
       spells[element.spellType]!.add(element);
     }
