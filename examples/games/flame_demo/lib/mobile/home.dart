@@ -18,8 +18,8 @@ class MobileGameHome extends Component with HasGameRef<MobileGameEntry> {
       RouteInfo('帧动画模型', 'game06'),
     ],
     [
-      RouteInfo('', 'game07'),
-      RouteInfo('', 'game08'),
+      RouteInfo('动画库', 'game08'),
+      RouteInfo('地图构建tmx', 'game09'),
       RouteInfo('', 'game09'),
     ],
     [
