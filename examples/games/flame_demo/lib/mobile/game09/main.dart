@@ -39,7 +39,7 @@ class Game09 extends Component {
     world.add(mapComponent);
 
     final objectGroup = mapComponent.tileMap.getLayer<ObjectGroup>('AnimatedCoins');
-    final coins = await Flame.images.load('coins.png');
+    final coins = await Flame.images.load('tiles/coins.png');
 
     // We are 100% sure that an object layer named `AnimatedCoins`
     // exists in the example `map.tmx`.
