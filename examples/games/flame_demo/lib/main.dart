@@ -4,10 +4,13 @@ import 'package:flame/game.dart';
 import 'package:flame_demo/mixins/RouterProvider.dart';
 import 'package:flame_demo/mobile/game.dart';
 import 'package:flame_demo/pc/game.dart';
+import 'package:flame_spine/flame_spine.dart';
 import 'package:flutter/material.dart' hide Route;
 import 'package:flutter/services.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initSpineFlutter();
   runApp(const MyApp());
 }
 

@@ -11,6 +11,9 @@ import 'game04/main.dart';
 import 'game05/main.dart';
 import 'game06/main.dart';
 import 'game07/main.dart';
+import 'game08/main.dart';
+import 'game09/main.dart';
+import 'game10/main.dart';
 import 'home.dart';
 
 class MobileGameEntry extends FlameGame
@@ -35,6 +38,9 @@ class MobileGameEntry extends FlameGame
           'game05': Route(Game05.new),
           'game06': Route(Game06.new),
           'game07': Route(Game07.new),
+          'game08': Route(Game08.new),
+          'game09': Route(Game09.new),
+          'game10': Route(Game10.new),
         },
       ),
     );
