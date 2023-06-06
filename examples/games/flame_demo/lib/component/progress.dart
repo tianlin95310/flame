@@ -17,6 +17,9 @@ class ProgressBar extends PositionComponent with BgPaint, HasPaint {
 
   @override
   void render(Canvas canvas) {
+    if (progress < 0) {
+      return;
+    }
     canvas.drawRect(size.toRect(), bgPaint);
     double current = size.x / maxValue * progress;
     canvas.drawRect(Vector2(current, size.y).toRect(), paint);

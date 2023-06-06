@@ -1,5 +1,3 @@
-import 'package:flame/components.dart';
-
 import 'common.dart';
 import 'model.dart';
 
@@ -9,14 +7,12 @@ class BaseModelInfo {
   double qi = 100;
   double shen = 100;
 
-
-  late BaseRPGModel model;
   late Header header;
 
   BaseModelInfo(this.name);
 }
 
-class FightModelInfo extends BaseModelInfo {
+class FightModelInfo<T extends BaseRPGModel> extends BaseModelInfo {
   double currentJing = 0;
   double currentQi = 0;
   double currentShen = 0;
@@ -25,6 +21,12 @@ class FightModelInfo extends BaseModelInfo {
 
   // 1,主角队，2敌人，其他
   int type = 1;
+
+  late T model;
+
+  update() {
+    // model.updateInfo
+  }
 
   FightModelInfo(super.name);
 }

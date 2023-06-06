@@ -15,43 +15,60 @@ var basicSkill = [
 ];
 
 void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
-  fightModels[0].model = SimpleRPGModel(
-    skills: [
-      SkillVo(
-        '横扫千军',
-        basicSkill,
-      ),
-      SkillVo('当头一击', basicSkill)
-    ],
-    spells: [
-      SpellVo('金', '金技能1', basicSkill),
-      SpellVo('金', '金技能2', basicSkill),
-      SpellVo('火', '火技能1', basicSkill),
-      SpellVo('火', '火技能2', basicSkill),
-      SpellVo('火', '火技能3', basicSkill),
-      SpellVo('火', '火技能4', basicSkill),
-      SpellVo('火', '火技能5', basicSkill),
-      SpellVo('火', '火技能6', basicSkill)
-    ]..forEach((element) => element.type = 2),
-  );
-  fightModels[1].model = SimpleRPGModel(
-    size: Vector2.all(80),
-    skills: [SkillVo('九齿钉耙击', basicSkill)],
-  );
-  fightModels[2].model = SimpleRPGModel(
-    size: Vector2.all(100),
-    skills: [SkillVo('杖击', basicSkill)],
-  );
+  fightModels[0]
+    ..speed = 150
+    ..jing = 2000
+    ..currentJing = 2000
+    ..currentQi = 60
+    ..currentShen = 70
+    ..model = SimpleRPGModel(
+      skills: [SkillVo('横扫千军', basicSkill, 300), SkillVo('当头一击', basicSkill, 400)],
+      spells: [
+        SpellVo('金', '金技能1', basicSkill, 100),
+        SpellVo('金', '金技能2', basicSkill, 100),
+        SpellVo('火', '火技能1', basicSkill, 100),
+        SpellVo('火', '火技能2', basicSkill, 100),
+        SpellVo('火', '火技能3', basicSkill, 100),
+        SpellVo('火', '火技能4', basicSkill, 100),
+        SpellVo('火', '火技能5', basicSkill, 100),
+        SpellVo('火', '火技能6', basicSkill, 100)
+      ]..forEach((element) => element.type = 2),
+    );
+  fightModels[1]
+    ..speed = 120
+    ..jing = 1000
+    ..currentJing = 800
+    ..currentQi = 30
+    ..currentShen = 30
+    ..model = SimpleRPGModel(
+      size: Vector2.all(80),
+      skills: [SkillVo('九齿钉耙击', basicSkill, 100)],
+    );
+  fightModels[2]
+    ..speed = 130
+    ..jing = 800
+    ..currentJing = 800
+    ..currentQi = 0
+    ..currentShen = 20
+    ..model = SimpleRPGModel(
+      size: Vector2.all(100),
+      skills: [SkillVo('杖击', basicSkill, 100)],
+    );
 
-  enemyModels[0].model = SimpleRPGModel(
-    size: Vector2.all(120),
-    skills: [
-      SkillVo(
-        '九阴白骨爪',
-        basicSkill,
-      ),
-    ],
-  );
+  enemyModels[0]
+    ..type = 2
+    ..speed = 150
+    ..jing = 1200
+    ..currentJing = 1200
+    ..currentQi = 100
+    ..currentShen = 100
+    ..model = EnemySimpleRPGModel(
+      enemyModels[0],
+      size: Vector2(120, 130),
+      skills: [
+        SkillVo('九阴白骨爪', basicSkill, 200),
+      ],
+    );
 
   // fightModels[1].model = await loadModel('kongshou06', 3, 8, 16, 23, 8, 1440.0 / 8, 1440.0 / 8);
   // fightModels[2].model = await loadModel('jian02', 3, 8, 16, 23, 8, 1400.0 / 8, 1400.0 / 8);

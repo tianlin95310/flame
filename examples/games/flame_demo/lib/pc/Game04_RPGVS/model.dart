@@ -5,10 +5,14 @@ import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_demo/component/progress.dart';
 import 'package:flame_demo/mixins/paint.dart';
 import 'package:flame_demo/pc/Game04_RPGVS/main.dart';
+import 'package:flame_demo/pc/Game04_RPGVS/vo.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/painting.dart';
+
+import 'util.dart';
 
 enum RPGBasicAction {
   standLeft,
@@ -41,7 +45,9 @@ class SkillVo {
   // type == 2, spell
   int type = 1;
 
-  SkillVo(this.name, this.actions, {int? type}) {
+  double damage;
+
+  SkillVo(this.name, this.actions, this.damage, {int? type}) {
     this.type = (type ?? 1);
   }
 }
@@ -50,7 +56,7 @@ class SpellVo extends SkillVo {
   /// 1, 2, 3, 4, 5 means 金木水火土
   String spellType;
 
-  SpellVo(this.spellType, super.name, super.actions, {super.type});
+  SpellVo(this.spellType, super.name, super.actions, super.damage, {super.type });
 }
 
 mixin BaseRPGModel on PositionComponent {
@@ -154,17 +160,6 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with BaseRP
         return completer.future;
       },
     };
-    basic = SkillVo('普通攻击', [
-      BasicActionVo('run'),
-      BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-        return {'to': takeHit.position - Vector2(size.x / 2, 0)};
-      }),
-      BasicActionVo('attack'),
-      BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-        return {'to': hit.position.clone()};
-      }),
-    ]);
-    skills = [];
   }
 
   @override
@@ -238,16 +233,7 @@ class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPG
         return completer.future;
       },
     };
-    basic = SkillVo('普通攻击', [
-      BasicActionVo('run'),
-      BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-        return {'to': takeHit.position - Vector2(this.size.x / 2, 0)};
-      }),
-      BasicActionVo('attack'),
-      BasicActionVo('rush', translate: (BaseRPGModel hit, BaseRPGModel takeHit) {
-        return {'to': hit.position.clone()};
-      }),
-    ]);
+    basic = SkillVo('普通攻击', basicSkill, 200);
     this.skills = (skills ?? []);
     this.spells = (spells ?? []);
   }
@@ -281,6 +267,21 @@ class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPG
   }
 }
 
+class EnemySimpleRPGModel extends SimpleRPGModel {
+  EnemySimpleRPGModel(this.info, {super.skills, super.size, super.spells, super.color});
+
+  FightModelInfo info;
+
+  @override
+  FutureOr<void> onLoad() {
+    updateInfo();
+  }
+
+  updateInfo() {
+    removeWhere((component) => component is ProgressBar);
+    add(ProgressBar(info.currentJing, info.jing, size: Vector2(size.x / 2, 5))..position = Vector2(size.x / 2 - size.x / 4, -10));
+  }
+}
 class EnemyRPGModel extends RPGModel {
   EnemyRPGModel({super.animations}) {
     basicActions = {

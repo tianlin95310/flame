@@ -90,6 +90,12 @@ class CharInfo extends PositionComponent {
       ],
     );
   }
+
+  void updateInfo() {
+    removeWhere((component) => component is PositionComponent);
+    int index = 0;
+    addAll(fightModels.map((e) => oneStatus(index++, e)));
+  }
 }
 
 class Toast extends HudMarginComponent with BgPaint {

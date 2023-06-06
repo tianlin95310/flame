@@ -107,6 +107,29 @@ class DemoGameWidget extends GameWidget<RouterProvider> {
               );
             },
             overlayBuilderMap: {
+              'gameWin': (BuildContext context, RouterProvider game) {
+                return Center(
+                  child: Container(
+                    width: 160,
+                    height: 160,
+                    decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(32))),
+                    child: Card(
+                      color: Colors.lightBlueAccent,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Text('战斗结束'),
+                          ElevatedButton(
+                              onPressed: () {
+                                game.overlays.remove('gameWin');
+                              },
+                              child: const Text('继续游戏')),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
               'pause': (BuildContext context, RouterProvider game) {
                 return Center(
                   child: Container(
