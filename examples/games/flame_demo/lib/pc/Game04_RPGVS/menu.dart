@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
+import 'package:flame/input.dart';
 import 'package:flame_demo/component/buttons.dart';
 import 'package:flame_demo/component/scroll.dart';
 import 'package:flame_demo/mixins/paint.dart';
@@ -80,13 +81,14 @@ class Menu extends PositionComponent with BgPaint {
 }
 
 class SecondMenu extends PositionComponent with BgPaint {
-  BaseRPGModel model;
+  FightModelInfo? model;
 
   static Vector2 menuSize = Vector2(150, 150);
 
   static Vector2 showPosition = DemoGame04.viewportSize / 2 - menuSize / 2 + Vector2(menuSize.x / 4 * 3, 0);
 
-  SecondMenu(this.model) : super(size: menuSize, position: DemoGame04.viewportSize / 2 - menuSize / 2);
+  SecondMenu(this.model, this.onSecondMenu)
+      : super(size: menuSize, position: DemoGame04.viewportSize / 2 - menuSize / 2);
 
   int? menuId;
 
@@ -95,6 +97,8 @@ class SecondMenu extends PositionComponent with BgPaint {
   CharSpell? charSpell;
 
   UserInventory? userInventory;
+
+  Function onSecondMenu;
 
   @override
   FutureOr<void> onLoad() async {
@@ -121,6 +125,9 @@ class SecondMenu extends PositionComponent with BgPaint {
   }
 
   void show(int menuId) {
+    if (model == null) {
+      return;
+    }
     if (this.menuId == menuId) {
       return;
     }
@@ -129,11 +136,11 @@ class SecondMenu extends PositionComponent with BgPaint {
     print('show, menuId = $menuId');
 
     if (menuId == 1) {
-      add(charSkill = CharSkill(model));
+      add(charSkill = CharSkill(model!, onSecondMenu));
     } else if (menuId == 2) {
-      add(charSpell = CharSpell(model));
+      add(charSpell = CharSpell(model!, onSecondMenu));
     } else if (menuId == 3) {
-      add(userInventory = UserInventory());
+      add(userInventory = UserInventory(onSecondMenu));
     }
   }
 
@@ -145,7 +152,7 @@ class SecondMenu extends PositionComponent with BgPaint {
     position = -DemoGame04.viewportSize * 2;
   }
 
-  void updateCurrentModel(BaseRPGModel rpgModel) {
+  void updateCurrentModel(FightModelInfo rpgModel) {
     model = rpgModel;
     charSkill?.model = rpgModel;
     charSkill?.show();
@@ -165,7 +172,9 @@ class SecondMenu extends PositionComponent with BgPaint {
 class UserInventory extends Component {
   late List<Inventory> inventory;
 
-  UserInventory();
+  UserInventory(this.onSecondMenu);
+
+  Function onSecondMenu;
 
   ScrollComponent? scrollComponent;
 
@@ -230,7 +239,13 @@ class UserInventory extends Component {
       scrollComponent = ScrollComponent(
         Axis.vertical,
         3,
-        inventorys[type]!.map((e) => InventoryItem(e)).toList(),
+        inventorys[type]!
+            .map((e) => ButtonComponent(
+                button: InventoryItem(e),
+                onReleased: () {
+                  onSecondMenu(3, e);
+                }))
+            .toList(),
         position: Vector2(0, 30),
         size: Vector2(SecondMenu.menuSize.x, SecondMenu.menuSize.y - 30),
       ),
@@ -294,9 +309,11 @@ class InventoryItem extends PositionComponent with BgPaint {
 }
 
 class CharSpell extends Component {
-  BaseRPGModel model;
+  FightModelInfo model;
 
-  CharSpell(this.model) : super();
+  CharSpell(this.model, this.onSecondMenu) : super();
+
+  Function onSecondMenu;
 
   ScrollComponentOneCol? listView;
 
@@ -348,7 +365,7 @@ class CharSpell extends Component {
 
   show() {
     spells = {'金': [], '木': [], '水': [], '火': [], '土': []};
-    for (var element in model.spells) {
+    for (var element in model.model.spells) {
       spells[element.spellType]!.add(element);
     }
     if (listView?.parent != null) {
@@ -358,11 +375,15 @@ class CharSpell extends Component {
       listView = ScrollComponentOneCol(
         Axis.vertical,
         spells[type]!
-            .map((e) => TextComponent(
+            .map((e) => ButtonComponent(
+                button: TextComponent(
                   textRenderer: middleRender,
                   text: e.name,
                   size: Vector2(middleRender.measureTextHeight(e.name), SecondMenu.menuSize.x),
-                ))
+                ),
+                onReleased: () {
+                  onSecondMenu(2, e);
+                }))
             .toList(),
         position: Vector2(0, 30),
         size: Vector2(SecondMenu.menuSize.x, SecondMenu.menuSize.y - 30),
@@ -372,9 +393,11 @@ class CharSpell extends Component {
 }
 
 class CharSkill extends Component {
-  BaseRPGModel model;
+  FightModelInfo model;
 
-  CharSkill(this.model) : super();
+  Function onSecondMenu;
+
+  CharSkill(this.model, this.onSecondMenu) : super();
 
   ScrollComponentOneCol? listView;
 
@@ -390,12 +413,16 @@ class CharSkill extends Component {
     add(
       listView = ScrollComponentOneCol(
         Axis.vertical,
-        model.skills
-            .map((e) => TextComponent(
+        model.model.skills
+            .map((e) => ButtonComponent(
+                button: TextComponent(
                   textRenderer: middleRender,
                   text: e.name,
                   size: Vector2(middleRender.measureTextHeight(e.name), SecondMenu.menuSize.x),
-                ))
+                ),
+                onReleased: () {
+                  onSecondMenu(1, e);
+                }))
             .toList(),
         size: SecondMenu.menuSize,
       ),

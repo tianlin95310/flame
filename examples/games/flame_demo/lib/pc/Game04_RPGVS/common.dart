@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
+import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame_demo/component/progress.dart';
 import 'package:flame_demo/mixins/paint.dart';
@@ -86,5 +89,41 @@ class CharInfo extends PositionComponent {
         )..position = Vector2(headWidth, proHeight * 2 + dividerHeight * 2)
       ],
     );
+  }
+}
+
+class Toast extends HudMarginComponent with BgPaint {
+  final String msg;
+  late TextComponent textComponent;
+  static Vector2 toastSize = Vector2(300, 30);
+
+  Toast(this.msg, {super.margin}) : super(size: toastSize) {
+    bgPaint.color = const Color(0x7f667788);
+  }
+
+  @override
+  FutureOr<void> onLoad() async {
+    add(
+      textComponent = TextComponent(
+        text: msg,
+        anchor: Anchor.center,
+        position: size / 2,
+        textRenderer: middleRender,
+      )..add(RemoveEffect(
+          delay: 2,
+          onComplete: () {
+            removeFromParent();
+          })),
+    );
+  }
+
+  @override
+  void render(Canvas canvas) {
+    canvas.drawRect(size.toRect(), bgPaint);
+  }
+
+  static void showToast(String msg, CameraComponent camera) {
+    double center = camera.viewport.size.x / 2 - toastSize.x / 2;
+    camera.viewport.add(Toast(msg, margin: EdgeInsets.only(left: center, top: 50)));
   }
 }

@@ -36,6 +36,7 @@ class BasicActionVo {
 class SkillVo {
   String name;
   List<BasicActionVo> actions;
+
   // type == 1, skill,
   // type == 2, spell
   int type = 1;
@@ -48,7 +49,8 @@ class SkillVo {
 class SpellVo extends SkillVo {
   /// 1, 2, 3, 4, 5 means 金木水火土
   String spellType;
-  SpellVo(this.spellType, super.name, super.actions, { super.type });
+
+  SpellVo(this.spellType, super.name, super.actions, {super.type});
 }
 
 mixin BaseRPGModel on PositionComponent {
@@ -173,8 +175,8 @@ class RPGModel extends SpriteAnimationGroupComponent<RPGBasicAction> with BaseRP
 
   @override
   void onTapUp(TapUpEvent event) {
-    DemoGame04? game = findParent();
-    game?.onModelSelect(this);
+    // DemoGame04? game = findParent();
+    // game?.onModelSelect(this);
   }
 
   @override
@@ -266,14 +268,16 @@ class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPG
     canvas.drawLine(bodyRect.topRight, bodyRect.bottomRight + Offset(bodyRect.width / 2, 0), shapePaint);
 
     // draw legs
-    canvas.drawLine(bodyRect.bottomLeft, bodyRect.bottomLeft + Offset(0, bodyRect.height), shapePaint);
-    canvas.drawLine(bodyRect.bottomRight, bodyRect.bottomRight + Offset(0, bodyRect.height), shapePaint);
+    canvas.drawLine(bodyRect.bottomLeft + Offset(bodyRect.width / 4, 0),
+        bodyRect.bottomLeft + Offset(bodyRect.width / 4, 0) + Offset(0, bodyRect.height), shapePaint);
+    canvas.drawLine(bodyRect.bottomRight - Offset(bodyRect.width / 4, 0),
+        bodyRect.bottomRight - Offset(bodyRect.width / 4, 0) + Offset(0, bodyRect.height), shapePaint);
   }
 
   @override
   void onTapUp(TapUpEvent event) {
-    DemoGame04? game = findParent();
-    game?.onModelSelect(this);
+    // DemoGame04? game = findParent();
+    // game?.onModelSelect(this);
   }
 }
 

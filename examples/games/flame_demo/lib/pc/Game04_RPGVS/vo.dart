@@ -9,6 +9,7 @@ class BaseModelInfo {
   double qi = 100;
   double shen = 100;
 
+
   late BaseRPGModel model;
   late Header header;
 
@@ -19,6 +20,11 @@ class FightModelInfo extends BaseModelInfo {
   double currentJing = 0;
   double currentQi = 0;
   double currentShen = 0;
+
+  double speed = 300;
+
+  // 1,主角队，2敌人，其他
+  int type = 1;
 
   FightModelInfo(super.name);
 }
