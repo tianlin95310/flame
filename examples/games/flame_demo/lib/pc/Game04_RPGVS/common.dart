@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import 'main.dart';
-import 'style.dart';
+import '../common/style.dart';
 import 'vo.dart';
 
 /// 头像

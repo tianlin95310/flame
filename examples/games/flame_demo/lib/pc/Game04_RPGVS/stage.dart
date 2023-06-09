@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flame_demo/mixins/paint.dart';
-import 'package:flame_demo/pc/Game04_RPGVS/style.dart';
+import 'package:flame_demo/pc/common/style.dart';
 import 'package:flutter/painting.dart';
 
 import 'main.dart';

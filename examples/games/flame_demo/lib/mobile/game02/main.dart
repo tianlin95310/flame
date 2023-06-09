@@ -3,7 +3,7 @@ import 'package:flame/experimental.dart';
 import 'package:flame_demo/component/ShapeSprite.dart';
 import 'package:flutter/material.dart';
 
-import '../common/MapDraggable.dart';
+import '../common/map.dart';
 
 class Game02 extends Component with HasGameRef {
   MapDraggable? map2;

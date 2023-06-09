@@ -1,5 +1,7 @@
 class RouteInfo {
   String title;
   String router;
-  RouteInfo(this.title, this.router);
+
+  Function? otherAction;
+  RouteInfo(this.title, this.router, {this.otherAction});
 }

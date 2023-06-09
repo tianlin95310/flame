@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 
 import 'main.dart';
 import 'model.dart';
-import 'style.dart';
+import '../common/style.dart';
 import 'vo.dart';
 
 class Menu extends PositionComponent with BgPaint {

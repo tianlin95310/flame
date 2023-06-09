@@ -7,7 +7,7 @@ import 'package:flame_demo/component/buttons.dart';
 import 'package:flame_demo/component/pause.dart';
 import 'package:flutter/rendering.dart';
 
-import '../common/StageMap.dart';
+import '../common/map.dart';
 import 'models.dart';
 
 class Game06 extends Component with TapCallbacks{

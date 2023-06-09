@@ -11,7 +11,7 @@ import '../../gameComponent/tank/PositionComponent_Enemy.dart';
 import '../../gameComponent/tank/TimerComponent_EnemyCreater.dart';
 import '../../interface/GameComponent.dart';
 import 'PositionComponent_ATank.dart';
-class Game07 extends GameComponent with HasGameRef, TapCallbacks {
+class Game07 extends Component with HasGameRef, TapCallbacks implements GameComponent {
   late ATank _aTank;
 
   late EnemyCreater enemyCreater;

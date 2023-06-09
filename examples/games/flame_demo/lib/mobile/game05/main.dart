@@ -4,7 +4,7 @@ import 'package:flame/experimental.dart';
 import 'package:flame/palette.dart';
 
 import '../common/ShapeSpriteWithJoystick.dart';
-import '../common/StageMap.dart';
+import '../common/map.dart';
 
 class Game05 extends Component with HasGameRef{
   late final JoystickComponent joystick;

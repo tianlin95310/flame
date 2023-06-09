@@ -10,6 +10,7 @@ import 'Game01_Tank/main.dart';
 import 'Game02_ShortestPath/main.dart';
 import 'Game03_FuncCallTest/main.dart';
 import 'Game04_RPGVS/main.dart';
+import 'Game05_SectionPlot/main.dart';
 import 'home.dart';
 
 class PCGameEntry extends FlameGame
@@ -33,6 +34,7 @@ class PCGameEntry extends FlameGame
           'game02': Route(DemoGame02.new),
           'game03': Route(DemoGame03.new),
           'game04': Route(DemoGame04.new),
+          'game05': Route(DemoGame05.new),
         },
       ),
     );

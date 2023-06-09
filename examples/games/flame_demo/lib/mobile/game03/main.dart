@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame_demo/component/scroll.dart';
 import 'package:flutter/rendering.dart';
 
-import '../common/StageMap.dart';
+import '../common/map.dart';
 import 'skills.dart';
 
 class Game03 extends Component {
