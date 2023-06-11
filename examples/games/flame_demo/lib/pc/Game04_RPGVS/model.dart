@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -7,7 +8,6 @@ import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_demo/component/progress.dart';
 import 'package:flame_demo/mixins/paint.dart';
-import 'package:flame_demo/pc/Game04_RPGVS/main.dart';
 import 'package:flame_demo/pc/Game04_RPGVS/vo.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/painting.dart';
@@ -240,7 +240,7 @@ class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPG
 
   @override
   void render(Canvas canvas) {
-    canvas.drawRect(size.toRect(), shapePaint);
+    // canvas.drawRect(size.toRect(), shapePaint);
 
     // draw body
     Rect bodyRect = Rect.fromCenter(center: (size / 2).toOffset(), width: width / 3.5, height: height / 3);
@@ -258,6 +258,11 @@ class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPG
         bodyRect.bottomLeft + Offset(bodyRect.width / 4, 0) + Offset(0, bodyRect.height), shapePaint);
     canvas.drawLine(bodyRect.bottomRight - Offset(bodyRect.width / 4, 0),
         bodyRect.bottomRight - Offset(bodyRect.width / 4, 0) + Offset(0, bodyRect.height), shapePaint);
+  }
+
+  @override
+  void onMount() {
+    super.onMount();
   }
 
   @override

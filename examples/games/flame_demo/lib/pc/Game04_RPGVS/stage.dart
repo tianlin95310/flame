@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -87,6 +88,18 @@ class TurnsWho extends PositionComponent with ShapePaint {
   }
 }
 
+class PositionStage extends PositionComponent with BgPaint {
+  PositionStage({super.size}):super(anchor: Anchor.center);
+
+  @override
+  FutureOr<void> onLoad() async {}
+
+  @override
+  void render(Canvas canvas) {
+    canvas.drawRect(size.toRect(), bgPaint);
+  }
+}
+
 class FightStage extends PositionComponent with ShapePaint {
   static Vector2 stageSize = DemoGame04.viewportSize - Vector2.all(40);
 
@@ -106,9 +119,18 @@ class FightStage extends PositionComponent with ShapePaint {
 
   late TurnsWho turnsWho;
 
+  late PositionStage positionStage;
+
   @override
   FutureOr<void> onLoad() async {
     int index = 0;
+    add(
+      positionStage = PositionStage(
+        size: stageSize - Vector2.all(50),
+      )..position = stageSize / 2,
+    );
+    positionStage.transformMatrix.rotateY(pi / 6);
+    positionStage.transformMatrix.rotateX(pi / 6);
     addAll(
       fightModels.map((e) {
         if (index == 0) {
@@ -124,6 +146,7 @@ class FightStage extends PositionComponent with ShapePaint {
     addAll(enemyModels.map((e) => e.model..position = Vector2(size.x - e.model.size.x / 2, size.y / 2)));
     add(indicator = TextComponent(text: '→', anchor: Anchor.center));
     hideIndicator();
+
     add(turnsWho = TurnsWho(fightModels, enemyModels));
   }
 
