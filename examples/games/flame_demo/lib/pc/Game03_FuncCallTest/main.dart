@@ -19,10 +19,10 @@ class DemoGame03 extends Component with TapCallbacks, HasGameRef {
   @override
   void onTapUp(TapUpEvent event) {
     print('DemoGame03 onTapUp, event = $event');
-    if (parent_p == null) {
+    if (parent_p?.parent == null) {
       add(parent_p = Parent()..position = gameRef.size / 2);
     } else {
-      if (child == null) {
+      if (child?.parent == null) {
         parent_p?.add(child = Child()..position = parent_p!.size / 2);
       }
     }

@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame/flame.dart';
 import 'package:flame_demo/pc/Game05_SectionPlot/text.dart';
 import 'package:flame_demo/pc/Game05_SectionPlot/xml.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../mobile/common/map.dart';
 import 'story.dart';
 
 class DemoGame05 extends Component {
@@ -19,6 +22,8 @@ class DemoGame05 extends Component {
   late World world;
   late CameraComponent camera;
   Vector2 viewportSize = Vector2(640, 360);
+  
+  late StageMap stageMap;
 
   @override
   FutureOr<void> onLoad() async {
@@ -34,13 +39,19 @@ class DemoGame05 extends Component {
         index++;
       }
     }
+    world.add(stageMap = StageMap(path: randomBg()));
     world.add(
-      storyShow = StoryShow(story.title, viewportSize),
+      storyShow = StoryShow(items.elementAt(index++ % items.length), viewportSize),
     );
   }
 
   void onTapUp(TapUpEvent event) {
-    storyShow.content = items.elementAt(index++ % items.length).content;
+    storyShow.item = items.elementAt(index++ % items.length);
+    Flame.images.load(randomBg()).then((value) => stageMap.sprite = Sprite(value));
     storyShow.show();
+  }
+
+  String randomBg() {
+    return 'bg/map/wild${(Random().nextInt(10) + 1).toString().padLeft(3, '0')}.jpg';
   }
 }

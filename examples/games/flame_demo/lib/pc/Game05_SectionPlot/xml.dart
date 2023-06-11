@@ -12,31 +12,35 @@ class XmlReader {
     try {
       XmlDocument document = XmlDocument.parse(xmlString);
       XmlElement root = document.rootElement;
-      String title = root.getElement('title')?.innerText ?? '';
+      String title = root.getAttribute('title') ?? '';
+      String section = root.getAttribute('section') ?? '';
+      int index = 0;
       Iterable<StoryItem> items = root.childElements.where((element) => element.name.local == 'story').map((e) {
         String inner = e.innerText.trim();
+        String name = e.getAttribute('name') ?? '';
         return StoryItem(
-          e.getAttribute('name') ?? '',
-          bool.tryParse(e.getAttribute('spaceWrap') ?? 'false') ?? false ? inner: dividerByLength(inner, 22),
+            name.padLeft(4),
+          bool.tryParse(e.getAttribute('spaceWrap') ?? 'false') ?? false ? inner: dividerByLength(inner, 20),
           id: e.getAttribute('id') ?? '',
+          head: 'icons/head_${index++ % 2}.png'
         );
       });
-      story = Story(title, items);
+      story = Story(title, section, items);
     } on Exception catch (e) {
-      print('xml file read failed, e = $e');
+      print('readXmlByString, e = $e');
     } finally {}
     return story;
   }
 
   static Story readXmlByUint8(Uint8List bytes) {
-    Story story = Story('name', []);
+    final empty = Story('','',  []);
+    Story story = empty;
     try {
       String xmlString = utf8.decode(bytes);
-      story = readXmlByString(xmlString) ?? Story('', []);
+      story = readXmlByString(xmlString) ?? empty;
     } on Exception catch (e) {
-      // todo
+      print('readXmlByUint8, e = $e');
     } finally {
-      print('readXmlByUint8');
     }
     return story;
   }

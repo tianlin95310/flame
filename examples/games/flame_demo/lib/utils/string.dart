@@ -13,3 +13,16 @@ String dividerByLength(String inner, int length) {
   String content = dividers.join('\n');
   return content;
 }
+
+List<String> stringToList(String raw) {
+  // return raw.split(RegExp('\\S'));
+  List<String> list = [];
+  for (int i = 0; i < raw.length; i++) {
+    list.add(raw[i]);
+  }
+  return list;
+}
+
+// void main() {
+//   print(stringToList('哈哈'));
+// }

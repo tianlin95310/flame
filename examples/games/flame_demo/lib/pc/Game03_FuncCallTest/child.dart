@@ -43,6 +43,12 @@ class Child extends PositionComponent with TapCallbacks {
   }
 
   @override
+  void onRemove() {
+    print('Child onRemove');
+    super.onRemove();
+  }
+
+  @override
   void onParentResize(Vector2 maxSize) {
     print('Child onParentResize, parent = $parent');
     super.onParentResize(maxSize);

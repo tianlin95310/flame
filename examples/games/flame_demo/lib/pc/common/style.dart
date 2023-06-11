@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 
 final _regularTextStyle = TextStyle(
   fontSize: 18,
-  color: BasicPalette.white.color,
-  fontFamily: 'DaKai'
+  color: BasicPalette.black.color,
+  fontFamily: 'DaKai',
 );
+
 final miniRender = TextPaint(
   style: _regularTextStyle.copyWith(fontSize: 10.0),
 );
@@ -25,20 +26,25 @@ final middleRender = TextPaint(
 
 final regularRender = TextPaint(style: _regularTextStyle);
 
-final boxRender = middleRender.copyWith(
+final largeRender = TextPaint(
+  style: _regularTextStyle.copyWith(fontSize: 16.0),
+);
+
+final boxRender = tinyRender.copyWith(
   (style) => style.copyWith(
-    color: Colors.lightGreenAccent,
     fontFamily: 'DaKai',
-    letterSpacing: 1.5,
+    letterSpacing: 1.2,
+    // backgroundColor: BasicPalette.brown.color
   ),
 );
+
 final shadedRender = TextPaint(
   style: TextStyle(
     color: BasicPalette.white.color,
-    fontSize: 40.0,
+    fontSize: 20,
     shadows: const [
-      Shadow(color: Colors.red, offset: Offset(2, 2), blurRadius: 2),
-      Shadow(color: Colors.yellow, offset: Offset(4, 4), blurRadius: 4),
+      Shadow(color: Colors.red, offset: Offset(1, 1), blurRadius: 1),
+      Shadow(color: Colors.yellow, offset: Offset(2, 2), blurRadius: 2),
     ],
   ),
 );

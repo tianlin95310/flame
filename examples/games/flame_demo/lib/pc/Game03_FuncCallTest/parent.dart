@@ -20,6 +20,7 @@ class Parent extends PositionComponent with TapCallbacks {
   @override
   void onTapUp(TapUpEvent event) {
     print('Parent onTapUp, event = $event');
+    removeFromParent();
     super.onTapUp(event);
   }
 
@@ -44,6 +45,12 @@ class Parent extends PositionComponent with TapCallbacks {
   void onMount() {
     print('Parent onMount');
     super.onMount();
+  }
+
+  @override
+  void onRemove() {
+    print('Parent onRemove');
+    super.onRemove();
   }
 
   @override

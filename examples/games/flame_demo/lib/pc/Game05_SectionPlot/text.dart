@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame/flame.dart';
+import 'package:flame/layout.dart';
+import 'package:flame_demo/pc/Game05_SectionPlot/story.dart';
 import 'package:flutter/material.dart';
 
 import '../common/style.dart';
@@ -9,17 +12,21 @@ import 'main.dart';
 
 class StoryShow extends PositionComponent with TapCallbacks {
   Vector2 viewportSize;
-  String content;
+  StoryItem item;
 
-  StoryShow(this.content, this.viewportSize)
+  StoryShow(this.item, this.viewportSize)
       : super(
-          size: Vector2(viewportSize.x * 2 / 3, viewportSize.y / 2),
-          position: Vector2(0, viewportSize.y / 2),
+          size: Vector2(viewportSize.x * 2 / 3 + viewportSize.y / 5, viewportSize.y / 5 * 2),
+          position: Vector2(0, viewportSize.y / 5 * 3),
         );
 
   StoryScrollTextBox? scrollText;
 
   DemoGame05? game;
+
+  late SpriteComponent spriteComponent;
+
+  late TextComponent nameComponent;
 
   @override
   void onMount() {
@@ -29,27 +36,48 @@ class StoryShow extends PositionComponent with TapCallbacks {
 
   @override
   FutureOr<void> onLoad() async {
+    await add(
+      AlignComponent(
+        child: spriteComponent = SpriteComponent(
+          sprite: Sprite(await Flame.images.load(item.head ?? '')),
+          size: Vector2(size.y, size.y),
+          // scale: Vector2(1.1, 1.1)
+        ),
+        alignment: Anchor.bottomRight,
+      )..priority = 5,
+    );
+    String text = '${item.name}：';
+    add(nameComponent = TextComponent(
+      text: text,
+      textRenderer: tinyRender,
+      size: tinyRender.measureText(text),
+      position: Vector2(0, 25),
+        priority: 4
+    ));
     show();
   }
-
   show() {
     if (scrollText?.parent != null) {
       remove(scrollText!);
     }
     add(
       scrollText = StoryScrollTextBox(
-        content,
-        size: size,
+        item.content,
+        size: size - Vector2(size.y / 2, 0),
       )..anchor = Anchor.topLeft,
     );
+    nameComponent.text = '${item.name}：';
+    if (item.name.contains('？？？')) {
+      spriteComponent.scale = Vector2.zero();
+    } else {
+      spriteComponent.scale = Vector2.all(1);
+      Flame.images.load(item.head ?? '').then((value) => spriteComponent.sprite = Sprite(value));
+    }
   }
 
   @override
   void onTapUp(TapUpEvent event) {
-    if (scrollText == null) {
-      return;
-    }
-    if (scrollText!.finished) {
+    if (scrollText!.finished == true) {
       game?.onTapUp(event);
     } else {
       if (scrollText?.parent != null) {
@@ -57,9 +85,9 @@ class StoryShow extends PositionComponent with TapCallbacks {
       }
       add(
         scrollText = StoryScrollTextBox(
-          content,
-          size: size,
-          timePerChar: 0
+          item.content,
+          size: size - Vector2(size.y / 2, 0),
+          timePerChar: 0,
         )..anchor = Anchor.topLeft,
       );
     }
@@ -72,13 +100,13 @@ class StoryScrollTextBox extends TextBoxComponent {
     super.align,
     super.size,
     double? timePerChar,
-    double? margins,
   }) : super(
           text: text,
           textRenderer: boxRender,
+          priority: 3,
           boxConfig: TextBoxConfig(
             timePerChar: timePerChar ?? 0.05,
-            margins: EdgeInsets.all(margins ?? 16),
+            margins: const EdgeInsets.only(top: 25, left: 64, right: 25, bottom: 25),
           ),
         );
 
