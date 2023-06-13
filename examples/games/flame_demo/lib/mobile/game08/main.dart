@@ -9,7 +9,7 @@ class Game08 extends Component with HasGameRef {
   @override
   FutureOr<void> onLoad() async {
     final skillsArtboard = await loadArtboard(RiveFile.asset('assets/anims/skills.riv'));
-    final asset = await loadLottie(Lottie.asset('assets/anims/LottieLogo1.json'));
+    final asset = await loadLottie(Lottie.asset('assets/anims/lottieLogo.json'));
 
     add(SkillsAnimationComponent(skillsArtboard, size: Vector2.all(200))..position = Vector2(200, 0));
     add(

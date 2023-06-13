@@ -209,7 +209,7 @@ class SimpleRPGModel extends PositionComponent with ShapePaint, BgPaint, BaseRPG
     List<SpellVo>? spells,
     this.color,
     Vector2? size,
-  }) : super(anchor: Anchor.center) {
+  }) : super(anchor: Anchor.bottomCenter) {
     super.size = (size ?? modelSize);
     basicActions = {
       'attack': ({Map? argument}) async {},

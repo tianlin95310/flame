@@ -39,7 +39,7 @@ class DemoGame05 extends Component {
         index++;
       }
     }
-    world.add(stageMap = StageMap(path: randomBg()));
+    // world.add(stageMap = StageMap(path: randomBg()));
     world.add(
       storyShow = StoryShow(items.elementAt(index++ % items.length), viewportSize),
     );
@@ -47,7 +47,7 @@ class DemoGame05 extends Component {
 
   void onTapUp(TapUpEvent event) {
     storyShow.item = items.elementAt(index++ % items.length);
-    Flame.images.load(randomBg()).then((value) => stageMap.sprite = Sprite(value));
+    // Flame.images.load(randomBg()).then((value) => stageMap.sprite = Sprite(value));
     storyShow.show();
   }
 

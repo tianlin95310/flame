@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 
 import 'model.dart';
@@ -22,6 +24,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
     ..currentQi = 60
     ..currentShen = 70
     ..model = SimpleRPGModel(
+      color: const Color(0xffffff00),
       skills: [SkillVo('横扫千军', basicSkill, 300), SkillVo('当头一击', basicSkill, 400)],
       spells: [
         SpellVo('金', '金技能1', basicSkill, 100),
@@ -41,6 +44,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
     ..currentQi = 30
     ..currentShen = 30
     ..model = SimpleRPGModel(
+      color: const Color(0xffff00ff),
       size: Vector2.all(80),
       skills: [SkillVo('九齿钉耙击', basicSkill, 100)],
     );
@@ -51,6 +55,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
     ..currentQi = 0
     ..currentShen = 20
     ..model = SimpleRPGModel(
+      color: const Color(0xff00ffff),
       size: Vector2.all(100),
       skills: [SkillVo('杖击', basicSkill, 100)],
     );
@@ -63,6 +68,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
     ..currentQi = 100
     ..currentShen = 100
     ..model = EnemySimpleRPGModel(
+      color: const Color(0xffff0000),
       enemyModels[0],
       size: Vector2(120, 130),
       skills: [

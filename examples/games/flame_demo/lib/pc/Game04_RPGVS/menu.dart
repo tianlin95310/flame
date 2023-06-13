@@ -15,7 +15,7 @@ import 'vo.dart';
 class Menu extends PositionComponent with BgPaint {
   static Vector2 menuSize = Vector2(150, 150);
 
-  static Vector2 showPosition = DemoGame04.viewportSize / 2 - menuSize / 2 - Vector2(menuSize.x / 2, 0);
+  static Vector2 showPosition = DemoGame04.viewportSize / 2 - menuSize / 2;
 
   Menu() : super(size: menuSize, position: showPosition);
 
@@ -45,7 +45,7 @@ class Menu extends PositionComponent with BgPaint {
       })
         ..position = center + Vector2(0, TextButtonRect.buttonSize.y),
     ]);
-    bgPaint.color = const Color(0x7FA52A2A);
+    bgPaint.color = const Color(0x7Fcccccc);
   }
 
   PositionComponent getButton(String text, void Function() action) {
@@ -54,6 +54,7 @@ class Menu extends PositionComponent with BgPaint {
       action: action,
       color: const Color(0xFF00FFFF),
       borderColor: const Color(0xFF00FFFF),
+      size: Vector2(40, 40)
     );
   }
 
@@ -109,7 +110,7 @@ class SecondMenu extends PositionComponent with BgPaint {
         ..scale = Vector2.all(0.7),
     );
 
-    bgPaint.color = const Color(0x7F668800);
+    bgPaint.color = const Color(0x7Fccccee);
   }
 
   _hideAll() {

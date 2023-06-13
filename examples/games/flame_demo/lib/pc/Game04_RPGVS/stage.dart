@@ -3,13 +3,11 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/events.dart';
 import 'package:flame_demo/mixins/paint.dart';
 import 'package:flame_demo/pc/common/style.dart';
 import 'package:flutter/painting.dart';
 
 import 'main.dart';
-import 'model.dart';
 import 'vo.dart';
 
 class TurnsWho extends PositionComponent with ShapePaint {
@@ -89,19 +87,93 @@ class TurnsWho extends PositionComponent with ShapePaint {
 }
 
 class PositionStage extends PositionComponent with BgPaint {
-  PositionStage({super.size}):super(anchor: Anchor.center);
+  List<FightModelInfo> fightModels;
+
+  List<FightModelInfo> enemyModels;
+
+  static Vector2 positionSize = Vector2(560, 210);
+
+  PositionStage(this.fightModels, this.enemyModels) : super(size: positionSize, anchor: Anchor.center);
+
+  late List<PolygonComponent> positions;
 
   @override
-  FutureOr<void> onLoad() async {}
+  FutureOr<void> onLoad() async {
+    double a = 15 * pi / 180;
+    List<Vector2> vlist = [
+      Vector2(0, 0),
+      Vector2(positionSize.y * tan(a), positionSize.y),
+      Vector2(positionSize.x, positionSize.y),
+      Vector2(positionSize.x - positionSize.y * tan(a), 0),
+    ];
+    add(PolygonComponent(vlist, paint: Paint()..color = const Color(0xff345600)));
 
-  @override
-  void render(Canvas canvas) {
-    canvas.drawRect(size.toRect(), bgPaint);
+    Vector2 edge1 = vlist[1] - vlist[0];
+    Vector2 edge4 = vlist[3] - vlist[0];
+
+    double distance1 = vlist[1].distanceTo(vlist[0]);
+    double distance4 = vlist[3].distanceTo(vlist[0]);
+
+    List<Offset> offsets = [
+      const Offset(0, 0),
+      const Offset(0, 1),
+      const Offset(0, 2),
+      const Offset(1, 0),
+      const Offset(1, 1),
+      const Offset(1, 2),
+      const Offset(2, 0),
+      const Offset(2, 1),
+      const Offset(2, 2),
+      const Offset(0, 5),
+      const Offset(0, 6),
+      const Offset(0, 7),
+      const Offset(1, 5),
+      const Offset(1, 6),
+      const Offset(1, 7),
+      const Offset(2, 5),
+      const Offset(2, 6),
+      const Offset(2, 7)
+    ];
+    List<Color> colors = [
+      const Color(0x7f00ff00),
+      const Color(0x7fff0000),
+      const Color(0x7f0000ff),
+      const Color(0x7fff0000),
+      const Color(0x7f00ff00),
+      const Color(0x7f0000ff),
+      const Color(0x7f0000ff),
+      const Color(0x7fff0000),
+      const Color(0x7f00ff00),
+    ];
+    int ci = 0;
+    addAll(positions = offsets
+        .map((e) => PolygonComponent(
+              [
+                Vector2(0, 0) + (edge1 / 3.0) * e.dx + (edge4 / 8.0) * e.dy,
+                edge1 / 3 + (edge1 / 3.0) * e.dx + (edge4 / 8.0) * e.dy,
+                edge1 / 3 + Vector2(distance4 / 8, 0) + (edge1 / 3.0) * e.dx + (edge4 / 8.0) * e.dy,
+                Vector2(0, 0) + Vector2(distance4 / 8, 0) + (edge1 / 3.0) * e.dx + (edge4 / 8.0) * e.dy,
+              ],
+              paint: Paint()..color = const Color(0x00000000),
+              // paint: Paint()..color = colors[ci++ % colors.length],
+            ))
+        .toList());
+    int index = 0;
+    addAll(
+      fightModels.map((e) {
+        Vector2 position = positions[4 * index++].center;
+        return e.model..position = position;
+      }),
+    );
+    addAll(enemyModels.map((e) => e.model..position = positions[13].center));
   }
+
+  @override
+  void render(Canvas canvas) {}
 }
 
 class FightStage extends PositionComponent with ShapePaint {
-  static Vector2 stageSize = DemoGame04.viewportSize - Vector2.all(40);
+  static Vector2 stageSize = DemoGame04.viewportSize - Vector2(40, 60);
 
   DemoGame04 game;
 
@@ -123,27 +195,12 @@ class FightStage extends PositionComponent with ShapePaint {
 
   @override
   FutureOr<void> onLoad() async {
-    int index = 0;
     add(
       positionStage = PositionStage(
-        size: stageSize - Vector2.all(50),
+        fightModels,
+        enemyModels,
       )..position = stageSize / 2,
     );
-    positionStage.transformMatrix.rotateY(pi / 6);
-    positionStage.transformMatrix.rotateX(pi / 6);
-    addAll(
-      fightModels.map((e) {
-        if (index == 0) {
-          e.model.position = e.model.size / 2;
-        } else {
-          BaseRPGModel pre = fightModels[index - 1].model;
-          e.model.position = pre.position + Vector2(e.model.size.x / 3, e.model.size.y / 2 + pre.size.y / 2);
-        }
-        index++;
-        return e.model;
-      }),
-    );
-    addAll(enemyModels.map((e) => e.model..position = Vector2(size.x - e.model.size.x / 2, size.y / 2)));
     add(indicator = TextComponent(text: '→', anchor: Anchor.center));
     hideIndicator();
 
@@ -162,7 +219,7 @@ class FightStage extends PositionComponent with ShapePaint {
     } else {
       for (var e in fightModels) {
         if (e == game.currentModel) {
-          Vector2 position = e.model.position - Vector2(e.model.size.y / 2, 0);
+          Vector2 position = e.model.position - Vector2(-e.model.x / 2, 0) ;
           indicator.position = position;
         }
       }

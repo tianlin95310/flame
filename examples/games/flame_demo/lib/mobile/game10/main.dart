@@ -27,7 +27,8 @@ class Game10 extends Component with TapCallbacks {
   FutureOr<void> onLoad() async{
     spineboy = await SpineComponent.fromAssets(
       atlasFile: 'assets/spine/spineboy.atlas',
-      skeletonFile: 'assets/spine/spineboy-pro.skel',
+      // skeletonFile: 'assets/spine/spineboy-pro.skel', // skel or json
+      skeletonFile: 'assets/spine/spineboy-pro.json',
       // atlasFile: 'assets/spine/DragonBones001.atlas',
       // skeletonFile: 'assets/spine/DragonBones001.json',
       scale: Vector2(0.4, 0.4),
