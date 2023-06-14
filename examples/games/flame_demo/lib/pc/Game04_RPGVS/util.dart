@@ -25,7 +25,7 @@ void init(List<FightModelInfo> fightModels, List<FightModelInfo> enemyModels) {
     ..currentShen = 70
     ..model = SimpleRPGModel(
       color: const Color(0xffffff00),
-      skills: [SkillVo('横扫千军', basicSkill, 300), SkillVo('当头一击', basicSkill, 400)],
+      skills: [SkillVo('横扫千军', basicSkill, 500), SkillVo('当头一击', basicSkill, 800)],
       spells: [
         SpellVo('金', '金技能1', basicSkill, 100),
         SpellVo('金', '金技能2', basicSkill, 100),

@@ -29,11 +29,9 @@ class MyApp extends StatelessWidget {
 class DemoHome extends StatelessWidget {
   const DemoHome({super.key});
 
-  void onMenuClick<T extends RouterProvider>(BuildContext context, T game,
-      {bool landscape = false}) {
+  void onMenuClick<T extends RouterProvider>(BuildContext context, T game, {bool landscape = false}) {
     if (landscape) {
-      SystemChrome.setPreferredOrientations(
-          [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     }
     Navigator.push(
       context,
@@ -42,10 +40,7 @@ class DemoHome extends StatelessWidget {
           onWillPop: () async {
             if (game.router.currentRoute.name == game.router.initialRoute) {
               if (landscape) {
-                SystemChrome.setPreferredOrientations([
-                  DeviceOrientation.portraitUp,
-                  DeviceOrientation.portraitDown
-                ]);
+                SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
               }
               Navigator.pop(context);
               return true;
@@ -78,12 +73,14 @@ class DemoHome extends StatelessWidget {
             },
             child: const Text('PC Game'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              onMenuClick<MobileGameEntry>(context, MobileGameEntry(),
-                  landscape: true);
-            },
-            child: const Text('Mobile Game'),
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: ElevatedButton(
+              onPressed: () {
+                onMenuClick<MobileGameEntry>(context, MobileGameEntry(), landscape: true);
+              },
+              child: const Text('Mobile Game'),
+            ),
           ),
         ],
       ),

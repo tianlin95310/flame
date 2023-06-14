@@ -40,6 +40,8 @@ class DemoGame04 extends Component with HasGameRef<PCGameEntry> {
 
   late CharInfo charInfo;
 
+  late void Function(bool value) completeWith;
+
   @override
   FutureOr<void> onLoad() async {
     init(fightModels, enemyModels);
@@ -66,8 +68,10 @@ class DemoGame04 extends Component with HasGameRef<PCGameEntry> {
 
   chargeWin() {
     if (enemyModels[0].currentJing <= 0) {
-      // Toast.showToast('战斗结束了,你获得了胜利', camera);
-      game.overlays.add('gameWin');
+      Toast.showToast('战斗结束了,你获得了胜利', camera);
+      // game.overlays.add('gameWin');
+      // gameRef.router.pop();
+      completeWith(true);
     }
     print('left: ${enemyModels[0].currentJing}');
   }

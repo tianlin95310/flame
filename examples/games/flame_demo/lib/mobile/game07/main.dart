@@ -11,7 +11,9 @@ import '../../gameComponent/tank/PositionComponent_Enemy.dart';
 import '../../gameComponent/tank/TimerComponent_EnemyCreater.dart';
 import '../../interface/GameComponent.dart';
 import 'PositionComponent_ATank.dart';
-class Game07 extends Component with HasGameRef, TapCallbacks implements GameComponent {
+
+class Game07 extends PositionComponent with HasGameRef, TapCallbacks implements GameComponent {
+  Game07() : super(size: Vector2(640, 360));
   late ATank _aTank;
 
   late EnemyCreater enemyCreater;
@@ -40,7 +42,7 @@ class Game07 extends Component with HasGameRef, TapCallbacks implements GameComp
       size: 60,
       knob: CircleComponent(radius: 30, paint: knobPaint),
       background: CircleComponent(radius: 60, paint: backgroundPaint),
-      margin: const EdgeInsets.only(left: 30, bottom: 30),
+      margin: const EdgeInsets.only(bottom: 20, left: 20),
     ));
 
     add(
@@ -51,14 +53,15 @@ class Game07 extends Component with HasGameRef, TapCallbacks implements GameComp
           angle: 0),
     );
     add(enemyCreater = EnemyCreater());
-    add(banner = TextComponent(
-        text: 'Destroyed Enemies:${enemyCreater.totalCount}',
-        textRenderer: _shaded)
+    add(banner = TextComponent(text: 'Destroyed Enemies:${enemyCreater.totalCount}', textRenderer: _shaded)
       ..anchor = Anchor.bottomRight
       ..position = gameRef.canvasSize);
     add(HudButtonComponent(
       priority: 100,
-      button: TextComponent(text: '攻击', priority: 100,),
+      button: TextComponent(
+        text: '攻击',
+        priority: 100,
+      ),
       onPressed: () {
         _aTank.attack();
       },
@@ -73,15 +76,23 @@ class Game07 extends Component with HasGameRef, TapCallbacks implements GameComp
   }
 
   @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    canvas.drawRect(size.toRect(), Paint()..color = const Color(0xff456700));
+  }
+
+  @override
   void onGameResize(Vector2 canvasSize) {
     print('Game07 onGameResize, Enemy length1 = ${checkEnemyChild()}, length2 = ${children.length}');
     super.onGameResize(canvasSize);
   }
+
   @override
   void onChildrenChanged(Component child, ChildrenChangeType type) {
     print('Game07 onChildrenChanged, Enemy length1 = ${checkEnemyChild()}, length2 = ${children.length}');
     super.onChildrenChanged(child, type);
   }
+
   @override
   void onParentResize(Vector2 maxSize) {
     print('Game07 onParentResize, Enemy length1 = ${checkEnemyChild()}, length2 = ${children.length}');
@@ -100,9 +111,11 @@ class Game07 extends Component with HasGameRef, TapCallbacks implements GameComp
 
   int checkEnemyChild() {
     int count = 0;
-    children.forEach((element) { if (element is Enemy) {
-      count++;
-    }});
+    children.forEach((element) {
+      if (element is Enemy) {
+        count++;
+      }
+    });
     return count;
   }
 }

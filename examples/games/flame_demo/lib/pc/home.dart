@@ -26,6 +26,7 @@ class PCGameHome extends Component with HasGameRef<PCGameEntry> {
     ],
     [
       RouteInfo('图像变换', 'game06'),
+      RouteInfo('对话框', 'game07'),
     ],
     [
       RouteInfo('', 'game03'),

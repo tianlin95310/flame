@@ -22,7 +22,8 @@ class XmlReader {
             name.padLeft(4),
           bool.tryParse(e.getAttribute('spaceWrap') ?? 'false') ?? false ? inner: dividerByLength(inner, 20),
           id: e.getAttribute('id') ?? '',
-          head: 'icons/head_${index++ % 2}.png'
+          head: 'icons/head_${index++ % 2}.png',
+            type: e.getAttribute('type') ?? 'story'
         );
       });
       story = Story(title, section, items);

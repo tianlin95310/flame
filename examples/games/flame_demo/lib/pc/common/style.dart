@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 final _regularTextStyle = TextStyle(
   fontSize: 18,
-  color: BasicPalette.black.color,
+  color: BasicPalette.white.color,
   fontFamily: 'DaKai',
 );
 

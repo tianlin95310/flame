@@ -6,12 +6,15 @@ import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame_demo/pc/Game05_SectionPlot/text.dart';
 import 'package:flame_demo/pc/Game05_SectionPlot/xml.dart';
+import 'package:flame_demo/pc/Game07_Dialog/main.dart';
+import 'package:flame_demo/pc/game.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../mobile/common/map.dart';
+import '../Game04_RPGVS/main.dart';
 import 'story.dart';
 
-class DemoGame05 extends Component {
+class DemoGame05 extends Component with HasGameRef<PCGameEntry> {
   static Uint8List? buffer;
 
   late StoryShow storyShow;
@@ -46,9 +49,26 @@ class DemoGame05 extends Component {
   }
 
   void onTapUp(TapUpEvent event) {
-    storyShow.item = items.elementAt(index++ % items.length);
+    nextStory();
     // Flame.images.load(randomBg()).then((value) => stageMap.sprite = Sprite(value));
-    storyShow.show();
+  }
+  Future<bool> nextStory() async {
+    StoryItem storyItem = items.elementAt(index++ % items.length);
+    if (storyItem.type == 'story') {
+      storyShow.item = storyItem;
+      storyShow.show();
+    } else if (storyItem.type == 'fight'){
+      // gameRef.router.pushNamed('game04');
+      // gameRef.router.pushAndWait(route);
+      bool value = await gameRef.router.pushAndWait(BaseValueRoute(DemoGame04()));
+      print('onTapUp, value = $value');
+      if (value) {
+        return nextStory();
+      } else {
+        return value;
+      }
+    }
+    return true;
   }
 
   String randomBg() {

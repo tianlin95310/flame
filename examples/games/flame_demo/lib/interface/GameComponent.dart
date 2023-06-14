@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
 
-abstract interface class GameComponent implements Component {
+abstract class GameComponent extends Component {
   void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other, PositionComponent main);
 }
