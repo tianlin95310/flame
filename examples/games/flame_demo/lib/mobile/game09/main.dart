@@ -35,12 +35,15 @@ class Game09 extends Component {
 
     addAll([cameraComponent, world]);
 
-    mapComponent = await TiledComponent.load('map.tmx', Vector2.all(16));
+    mapComponent = await TiledComponent.load('Demo01/map.tmx', Vector2.all(16));
     world.add(mapComponent);
 
     final objectGroup = mapComponent.tileMap.getLayer<ObjectGroup>('AnimatedCoins');
-    final coins = await Flame.images.load('tiles/coins.png');
+    final coins = await Flame.images.load('coins.png');
 
+    final objectGroup2 = mapComponent.tileMap.getLayer<ObjectGroup>('path');
+    final customProperties = objectGroup2!.objects[1].properties.elementAt(3);
+    print('customProperties.value = ${customProperties.value}');
     // We are 100% sure that an object layer named `AnimatedCoins`
     // exists in the example `map.tmx`.
     for (final object in objectGroup!.objects) {

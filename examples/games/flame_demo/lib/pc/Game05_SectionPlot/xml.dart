@@ -45,4 +45,5 @@ class XmlReader {
     }
     return story;
   }
+
 }

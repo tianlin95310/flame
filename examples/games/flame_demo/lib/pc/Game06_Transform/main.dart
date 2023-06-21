@@ -66,7 +66,7 @@ class DemoGame06 extends Component {
         }));
 
     add(component = SpriteComponent(
-        sprite: Sprite(await Flame.images.load('icons/hudie.png')),
+        sprite: Sprite(await Flame.images.load('icons/flame.png')),
         size: size,
         anchor: Anchor.center,
         children: [RectangleComponent(size: size, paint: Paint()..color = const Color(0x7fcccc00))])
@@ -74,7 +74,7 @@ class DemoGame06 extends Component {
 
     Vector2 dot = Vector2(5, 5);
     add(component2 = SpriteComponent(
-      sprite: Sprite(await Flame.images.load('icons/hudie.png')),
+      sprite: Sprite(await Flame.images.load('icons/flame.png')),
       size: size,
       anchor: Anchor.topLeft,
       children: [

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="13">
+ <tileset firstgid="1" source="tileset.tsx"/>
+ <layer id="1" name="图块层 1" width="10" height="10" visible="0">
+  <properties>
+   <property name="name" value="123"/>
+  </properties>
+  <data encoding="csv">
+30,0,0,0,0,0,0,0,0,0,
+30,0,0,0,0,0,0,0,0,0,
+30,0,0,0,0,0,0,0,0,0,
+30,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="图块层 2" width="10" height="10" visible="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="3" name="对象层 1">
+  <object id="1" x="130" y="35" width="113" height="77"/>
+  <object id="3" x="42" y="143">
+   <point/>
+  </object>
+  <object id="4" x="96" y="191">
+   <point/>
+  </object>
+  <object id="5" x="56" y="27.3333" width="80" height="16" rotation="90">
+   <text fontfamily="楷体" wrap="1">你好，世界</text>
+  </object>
+  <object id="12" gid="30" x="206.667" y="51.3333" width="32" height="32" rotation="-180"/>
+ </objectgroup>
+ <group id="4" name="Group Layer 1"/>
+ <imagelayer id="5" name="图像图层 1" visible="0">
+  <image source="C:/Users/tian.lin/Downloads/p2.png" width="100" height="200"/>
+ </imagelayer>
+</map>
