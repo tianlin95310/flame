@@ -29,7 +29,7 @@ class PCGameHome extends Component with HasGameRef<PCGameEntry> {
       RouteInfo('对话框', 'game07'),
     ],
     [
-      RouteInfo('', 'game03'),
+      RouteInfo('图像混合BlendMode', 'game08'),
     ]
   ];
   @override

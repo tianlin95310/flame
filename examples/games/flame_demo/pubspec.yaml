@@ -88,7 +88,9 @@ flutter:
     - assets/images/bg/map/
     - assets/images/icons/
     - assets/images/models/singleSkill/
-    - assets/images/models/mulSkill/effect_test/
+    - assets/images/models/mulSkill/crtz/
+    - assets/images/models/mulSkill/feidao/
+    - assets/images/models/temp/
 #    - assets/images/models/singleModel/jian02/
 #    - assets/images/models/singleModel/jian10/
 #    - assets/images/models/singleModel/kongshou04/

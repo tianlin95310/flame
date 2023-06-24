@@ -101,11 +101,7 @@ class SkillLoadUtils {
   static Future<List<PositionComponent>> getAllSkillMulFile() async {
     return [
       await mulFileSkill('crtz', 14),
-      await mulFileSkill('effect_test', 13),
       await mulFileSkill('feidao', 15),
-      await mulFileSkill('fsyj', 15),
-      await mulFileSkill('tqzyj', 6),
-      await mulFileSkill('yujianshu', 13),
     ];
   }
 
@@ -219,6 +215,12 @@ class SkillLoadUtils {
       // skillSingleFile('sk081.jpg', 3, 5, 0, 14, 15, 192.0, 192.0, filterColor: 0xFF000000),
       // skillSingleFile('sk082.jpg', 2, 5, 0, 8, 9, 192.0, 192.0, filterColor: 0xFF000000),
       // skillSingleFile('sk083.jpg', 2, 5, 0, 8, 9, 192.0, 192.0, filterColor: 0xFF000000),
+
+      // skillSingleFileTemp('baopo_01.png', 4, 4, 0, 15, 16, 512 / 4, 512 / 4, filterColor: 0xFF000000),
+      // skillSingleFileTemp('bowen.png', 5, 5, 0, 24, 25, 256 / 5, 256 / 5, filterColor: 0xFF000000),
+      // skillSingleFileTemp('dkjg_suipian.png', 4, 4, 0, 15, 16, 512 / 4, 512 / 4),
+      // skillSingleFileTemp('dy_water1.png', 4, 4, 0, 15, 16, 512 / 4, 512 / 4),
+      // skillSingleFileTemp('feichuansgx.png', 4, 4, 0, 12, 13, 510 / 4, 474 / 4),
     ];
   }
 
@@ -228,6 +230,18 @@ class SkillLoadUtils {
     return SingleFileSkill(
       filterColor,
       'models/singleSkill/$file',
+      totalCount,
+      col,
+      Vector2(frameWidth, frameHeight),
+    );
+  }
+
+  static PositionComponent skillSingleFileTemp(file, row, col, startIndex, endIndex,
+      totalCount, double frameWidth, double frameHeight,
+      {filterColor}) {
+    return SingleFileSkill(
+      filterColor,
+      'models/temp/$file',
       totalCount,
       col,
       Vector2(frameWidth, frameHeight),
