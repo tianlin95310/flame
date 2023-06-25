@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
@@ -92,8 +91,8 @@ class AtlasSprite extends SpriteComponent {
 
   @override
   FutureOr<void> onLoad() async {
-    Sprite sprite = Sprite(await Flame.images.load('icons/holidayCattle_atlas0_1.png'));
-    sprite_ = Sprite(await Flame.images.load('icons/holidayCattle_atlas0_1!a.png'));
+    Sprite sprite = Sprite(await Flame.images.load('icons/port.png'));
+    sprite_ = Sprite(await Flame.images.load('icons/port!a.png'));
     this.sprite = sprite;
     size = sprite.originalSize..scaleTo(200);
 
