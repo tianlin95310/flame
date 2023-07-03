@@ -14,6 +14,7 @@ import 'Game05_SectionPlot/main.dart';
 import 'Game06_transform/main.dart';
 import 'Game07_Dialog/main.dart';
 import 'Game08_BlendMode/main.dart';
+import 'Game09_Effect/main.dart';
 import 'home.dart';
 
 class PCGameEntry extends FlameGame
@@ -40,6 +41,7 @@ class PCGameEntry extends FlameGame
           'game06': Route(DemoGame06.new),
           'game07': Route(DemoGame07.new),
           'game08': Route(DemoGame08.new),
+          'game09': Route(DemoGame09.new),
           'okOrNot': OverlayRoute((context, game) {
             return Center(
               child: GestureDetector(
