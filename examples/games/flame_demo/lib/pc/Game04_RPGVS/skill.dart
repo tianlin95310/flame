@@ -91,7 +91,7 @@ Future<PositionComponent> mulFileSkill(name, frameCount) async {
   MulFileSkill skill = MulFileSkill();
   for (int i = 0; i < frameCount; i++) {
     String fileName = (i + 1).toString().padLeft(3, '0');
-    skill.frames.add(Sprite(await Flame.images.load('models/mulSkill/$name/s${fileName}.png')));
+    skill.frames.add(Sprite(await Flame.images.load('mulSkill/$name/s${fileName}.png')));
   }
   return skill;
 }
@@ -99,7 +99,7 @@ Future<PositionComponent> mulFileSkill(name, frameCount) async {
 PositionComponent skillSingleFile(file, row, col, startIndex, endIndex, totalCount, double frameWidth, double frameHeight, {filterColor}) {
   return SingleFileSkill(
     filterColor,
-    'models/singleSkill/$file',
+    'singleSkill/$file',
     totalCount,
     col,
     Vector2(frameWidth, frameHeight),

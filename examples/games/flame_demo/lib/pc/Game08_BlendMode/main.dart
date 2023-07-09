@@ -17,10 +17,10 @@ class DemoGame08 extends Component with HasGameRef, HasPaint {
       int col = index % colCount;
       add(AtlasSprite(index)..position = Vector2(col * 200, row * 200));
 
-      // add(SingleFileSkill(index, 0xFF000000, 'models/singleSkill/sk001.png', 16, 4, Vector2(128.0, 128.0))
+      // add(SingleFileSkill(index, 0xFF000000, 'singleSkill/sk001.png', 16, 4, Vector2(128.0, 128.0))
       //   ..position = Vector2(col * 200, row * 200)
       //   ..anchor = Anchor.topLeft);
-      // add(SingleFileSkill(index, 0xFF000000, 'models/singleSkill/sk003.png', 17, 5, Vector2(192.0, 192.0))
+      // add(SingleFileSkill(index, 0xFF000000, 'singleSkill/sk003.png', 17, 5, Vector2(192.0, 192.0))
       //   ..position = Vector2(col * 200, row * 200)
       //   ..anchor = Anchor.topLeft);
       index++;

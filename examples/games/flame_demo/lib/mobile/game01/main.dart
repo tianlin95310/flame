@@ -29,7 +29,7 @@ class Game01 extends Component {
       margin: const EdgeInsets.only(left: 30, bottom: 30),
     );
 
-    Sprite map = await Sprite.load('bg/bigMap/ditu2019.jpg');
+    Sprite map = await Sprite.load('bigMap/ditu2019.jpg');
 
     await add(world = World());
     // world.add(joystick);

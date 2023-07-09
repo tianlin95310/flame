@@ -72,6 +72,6 @@ class DemoGame05 extends Component with HasGameRef<PCGameEntry> {
   }
 
   String randomBg() {
-    return 'bg/map/wild${(Random().nextInt(10) + 1).toString().padLeft(3, '0')}.jpg';
+    return 'map/wild${(Random().nextInt(10) + 1).toString().padLeft(3, '0')}.jpg';
   }
 }

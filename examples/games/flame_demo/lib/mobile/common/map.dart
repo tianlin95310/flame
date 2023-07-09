@@ -9,7 +9,7 @@ class MapDraggable extends SpriteComponent with DragCallbacks {
 
   @override
   Future<void>? onLoad() async {
-    sprite = await Sprite.load('bg/bigMap/ditu2019.jpg');
+    sprite = await Sprite.load('bigMap/ditu2019.jpg');
     size = sprite!.originalSize;
   }
 
@@ -43,7 +43,7 @@ class StageMap extends SpriteComponent with HasGameRef {
   String? path;
   @override
   Future<void>? onLoad() async {
-    sprite = await Sprite.load(path ?? 'bg/map/stage001.jpg');
+    sprite = await Sprite.load(path ?? 'map/stage001.jpg');
     sizeByX();
   }
 

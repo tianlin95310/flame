@@ -7,8 +7,8 @@ import 'package:flame_demo/component/ShapeSpriteDraggable.dart';
 
 class Game04 extends Component with HasGameRef {
   final bgLayers = {
-    'bg/map/stage001.jpg': 1.0,
-    'bg/map/stage009.jpg': 1.0,
+    'map/stage001.jpg': 1.0,
+    'map/stage009.jpg': 1.0,
   };
 
   late ShapeSpriteDraggable draggable;
