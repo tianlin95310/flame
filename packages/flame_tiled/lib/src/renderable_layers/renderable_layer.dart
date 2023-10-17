@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_tiled/src/renderable_layers/group_layer.dart';
@@ -18,12 +21,16 @@ abstract class RenderableLayer<T extends Layer> {
   /// The parent [Group] layer (if it exists)
   final GroupLayer? parent;
 
+  /// The [FilterQuality] that should be used by all the layers.
+  final FilterQuality filterQuality;
+
   RenderableLayer({
     required this.layer,
     required this.parent,
     required this.map,
     required this.destTileSize,
-  });
+    FilterQuality? filterQuality,
+  }) : filterQuality = filterQuality ?? FilterQuality.none;
 
   /// [load] is a factory method to create [RenderableLayer] by type of [layer].
   static Future<RenderableLayer> load({
@@ -34,7 +41,9 @@ abstract class RenderableLayer<T extends Layer> {
     required CameraComponent? camera,
     required Map<Tile, TileFrames> animationFrames,
     required TiledAtlas atlas,
+    FilterQuality? filterQuality,
     bool? ignoreFlip,
+    Images? images,
   }) async {
     if (layer is TileLayer) {
       return FlameTileLayer.load(
@@ -45,6 +54,7 @@ abstract class RenderableLayer<T extends Layer> {
         animationFrames: animationFrames,
         atlas: atlas.clone(),
         ignoreFlip: ignoreFlip,
+        filterQuality: filterQuality,
       );
     } else if (layer is ImageLayer) {
       return FlameImageLayer.load(
@@ -53,12 +63,15 @@ abstract class RenderableLayer<T extends Layer> {
         camera: camera,
         map: map,
         destTileSize: destTileSize,
+        filterQuality: filterQuality,
+        images: images,
       );
     } else if (layer is ObjectGroup) {
       return ObjectLayer.load(
         layer,
         map,
         destTileSize,
+        filterQuality,
       );
     } else if (layer is Group) {
       final groupLayer = layer;
@@ -67,6 +80,7 @@ abstract class RenderableLayer<T extends Layer> {
         parent: parent,
         map: map,
         destTileSize: destTileSize,
+        filterQuality: filterQuality,
       );
     }
 
@@ -117,9 +131,12 @@ abstract class RenderableLayer<T extends Layer> {
     // entire layer
     var x = (1 - parallaxX) * viewportCenterX;
     var y = (1 - parallaxY) * viewportCenterY;
-    // compensate the offset for zoom
+    // Compensate the offset for zoom.
     x /= camera.viewfinder.zoom;
     y /= camera.viewfinder.zoom;
+    // Scale to tile space.
+    x /= destTileSize.x;
+    y /= destTileSize.y;
 
     // Now add the scroll for the current camera position
     x += cameraX - (cameraX * parallaxX);

@@ -175,7 +175,7 @@ class SpriteAnimation {
     return SpriteAnimation(
       [
         for (var i = 0; i < sprites.length; i++)
-          SpriteAnimationFrame(sprites[i], stepTimes[i])
+          SpriteAnimationFrame(sprites[i], stepTimes[i]),
       ],
       loop: loop,
     );
@@ -199,7 +199,7 @@ class SpriteAnimation {
               srcPosition: frameData.srcPosition,
             ),
             frameData.stepTime,
-          )
+          ),
       ],
       loop: data.loop,
     );
@@ -282,8 +282,6 @@ class SpriteAnimation {
     return SpriteAnimation(frames.reversed.toList(), loop: loop);
   }
 
-  /// Returns a new instance of [SpriteAnimationTicker].
-  SpriteAnimationTicker ticker() {
-    return SpriteAnimationTicker(this);
-  }
+  /// Creates and returns a new [SpriteAnimationTicker].
+  SpriteAnimationTicker createTicker() => SpriteAnimationTicker(this);
 }

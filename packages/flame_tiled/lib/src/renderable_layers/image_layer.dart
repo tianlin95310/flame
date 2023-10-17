@@ -1,3 +1,4 @@
+import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/flame.dart';
@@ -19,6 +20,7 @@ class FlameImageLayer extends RenderableLayer<ImageLayer> {
     required super.map,
     required super.destTileSize,
     required Image image,
+    super.filterQuality,
   }) : _image = image {
     _initImageRepeat();
   }
@@ -45,6 +47,7 @@ class FlameImageLayer extends RenderableLayer<ImageLayer> {
       opacity: opacity,
       alignment: Alignment.topLeft,
       repeat: _repeat,
+      filterQuality: filterQuality,
     );
 
     canvas.restore();
@@ -68,13 +71,16 @@ class FlameImageLayer extends RenderableLayer<ImageLayer> {
     required CameraComponent? camera,
     required TiledMap map,
     required Vector2 destTileSize,
+    FilterQuality? filterQuality,
+    Images? images,
   }) async {
     return FlameImageLayer(
       layer: layer,
       parent: parent,
       map: map,
       destTileSize: destTileSize,
-      image: await Flame.images.load(layer.image.source!),
+      filterQuality: filterQuality,
+      image: await (images ?? Flame.images).load(layer.image.source!),
     );
   }
 

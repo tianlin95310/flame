@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:flame/src/spritesheet.dart';
+import 'package:flame/src/sprite_sheet.dart';
 import 'package:meta/meta.dart';
 
 /// This is just a pair of <int, int>.
@@ -69,6 +69,7 @@ class IsometricTileMapComponent extends PositionComponent {
     super.anchor,
     super.children,
     super.priority,
+    super.key,
   }) : _renderSprite = Sprite(tileset.image);
 
   /// This is the size the tiles will be drawn (either original or overwritten).

@@ -13,7 +13,7 @@ void main() {
     when(() => image.width).thenReturn(100);
     when(() => image.height).thenReturn(100);
 
-    test('calculates all field from SpriteSheet', () async {
+    test('calculates all field from SpriteSheet', () {
       final spriteSheet = SpriteSheet(
         image: image,
         srcSize: Vector2(1, 2),
@@ -32,7 +32,7 @@ void main() {
       final animationTicker = spriteSheet.createAnimationWithVariableStepTimes(
         row: 1,
         stepTimes: [2.0, 3.0],
-      ).ticker();
+      ).createTicker();
 
       expect(animationTicker.totalDuration(), 5.0);
     });
@@ -54,5 +54,69 @@ void main() {
         );
       },
     );
+
+    test('return sprite based on row and column', () {
+      final spriteSheet = SpriteSheet(
+        image: image,
+        srcSize: Vector2(50, 50),
+      );
+
+      expect(
+        spriteSheet.getSprite(1, 1),
+        isA<Sprite>().having(
+          (sprite) => sprite.srcPosition,
+          'srcPosition',
+          equals(Vector2(50, 50)),
+        ),
+      );
+    });
+
+    test('return sprite based on id', () {
+      final spriteSheet = SpriteSheet(
+        image: image,
+        srcSize: Vector2(50, 50),
+      );
+
+      expect(
+        spriteSheet.getSpriteById(3),
+        isA<Sprite>().having(
+          (sprite) => sprite.srcPosition,
+          'srcPosition',
+          equals(Vector2(50, 50)),
+        ),
+      );
+    });
+
+    test('create sprite animation frame data based on row and column', () {
+      final spriteSheet = SpriteSheet(
+        image: image,
+        srcSize: Vector2(50, 50),
+      );
+
+      expect(
+        spriteSheet.createFrameData(1, 1, stepTime: 0.1),
+        isA<SpriteAnimationFrameData>().having(
+          (frame) => frame.srcPosition,
+          'srcPosition',
+          equals(Vector2(50, 50)),
+        ),
+      );
+    });
+
+    test('create sprite animation frame data based on id', () {
+      final spriteSheet = SpriteSheet(
+        image: image,
+        srcSize: Vector2(50, 50),
+      );
+
+      expect(
+        spriteSheet.createFrameDataFromId(3, stepTime: 0.1),
+        isA<SpriteAnimationFrameData>().having(
+          (frame) => frame.srcPosition,
+          'srcPosition',
+          equals(Vector2(50, 50)),
+        ),
+      );
+    });
   });
 }

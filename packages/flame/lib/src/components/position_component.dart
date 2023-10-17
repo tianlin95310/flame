@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'dart:ui' hide Offset;
 
 import 'package:collection/collection.dart';
+import 'package:flame/camera.dart';
 import 'package:flame/src/anchor.dart';
 import 'package:flame/src/components/core/component.dart';
 import 'package:flame/src/components/mixins/coordinate_transform.dart';
@@ -80,6 +81,7 @@ class PositionComponent extends Component
     Anchor? anchor,
     super.children,
     super.priority,
+    super.key,
   })  : transform = Transform2D(),
         _anchor = anchor ?? Anchor.topLeft,
         _size = NotifyingVector2.copy(size ?? Vector2.zero()) {
@@ -230,7 +232,7 @@ class PositionComponent extends Component
   double get absoluteAngle {
     // TODO(spydon): take scale into consideration
     return ancestors(includeSelf: true)
-        .whereType<PositionComponent>()
+        .whereType<ReadOnlyAngleProvider>()
         .map((c) => c.angle)
         .sum;
   }
@@ -428,6 +430,7 @@ class PositionComponent extends Component
 
   @override
   void renderDebugMode(Canvas canvas) {
+    final zoom = CameraComponent.currentCamera?.viewfinder.zoom ?? 1.0;
     super.renderDebugMode(canvas);
     final precision = debugCoordinatesPrecision;
     canvas.drawRect(size.toRect(), debugPaint);
@@ -443,7 +446,7 @@ class PositionComponent extends Component
       debugTextPaint.render(
         canvas,
         'x:$x1str y:$y1str',
-        Vector2(-10 * (precision + 3), -15),
+        Vector2(-10 * (precision + 3) / zoom, -15 / zoom),
       );
       // print coordinates at the bottom-right corner
       final p2 = absolutePositionOfAnchor(Anchor.bottomRight);
@@ -452,7 +455,7 @@ class PositionComponent extends Component
       debugTextPaint.render(
         canvas,
         'x:$x2str y:$y2str',
-        Vector2(size.x - 10 * (precision + 3), size.y),
+        Vector2(size.x - 10 * (precision + 3) / zoom, size.y),
       );
     }
   }

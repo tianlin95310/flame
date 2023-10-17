@@ -28,6 +28,7 @@ class RiveComponent extends PositionComponent {
     super.anchor = Anchor.topLeft,
     super.children,
     super.priority,
+    super.key,
   })  : _renderer = RiveArtboardRenderer(
           antialiasing: antialiasing,
           fit: fit,
@@ -103,7 +104,9 @@ class RiveArtboardRenderer {
     var scaleY = 1.0;
 
     canvas.save();
-    canvas.clipRect(position & size);
+    if (artboard.clip) {
+      canvas.clipRect(position & size);
+    }
 
     switch (fit) {
       case BoxFit.fill:
