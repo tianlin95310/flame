@@ -46,5 +46,11 @@ _build/
 
 # Custom
 lib/generated_plugin_registrant.dart
-#examples/**/.gitignore
 
+examples/**/.gitignore
+**/example/android
+**/example/ios
+**/example/linux
+**/example/macos
+**/example/windows
+**/example/web

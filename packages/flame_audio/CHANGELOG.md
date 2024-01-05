@@ -1,3 +1,23 @@
+## 2.1.7
+
+ - Update a dependency to the latest release.
+
+## 2.1.6
+
+ - Update a dependency to the latest release.
+
+## 2.1.5
+
+ - Update a dependency to the latest release.
+
+## 2.1.4
+
+ - **FIX**: Minor issues due Flutter 3.16 ([#2856](https://github.com/flame-engine/flame/issues/2856)). ([d51cd584](https://github.com/flame-engine/flame/commit/d51cd584c71a27c242c2f4600282cf8359daaa17))
+
+## 2.1.3
+
+ - Update a dependency to the latest release.
+
 ## 2.1.2
 
  - **REFACTOR**: Remove unnecessary 'async' keyword across the codebase [DCM] ([#2803](https://github.com/flame-engine/flame/issues/2803)). ([2dfe0e5a](https://github.com/flame-engine/flame/commit/2dfe0e5a431213c7148ab6389e3e8c8dc49fbf3d))

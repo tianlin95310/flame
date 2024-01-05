@@ -80,6 +80,7 @@ class PolygonComponent extends ShapeComponent {
     List<Paint>? paintLayers,
     bool? shrinkToBounds,
     ComponentKey? key,
+    List<Component>? children,
   }) : this(
           normalsToVertices(relation, parentSize),
           position: position,
@@ -91,6 +92,7 @@ class PolygonComponent extends ShapeComponent {
           paintLayers: paintLayers,
           shrinkToBounds: shrinkToBounds,
           key: key,
+          children: children,
         );
 
   @internal
@@ -224,15 +226,18 @@ class PolygonComponent extends ShapeComponent {
 
   @override
   bool containsLocalPoint(Vector2 point) {
+    // Take anchor into consideration.
+    final localPoint =
+        anchor.toOtherAnchorPosition(point, Anchor.topLeft, size);
     if (size.x == 0 || size.y == 0) {
       return false;
     }
     for (var i = 0; i < _vertices.length; i++) {
       final edge = getEdge(i, vertices: vertices);
-      final isOutside = (edge.to.x - edge.from.x) *
-                  (point.y - edge.from.y + _topLeft.y) -
-              (point.x - edge.from.x + _topLeft.x) * (edge.to.y - edge.from.y) >
-          0;
+      final isOutside =
+          (edge.to.x - edge.from.x) * (localPoint.y - edge.from.y) -
+                  (localPoint.x - edge.from.x) * (edge.to.y - edge.from.y) >
+              0;
       if (isOutside) {
         return false;
       }
