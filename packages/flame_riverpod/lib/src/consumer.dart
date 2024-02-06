@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_riverpod/src/widget.dart';
@@ -13,7 +14,7 @@ class ComponentRef implements WidgetRef {
   BuildContext get context => game!.buildContext!;
 
   RiverpodAwareGameWidgetState? get _container {
-    return game?.key?.currentState;
+    return game?.widgetKey?.currentState;
   }
 
   @override
@@ -80,7 +81,7 @@ mixin RiverpodComponentMixin on Component {
 
   @mustCallSuper
   @override
-  void onLoad() {
+  FutureOr<void> onLoad() {
     ref.game = findGame()! as RiverpodGameMixin;
     super.onLoad();
   }
@@ -126,17 +127,17 @@ mixin RiverpodComponentMixin on Component {
   void rebuildGameWidget() {
     assert(ref.game!.isMounted == true);
     if (ref.game!.isMounted) {
-      ref.game!.key!.currentState!.forceBuild();
+      ref.game!.widgetKey!.currentState!.forceBuild();
     }
   }
 }
 
-mixin RiverpodGameMixin on FlameGame {
+mixin RiverpodGameMixin<W extends World> on FlameGame<W> {
   /// [GlobalKey] associated with the [RiverpodAwareGameWidget] that this game
   /// was provided to.
   ///
   /// Used to facilitate [Component] access to the [ProviderContainer].
-  GlobalKey<RiverpodAwareGameWidgetState>? key;
+  GlobalKey<RiverpodAwareGameWidgetState>? widgetKey;
 
   final List<void Function()> _onBuildCallbacks = [];
 
