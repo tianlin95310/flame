@@ -1,3 +1,29 @@
+## 5.4.2
+
+ - Update a dependency to the latest release.
+
+## 5.4.1
+
+ - Update a dependency to the latest release.
+
+## 5.4.0
+
+ - **FIX**: Resolve logic error with assignment of ComponentRef's game property in flame_riverpod ([#3082](https://github.com/flame-engine/flame/issues/3082)). ([b44011fd](https://github.com/flame-engine/flame/commit/b44011fd714ec5919de5407f53d0772f31ed1a13))
+ - **FIX**: Resolve breaking changes from Riverpod affecting flame_riverpod ([#3080](https://github.com/flame-engine/flame/issues/3080)). ([e3aaa7c2](https://github.com/flame-engine/flame/commit/e3aaa7c21d89a6679c3ae70de6e676d1f11501fa))
+ - **FIX**: Implement necessary `ProviderSubscription` getters ([#3075](https://github.com/flame-engine/flame/issues/3075)). ([17da92b2](https://github.com/flame-engine/flame/commit/17da92b2d1c527162106778f459d72f19a5c5607))
+ - **FEAT**: Allow ComponentRef access in RiverpodGameMixin ([#3010](https://github.com/flame-engine/flame/issues/3010)). ([44b10fd6](https://github.com/flame-engine/flame/commit/44b10fd60c61392d449a8d12020c45724ad19625))
+
+## 5.3.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FIX**: Migrate from `RawKeyEvent` to `KeyEvent` ([#3002](https://github.com/flame-engine/flame/issues/3002)). ([330862c9](https://github.com/flame-engine/flame/commit/330862c98ecc7ed8d94e7cae0c34cd5781da0007))
+
+## 5.2.0
+
+ - **FIX**: Add Template param to RiverpodGameMixin ([#2972](https://github.com/flame-engine/flame/issues/2972)). ([622c8553](https://github.com/flame-engine/flame/commit/622c855318b6c1731891b023ddc6429ba1f32329))
+ - **FEAT**: Make `Component.key` public ([#2988](https://github.com/flame-engine/flame/issues/2988)). ([7fbd5af9](https://github.com/flame-engine/flame/commit/7fbd5af935211264822f89bc1beb4062d3efdf7a))
+
 ## 5.1.5
 
  - **FIX**: Change return type of RiverpodComponentMixin.onLoad to FutureOr<void> ([#2964](https://github.com/flame-engine/flame/issues/2964)). ([7ac80a78](https://github.com/flame-engine/flame/commit/7ac80a78e95b06bb1287fb74773634483d80b1c9))

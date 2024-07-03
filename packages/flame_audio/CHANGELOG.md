@@ -1,3 +1,21 @@
+## 2.10.2
+
+ - **DOCS**: Update flame_audio readme ([#3119](https://github.com/flame-engine/flame/issues/3119)). ([843984de](https://github.com/flame-engine/flame/commit/843984dee5f5f6afd351ef29ad2adb39650f30bb))
+
+## 2.10.1
+
+ - Update a dependency to the latest release.
+
+## 2.10.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FIX**: Migrate from `RawKeyEvent` to `KeyEvent` ([#3002](https://github.com/flame-engine/flame/issues/3002)). ([330862c9](https://github.com/flame-engine/flame/commit/330862c98ecc7ed8d94e7cae0c34cd5781da0007))
+
+## 2.1.8
+
+ - Update a dependency to the latest release.
+
 ## 2.1.7
 
  - Update a dependency to the latest release.

@@ -1,3 +1,64 @@
+## 1.18.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: Modernize switch; use switch-expressions and no break; ([#3133](https://github.com/flame-engine/flame/issues/3133)). ([b283b82f](https://github.com/flame-engine/flame/commit/b283b82f6cfa7e7f2ce5ff7f657e6569667183d4))
+ - **FIX**: Add key parameters to the rest of the components ([#3170](https://github.com/flame-engine/flame/issues/3170)). ([2477ea0f](https://github.com/flame-engine/flame/commit/2477ea0fcee99e71597983146f4af2dffd866971))
+ - **FIX**: Invoke `setToStart` on child effect controller of wrapping effect controllers ([#3168](https://github.com/flame-engine/flame/issues/3168)). ([217c95f0](https://github.com/flame-engine/flame/commit/217c95f0a53fd5a7933bfa57833f951cc0037878))
+ - **FIX**: Fix cascading and fallback propagation of text styles ([#3129](https://github.com/flame-engine/flame/issues/3129)). ([7b706d5f](https://github.com/flame-engine/flame/commit/7b706d5f63207aaf82d12a4b26233bc476771b1e))
+ - **FEAT**: Add `onReleased` action to `AdvancedButtonComponent` which will be called within `onTapUp` ([#3152](https://github.com/flame-engine/flame/issues/3152)). ([2269732e](https://github.com/flame-engine/flame/commit/2269732e64a2acef2451d283c85b03e1101229ec))
+ - **FEAT**: Support text align on new text rendering pipeline ([#3147](https://github.com/flame-engine/flame/issues/3147)). ([194d5536](https://github.com/flame-engine/flame/commit/194d5536560e464644bff8d5582a8ca8996539f5))
+ - **FEAT**: Add missing parameters to InlineTextStyle ([#3146](https://github.com/flame-engine/flame/issues/3146)). ([ce9392ab](https://github.com/flame-engine/flame/commit/ce9392abd85fe5fd3ae6f766c3a2957275c6fb8c))
+ - **FEAT**: Expand flame_lint to respect required pub.dev checks ([#3139](https://github.com/flame-engine/flame/issues/3139)). ([6e80bf5e](https://github.com/flame-engine/flame/commit/6e80bf5e679d1cdeeb9362d4103690b0b381161d))
+ - **FEAT**: Add accessor to determine a TextElement size ([#3130](https://github.com/flame-engine/flame/issues/3130)). ([8a63a07a](https://github.com/flame-engine/flame/commit/8a63a07ae3b569c316eafa23f0378e00180e0963))
+ - **FEAT**: Add ability to convert between TextPaint and InlineTextStyle ([#3128](https://github.com/flame-engine/flame/issues/3128)). ([6b63a57a](https://github.com/flame-engine/flame/commit/6b63a57a4888211b284f3a074c17519cb31341e0))
+ - **FEAT**: Add completed future for effects ([#3123](https://github.com/flame-engine/flame/issues/3123)). ([5e967deb](https://github.com/flame-engine/flame/commit/5e967deb876ed39fa4ee6839471bbfbcd3b72463))
+ - **FEAT**: Add custom long tap delay ([#3110](https://github.com/flame-engine/flame/issues/3110)). ([a95d7df6](https://github.com/flame-engine/flame/commit/a95d7df606bd2119423cc8a7ae51cacfb7b4dbed))
+ - **DOCS**: Update the dartdocs for `FixedResolutionViewport` ([#3132](https://github.com/flame-engine/flame/issues/3132)). ([db4b6fd6](https://github.com/flame-engine/flame/commit/db4b6fd6fa5968462d3f89238a92edbb93e4898d))
+ - **BREAKING** **FIX**: Update IsometricTileMapComponent to have better defined position and size ([#3142](https://github.com/flame-engine/flame/issues/3142)). ([9a7bdc74](https://github.com/flame-engine/flame/commit/9a7bdc7439322a26a388e3ac1b9c1a7c43742222))
+
+## 1.17.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: Change the ClipComponent factory Constructor to redirect Constructor ([#3089](https://github.com/flame-engine/flame/issues/3089)). ([cc035fb4](https://github.com/flame-engine/flame/commit/cc035fb4a3e123473d4e5e0db1fa0253e533bc61))
+ - **FIX**: Call `render` properly from nested `FlameGame`s ([#3106](https://github.com/flame-engine/flame/issues/3106)). ([cb1e3701](https://github.com/flame-engine/flame/commit/cb1e37014bac7bb68b647234b718a37e26ad7559))
+ - **FIX**: CircleHitbox should properly detect when ray is outside ([#3100](https://github.com/flame-engine/flame/issues/3100)). ([8cd9e123](https://github.com/flame-engine/flame/commit/8cd9e12319c0715def655fcf42f3976fa5f45e11))
+ - **FIX**: Clamp opacity set by the `ColorEffect` to 1.0 ([#3069](https://github.com/flame-engine/flame/issues/3069)). ([9282cc38](https://github.com/flame-engine/flame/commit/9282cc38f06cd6c87ed3a1880d28d5c9f290cc04))
+ - **FIX**: FutureOr return type of ComponentViewportMargin.onLoad ([#3059](https://github.com/flame-engine/flame/issues/3059)). ([72678c67](https://github.com/flame-engine/flame/commit/72678c676020480beae1d944ee687fd73eac9cf7))
+ - **FIX**: Size for `SpriteComponent.fromImage` should be nullable ([#3054](https://github.com/flame-engine/flame/issues/3054)). ([2ed71a3c](https://github.com/flame-engine/flame/commit/2ed71a3c89b3c2182828f2812d8515811483f4d5))
+ - **FIX**: Check for removing state while adding a child ([#3050](https://github.com/flame-engine/flame/issues/3050)). ([3a24a51d](https://github.com/flame-engine/flame/commit/3a24a51d108b1138ac3dd735956f4276f16b2974))
+ - **FEAT**: Add onFinished callback to ScrollTextBoxComponent ([#3105](https://github.com/flame-engine/flame/issues/3105)). ([233cc94c](https://github.com/flame-engine/flame/commit/233cc94c557e0af2fcf7599943ddf75180abf801))
+ - **FEAT**: Add `copyWith` method on the `TextBoxConfig` ([#3099](https://github.com/flame-engine/flame/issues/3099)). ([b946ba70](https://github.com/flame-engine/flame/commit/b946ba70cbfb5793a8d4d7c61d6ba029fbc303ab))
+ - **FEAT**: Component tree for the devtools extension tab ([#3094](https://github.com/flame-engine/flame/issues/3094)). ([bf5d68e9](https://github.com/flame-engine/flame/commit/bf5d68e9b5147dd5e7c10d72bf9c2f705733d688))
+ - **FEAT**: Add PositionComponent.toString ([#3095](https://github.com/flame-engine/flame/issues/3095)). ([b1f01986](https://github.com/flame-engine/flame/commit/b1f01986b440ac18bb35b0d76963b2c66f49ea33))
+ - **FEAT**: Add SpriteBatch.replace to allow the replacement of the batch information ([#3079](https://github.com/flame-engine/flame/issues/3079)). ([bf3c282d](https://github.com/flame-engine/flame/commit/bf3c282dd669e9a32a550b86770dba7fb8472afa))
+ - **FEAT**: Initial functionality of flame_devtools ([#3061](https://github.com/flame-engine/flame/issues/3061)). ([c92910c6](https://github.com/flame-engine/flame/commit/c92910c688f5dc4463e129132759102e7ebf2e36))
+ - **FEAT**: Add `HasPerformanceTracker` mixin on `Game` ([#3043](https://github.com/flame-engine/flame/issues/3043)). ([6270353a](https://github.com/flame-engine/flame/commit/6270353af9a6ec58ee9275ddfa6a8b26276a2c20))
+ - **BREAKING** **REFACTOR**: Use HasTimeScale for Route ([#3064](https://github.com/flame-engine/flame/issues/3064)). ([30fde805](https://github.com/flame-engine/flame/commit/30fde805b4650cc802f9908f9a1149dae19669d4))
+ - **BREAKING** **FIX**: Removed unused parameters from SpriteWidget ([#3074](https://github.com/flame-engine/flame/issues/3074)). ([f49d24c0](https://github.com/flame-engine/flame/commit/f49d24c02dd0d9b781926908bad1fb6dfcbda5f2))
+
+## 1.16.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: Fix unrelated types reported by DCM ([#3023](https://github.com/flame-engine/flame/issues/3023)). ([1d020a52](https://github.com/flame-engine/flame/commit/1d020a525b81df1cb45345d3e36a9c4e9caf701e))
+ - **FIX**: Vertices in `PolygonComponent` should subtract vertices positioning ([#3040](https://github.com/flame-engine/flame/issues/3040)). ([4f053ed7](https://github.com/flame-engine/flame/commit/4f053ed74c09d4e19a53694130b5d5c0d3e23aa6))
+ - **BREAKING** **FIX**: Migrate from `RawKeyEvent` to `KeyEvent` ([#3002](https://github.com/flame-engine/flame/issues/3002)). ([330862c9](https://github.com/flame-engine/flame/commit/330862c98ecc7ed8d94e7cae0c34cd5781da0007))
+
+## 1.15.0
+
+ - **REFACTOR**: Minimize `Vector2` creation in `IsometricTileMapComponent` ([#3018](https://github.com/flame-engine/flame/issues/3018)). ([5d3be313](https://github.com/flame-engine/flame/commit/5d3be3137a177c8900158fce10cffc01f729ed7a))
+ - **FIX**: Set margins of `JoystickComponent` properly ([#3019](https://github.com/flame-engine/flame/issues/3019)). ([e27818d8](https://github.com/flame-engine/flame/commit/e27818d8721c577507411fca085859335206391f))
+ - **FIX**: Properly update sprites in SpriteButtonComponent ([#3013](https://github.com/flame-engine/flame/issues/3013)). ([23cf8b9d](https://github.com/flame-engine/flame/commit/23cf8b9de81cade9ce90b8401c39432bc70f9d0d))
+ - **FIX**: Lifecycle completers to be called for FlameGame ([#3007](https://github.com/flame-engine/flame/issues/3007)). ([3804f524](https://github.com/flame-engine/flame/commit/3804f52434cf1bcaf28b501bf96858ecd3636164))
+ - **FIX**: CameraComponent no longer throws Concurrent modification on stop ([#2997](https://github.com/flame-engine/flame/issues/2997)). ([6a1059b0](https://github.com/flame-engine/flame/commit/6a1059b0a6e381020cdaa7a96ceecbcaa45b9a42))
+ - **FIX**: Updated PolygonComponent.containsPoint to account for concave polygons ([#2979](https://github.com/flame-engine/flame/issues/2979)). ([a6fe62a2](https://github.com/flame-engine/flame/commit/a6fe62a2c3b74d9b4781531e0c53470b6d3242ea))
+ - **FIX**: Add missing generic to `ComponentViewportMargin` ([#2983](https://github.com/flame-engine/flame/issues/2983)). ([1d9fe613](https://github.com/flame-engine/flame/commit/1d9fe6139287b984a05e0056c279b9c5d277e026))
+ - **FEAT**: Add support for base64 encoded images to be manually added to Images cache. ([#3008](https://github.com/flame-engine/flame/issues/3008)). ([1e56293c](https://github.com/flame-engine/flame/commit/1e56293c1f89e7636c97b0ed518642bd493d7a40))
+ - **FEAT**: Make `Component.key` public ([#2988](https://github.com/flame-engine/flame/issues/2988)). ([7fbd5af9](https://github.com/flame-engine/flame/commit/7fbd5af935211264822f89bc1beb4062d3efdf7a))
+ - **FEAT**: Add a hitboxFilter argument to raycast() ([#2968](https://github.com/flame-engine/flame/issues/2968)). ([d7c53e23](https://github.com/flame-engine/flame/commit/d7c53e230f32b4b224e23483d99b0b276d14686f))
+
 ## 1.14.0
 
 > Note: This release has breaking changes.
