@@ -1,16 +1,13 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:flame/src/effects/provider_interfaces.dart';
 import 'package:flutter/foundation.dart';
 
 export '../sprite_animation.dart';
 
 /// A [PositionComponent] that can have multiple [Sprite]s and render
 /// the one mapped with the [current] key.
-class SpriteGroupComponent<T> extends PositionComponent
-    with HasPaint
-    implements SizeProvider {
+class SpriteGroupComponent<T> extends PositionComponent with HasPaint {
   /// Key for the current sprite.
   T? _current;
 
@@ -68,6 +65,9 @@ class SpriteGroupComponent<T> extends PositionComponent
   ///
   /// Will update [size] if [autoResize] is true.
   set current(T? value) {
+    assert(_sprites != null, 'Sprites not set');
+    assert(_sprites!.keys.contains(value), 'Sprite not found for key: $value');
+
     final changed = _current != value;
     _current = value;
     _resizeToSprite();
@@ -97,7 +97,12 @@ class SpriteGroupComponent<T> extends PositionComponent
 
   /// Updates the sprite for the given key.
   void updateSprite(T key, Sprite sprite) {
-    _sprites![key] = sprite;
+    assert(
+      _sprites != null,
+      'This call can only be made after the sprites map has been initialized, '
+      'which should be done in either the constructor or in onLoad.',
+    );
+    _sprites?[key] = sprite;
     _resizeToSprite();
   }
 

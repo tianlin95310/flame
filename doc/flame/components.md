@@ -8,9 +8,8 @@ This diagram might look intimidating, but don't worry, it is not as complex as i
 
 ## Component
 
-All components inherit from the abstract class `Component` and all components can have other
-`Component`s as children. This is the base of what we call the Flame Component System, or FCS for
-short.
+All components inherit from the `Component` class and can have other `Component`s as children.
+This is the base of what we call the Flame Component System, or FCS for short.
 
 Children can be added either with the `add(Component c)` method or directly in the constructor.
 
@@ -1071,9 +1070,9 @@ For example you could create a diamond shapes polygon like this:
 void main() {
   PolygonComponent.relative(
     [
-      Vector2(0.0, 1.0), // Middle of top wall
+      Vector2(0.0, -1.0), // Middle of top wall
       Vector2(1.0, 0.0), // Middle of right wall
-      Vector2(0.0, -1.0), // Middle of bottom wall
+      Vector2(0.0, 1.0), // Middle of bottom wall
       Vector2(-1.0, 0.0), // Middle of left wall
     ],
     size: Vector2.all(100),
@@ -1090,9 +1089,6 @@ the center of the polygon.
 
 In the image you can see how the polygon shape formed by the purple arrows is defined by the red
 arrows.
-
-Remember to define the lists in a counter clockwise manner (if you think in the screen coordinate
-system where the y-axis is flipped, otherwise it is clockwise).
 
 
 ### RectangleComponent

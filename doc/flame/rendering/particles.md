@@ -250,7 +250,7 @@ game.add(
   ParticleSystemComponent(
     particle: CircleParticle(
       radius: game.size.x / 2,
-      paint: Paint()..color = Colors.red.withOpacity(.5),
+      paint: Paint()..color = Colors.red.withValues(alpha: .5),
     ),
   ),
 );
@@ -309,6 +309,7 @@ game.add(
     particle: ScalingParticle(
       lifespan: 2,
       to: 0,
+      curve: Curves.easeIn,
       child: CircleParticle(
         radius: 2.0,
         paint: Paint()..color = Colors.red,
