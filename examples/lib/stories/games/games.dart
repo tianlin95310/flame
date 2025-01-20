@@ -1,4 +1,5 @@
 import 'package:dashbook/dashbook.dart';
+import 'package:examples/demo/main.dart';
 import 'package:padracing/padracing_game.dart';
 import 'package:padracing/padracing_widget.dart';
 import 'package:rogue_shooter/rogue_shooter_game.dart';
@@ -11,6 +12,12 @@ String gamesLink(String game) =>
 
 void addGameStories(Dashbook dashbook) {
   dashbook.storiesOf('Sample Games')
+    ..add(
+      'PC Game Demo',
+          (_) => const DemoHome(),
+      codeLink: gamesLink('demo'),
+      info: 'PC Game Demo',
+    )
     ..add(
       'Padracing',
       (_) => const PadracingWidget(),
