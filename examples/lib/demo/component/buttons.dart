@@ -1,4 +1,4 @@
-import 'package:examples/demo/mixins/router-provider.dart';
+import 'package:examples/demo/utils/mixins/router-provider.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/rendering.dart';

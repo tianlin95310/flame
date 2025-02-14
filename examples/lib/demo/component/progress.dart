@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:examples/demo/mixins/paint.dart';
+import 'package:examples/demo/utils/mixins/paint.dart';
 import 'package:flame/components.dart';
 
 class ProgressBar extends PositionComponent with BgPaint, HasPaint {

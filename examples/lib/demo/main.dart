@@ -1,5 +1,5 @@
-import 'package:examples/demo/mixins/router-provider.dart';
-import 'package:examples/demo/pc/game.dart';
+import 'package:examples/demo/game.dart';
+import 'package:examples/demo/utils/mixins/router-provider.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' hide Route;
 

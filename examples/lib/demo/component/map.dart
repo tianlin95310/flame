@@ -1,10 +1,11 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 
-class MapDraggable extends SpriteComponent with DragCallbacks {
+// 锚点在中心
+class DraggableMap extends SpriteComponent with DragCallbacks {
   CameraComponent camera;
 
-  MapDraggable(this.camera) : super(anchor: Anchor.topLeft);
+  DraggableMap(this.camera) : super(anchor: Anchor.center);
   late Vector2 start;
 
   @override
@@ -38,34 +39,47 @@ class MapDraggable extends SpriteComponent with DragCallbacks {
   }
 }
 
-class BigStageMap extends SpriteComponent with HasGameRef {
+class BigRawMap extends SpriteComponent with HasGameRef {
   @override
   Future<void>? onLoad() async {
     sprite = await Sprite.load('img34.jpg');
     size = sprite!.originalSize;
   }
 
-  BigStageMap() : super(anchor: Anchor.center);
+  BigRawMap() : super(anchor: Anchor.topLeft);
 }
 
-class StageMap extends SpriteComponent with HasGameRef {
+class StageFitMap extends SpriteComponent with HasGameRef {
   String? path;
 
   @override
   Future<void>? onLoad() async {
     sprite = await Sprite.load(path ?? 'img34.jpg');
-    sizeByX();
+    fitByY();
+    print('StageFitMap sprite = ${sprite!.originalSize}, size = ${size}');
   }
 
-  sizeByY() {
+  fitByY() {
     size.y = gameRef.canvasSize.y;
     size.x = sprite!.originalSize.x / (sprite!.originalSize.y / size.y);
   }
 
-  sizeByX() {
+  fitByX() {
     size.x = gameRef.canvasSize.x;
     size.y = sprite!.originalSize.y / (sprite!.originalSize.x / size.x);
   }
 
-  StageMap({this.path}) : super(anchor: Anchor.topLeft);
+  StageFitMap({this.path}) : super(anchor: Anchor.topLeft);
+}
+
+class FullScreenBg extends SpriteComponent with HasGameRef {
+  String? path;
+
+  @override
+  Future<void>? onLoad() async {
+    sprite = await Sprite.load(path ?? 'img35.jpg');
+    size = game.size;
+  }
+
+  FullScreenBg({this.path}) : super();
 }
