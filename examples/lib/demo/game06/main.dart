@@ -64,7 +64,7 @@ class Game06 extends Component with TapCallbacks{
           margin: const EdgeInsets.only(left: 110, top: 30),
         ),
         HudButtonComponent(
-          button: TextComponent(text: '上'),
+          button: TextComponent(text: 'Pre'),
           onPressed: () {
             Vector2 position = currentSprite.position.clone();
             world.remove(currentSprite);
@@ -75,7 +75,7 @@ class Game06 extends Component with TapCallbacks{
           margin: const EdgeInsets.only(left: 160 + 30, top: 30),
         ),
         HudButtonComponent(
-          button: TextComponent(text: '下'),
+          button: TextComponent(text: 'Next'),
           onPressed: () {
             Vector2 position = currentSprite.position.clone();
             world.remove(currentSprite);
@@ -86,21 +86,21 @@ class Game06 extends Component with TapCallbacks{
           margin: const EdgeInsets.only(left: 210 + 30, top: 30),
         ),
         HudButtonComponent(
-          button: TextComponent(text: '攻击'),
+          button: TextComponent(text: 'Attack'),
           onPressed: () {
             currentSprite.onJinAttack();
           },
           margin: const EdgeInsets.only(right: 100, bottom: 20),
         ),
         HudButtonComponent(
-          button: TextComponent(text: '冲刺'),
+          button: TextComponent(text: 'Rush'),
           onPressed: () {
             currentSprite.onRunAttack();
           },
           margin: const EdgeInsets.only(right: 20, bottom: 160),
         ),
         HudButtonComponent(
-          button: TextComponent(text: '技能'),
+          button: TextComponent(text: 'Skill'),
           onPressed: () {
             currentSprite.onYuanAttack();
           },

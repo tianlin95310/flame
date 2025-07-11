@@ -27,18 +27,15 @@ class Game10 extends Component with TapCallbacks {
   FutureOr<void> onLoad() async {
     await initSpineFlutter();
     spineboy = await SpineComponent.fromAssets(
-      // atlasFile: 'assets/spine/spineboy.atlas',
+      atlasFile: 'assets/spine/skeleton.atlas',
       // skeletonFile: 'assets/spine/spineboy-pro.skel', // skel or json
-      // skeletonFile: 'assets/spine/spineboy-pro.json',
-
-      atlasFile: 'assets/spine/action.atlas',
-      skeletonFile: 'assets/spine/action.skel',
+      skeletonFile: 'assets/spine/skeleton.json',
       scale: Vector2(0.4, 0.4),
       anchor: Anchor.center,
       position: Vector2(size.x / 2, size.y / 2),
     );
     // Set the "walk" animation on track 0 in looping mode
-    spineboy.animationState.setAnimationByName(0, 'walk', true);
+    // spineboy.animationState.setAnimationByName(0, 'walk', true);
     await add(spineboy);
 
     print(spineboy.animationStateData);

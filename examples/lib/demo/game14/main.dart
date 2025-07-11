@@ -7,7 +7,7 @@ import 'package:flame/input.dart';
 import 'package:flame/layout.dart';
 import 'package:flutter/cupertino.dart';
 
-class Game14 extends RectangleComponent {
+class Game14 extends RectangleComponent with HasGameRef {
   late SpriteComponent component;
 
   late SpriteComponent component2;
@@ -25,7 +25,8 @@ class Game14 extends RectangleComponent {
 
     add(HudButtonComponent(
         button: TextComponent(text: 'X加'),
-        margin: const EdgeInsets.only(top: 50, right: 30),
+        // margin: const EdgeInsets.only(top: 200, left: 200),
+        position: Vector2(10, 10),
         onPressed: () {
           double cu = angleX;
           totalX += angleX;
@@ -79,19 +80,18 @@ class Game14 extends RectangleComponent {
       size: size,
       anchor: Anchor.topLeft,
       children: [
-        AlignComponent(
-            child: RectangleComponent(size: dot, paint: Paint()..color = const Color(0xffcccc00)),
-            alignment: Anchor.center)
+        AlignComponent(child: RectangleComponent(size: dot, paint: Paint()..color = const Color(0xffcccc00)), alignment: Anchor.center)
       ],
     )
       ..position = size * 2
       ..y = 100);
-    add(
-      point = RectangleComponent(
-          size: dot,
-          paint: Paint()..color = const Color(0xffcc0000),
-          position: Vector2(size.x * 2 + size.x / 2, 100 + size.y / 2)),
-    );
+    add(point = RectangleComponent(
+      size: dot,
+      paint: Paint()..color = const Color(0xffcc0000),
+      position: Vector2(size.x * 2 + size.x / 2, 100 + size.y / 2),
+    ));
+
+    print('size = ${this.size}');
   }
 
   updatePosition(Vector2 size) {

@@ -269,9 +269,9 @@ class ModelLoadUtils {
 
   static Future<ModelSprite> loadModel(name, imgRow, imgColumn, startIndex, endIndex, frameCount, double frameWidth, double frameHeight) async{
 
-    final spriteSheetStand = SpriteSheet(image: await Flame.images.load('singleModel/$name/stand.png'), srcSize: Vector2(frameWidth, frameHeight));
-    final spriteSheetRun = SpriteSheet(image: await Flame.images.load('singleModel/$name/run.png'), srcSize: Vector2(frameWidth, frameHeight));
-    final spriteSheetAttack = SpriteSheet(image: await Flame.images.load('singleModel/$name/attack.png'), srcSize: Vector2(frameWidth, frameHeight));
+    final spriteSheetStand = SpriteSheet(image: await Flame.images.load('demo/models/$name/stand.png'), srcSize: Vector2(frameWidth, frameHeight));
+    final spriteSheetRun = SpriteSheet(image: await Flame.images.load('demo/models/$name/run.png'), srcSize: Vector2(frameWidth, frameHeight));
+    final spriteSheetAttack = SpriteSheet(image: await Flame.images.load('demo/models/$name/attack.png'), srcSize: Vector2(frameWidth, frameHeight));
     Map<CharBasicAnimation, SpriteAnimation> sprites = {
       CharBasicAnimation.standLeft: spriteSheetStand.createAnimation(row: 1, to: 7, stepTime: 0.1),
       CharBasicAnimation.standRight: spriteSheetStand.createAnimation(row: 2, to: 7, stepTime: 0.1),
@@ -286,9 +286,9 @@ class ModelLoadUtils {
 
   static Future<ModelSpriteAndroid> loadAndroidModel(name, imgRow, imgColumn, startIndex, endIndex, frameCount, double frameWidth, double frameHeight) async{
 
-    final spriteSheetStand = SpriteSheet(image: await Flame.images.load('singleModel/$name/stand.png'), srcSize: Vector2(frameWidth, frameHeight));
-    final spriteSheetRun = SpriteSheet(image: await Flame.images.load('singleModel/$name/run.png'), srcSize: Vector2(frameWidth, frameHeight));
-    final spriteSheetAttack = SpriteSheet(image: await Flame.images.load('singleModel/$name/attack.png'), srcSize: Vector2(frameWidth, frameHeight));
+    final spriteSheetStand = SpriteSheet(image: await Flame.images.load('demo/models/$name/stand.png'), srcSize: Vector2(frameWidth, frameHeight));
+    final spriteSheetRun = SpriteSheet(image: await Flame.images.load('demo/models/$name/run.png'), srcSize: Vector2(frameWidth, frameHeight));
+    final spriteSheetAttack = SpriteSheet(image: await Flame.images.load('demo/models/$name/attack.png'), srcSize: Vector2(frameWidth, frameHeight));
 
     Map<CharBasicAnimation, SpriteAnimation> sprites = {
       CharBasicAnimation.standLeft: spriteSheetStand.createAnimation(row: 1, to: 7, stepTime: 0.1),

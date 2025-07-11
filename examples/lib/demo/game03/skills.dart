@@ -100,8 +100,8 @@ class SkillLoadUtils {
 
   static Future<List<PositionComponent>> getAllSkillMulFile() async {
     return [
-      await mulFileSkill('crtz', 14),
-      await mulFileSkill('feidao', 15),
+      // await mulFileSkill('crtz', 14),
+      // await mulFileSkill('feidao', 15),
     ];
   }
 
@@ -229,7 +229,7 @@ class SkillLoadUtils {
       {int? filterColor}) {
     return SingleFileSkill(
       filterColor,
-      'singleSkill/$file',
+      'demo/singleSkill/$file',
       totalCount,
       col,
       Vector2(frameWidth, frameHeight),

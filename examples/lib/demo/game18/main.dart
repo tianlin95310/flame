@@ -7,5 +7,4 @@ class Game18 extends Component {
   FutureOr<void> onLoad() {
     return super.onLoad();
   }
-
 }

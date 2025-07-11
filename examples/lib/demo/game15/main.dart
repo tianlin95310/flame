@@ -91,8 +91,8 @@ class AtlasSprite extends SpriteComponent {
 
   @override
   FutureOr<void> onLoad() async {
-    Sprite sprite = Sprite(await Flame.images.load('icons/port.png'));
-    sprite_ = Sprite(await Flame.images.load('icons/port!a.png'));
+    Sprite sprite = Sprite(await Flame.images.load('green_button_sqr.png'));
+    sprite_ = Sprite(await Flame.images.load('red_button_sqr.png'));
     this.sprite = sprite;
     size = sprite.originalSize..scaleTo(200);
 

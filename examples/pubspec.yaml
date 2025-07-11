@@ -52,3 +52,6 @@ flutter:
     - assets/audio/music/
     - assets/audio/sfx/
     - assets/yarn/
+    - assets/images/demo/singleSkill/
+    - assets/images/demo/models/jian02/
+    - assets/images/demo/models/jian10/
