@@ -3,14 +3,11 @@ import 'package:jenny/src/parse/token.dart';
 import 'package:jenny/src/parse/tokenize.dart';
 import 'package:jenny/src/structure/block.dart';
 import 'package:jenny/src/structure/commands/character_command.dart';
-import 'package:jenny/src/structure/commands/command.dart';
 import 'package:jenny/src/structure/commands/declare_command.dart';
 import 'package:jenny/src/structure/commands/if_command.dart';
-import 'package:jenny/src/structure/commands/jump_command.dart';
 import 'package:jenny/src/structure/commands/local_command.dart';
 import 'package:jenny/src/structure/commands/set_command.dart';
 import 'package:jenny/src/structure/commands/stop_command.dart';
-import 'package:jenny/src/structure/commands/visit_command.dart';
 import 'package:jenny/src/structure/commands/wait_command.dart';
 import 'package:jenny/src/structure/dialogue_entry.dart';
 import 'package:jenny/src/structure/expressions/expression.dart';
@@ -433,8 +430,8 @@ class _Parser {
     }
   }
 
-  /// Parses the <<if>> command, and the subsequent <<elseif>>, <<else>>, up to
-  /// and including the <<endif>>.
+  /// Parses the `<<if>>` command, and the subsequent `<<elseif>>`, `<<else>>`,
+  /// up to and including the `<<endif>>`.
   Command parseCommandIf() {
     final parts = <IfBlock>[];
     parts.add(parseCommandIfBlock('if'));

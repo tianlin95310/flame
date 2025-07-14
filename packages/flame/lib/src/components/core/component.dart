@@ -5,10 +5,14 @@ import 'package:collection/collection.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/src/cache/value_cache.dart';
+import 'package:flame/src/camera/viewport.dart';
+import 'package:flame/src/components/core/component_render_context.dart';
 import 'package:flame/src/components/core/component_tree_root.dart';
 import 'package:flame/src/effects/provider_interfaces.dart';
 import 'package:flutter/painting.dart';
 import 'package:meta/meta.dart';
+import 'package:ordered_set/ordered_set.dart';
+import 'package:ordered_set/read_only_ordered_set.dart';
 
 /// [Component]s are the basic building blocks for a [FlameGame].
 ///
@@ -283,24 +287,58 @@ class Component {
     }
   }
 
+  /// This field should be used internally for functionality when you don't need
+  /// to create a component set for the children if one doesn't already exist.
+  ///
+  /// This makes it possible to have lighter components that don't have any
+  /// children.
+  OrderedSet<Component>? _children;
+
+  /// This field should be used internally for functionality when you need to
+  /// make sure that the component set is created if it doesn't already exist.
+  OrderedSet<Component> get _internalChildren =>
+      _children ??= createComponentSet();
+
+  void rebalanceChildren() {
+    if (_children != null) {
+      _children!.rebalanceAll();
+    }
+  }
+
   /// The children components of this component.
   ///
-  /// This getter will automatically create the [ComponentSet] container within
+  /// This getter will automatically create the [OrderedSet] container within
   /// the current object if it didn't exist before. Check the [hasChildren]
   /// property in order to avoid instantiating the children container.
-  ComponentSet get children => _children ??= createComponentSet();
+  ReadOnlyOrderedSet<Component> get children =>
+      _children ??= createComponentSet();
+
+  /// Whether this component has any children.
+  /// Avoids the creation of the children container if not necessary.
   bool get hasChildren => _children?.isNotEmpty ?? false;
-  ComponentSet? _children;
 
   /// `Component.childrenFactory` is the default method for creating children
   /// containers within all components. Replace this method if you want to have
-  /// customized (non-default) [ComponentSet] instances in your project.
-  static ComponentSetFactory childrenFactory = ComponentSet.new;
+  /// customized (non-default) [OrderedSet] instances in your project.
+  static OrderedSet<Component> Function() childrenFactory = () {
+    return OrderedSet.mapping(
+      _componentPriorityMapper,
+      strictMode: strictQueryMode,
+    );
+  };
+
+  /// Whether OrderedSet's strict mode mode should be enabled for all children
+  /// sets.
+  static bool strictQueryMode = false;
+
+  static num _componentPriorityMapper(Component component) {
+    return component.priority;
+  }
 
   /// This method creates the children container for the current component.
-  /// Override this method if you need to have a custom [ComponentSet] within
+  /// Override this method if you need to have a custom [OrderedSet] within
   /// a particular class.
-  ComponentSet createComponentSet() => childrenFactory();
+  OrderedSet<Component> createComponentSet() => childrenFactory();
 
   /// Returns the closest parent further up the hierarchy that satisfies type=T,
   /// or null if no such parent can be found.
@@ -435,7 +473,7 @@ class Component {
   ///   - it is invoked when the size of the game canvas is already known.
   ///
   /// If your loading logic requires knowing the size of the game canvas, then
-  /// add [HasGameRef] mixin and then query `game.size` or
+  /// add [HasGameReference] mixin and then query `game.size` or
   /// `game.canvasSize`.
   ///
   /// The default implementation returns `null`, indicating that there is no
@@ -491,7 +529,9 @@ class Component {
   /// game tree
   void onMount() {}
 
-  /// Called right before the component is removed from the game.
+  /// Called right before the component is removed from its parent
+  /// and also before it changes parents (and is thus temporarily removed
+  /// from the component tree).
   ///
   /// This method will only run for a component that was previously mounted into
   /// a component tree. If a component was never mounted (for example, when it
@@ -539,17 +579,36 @@ class Component {
   void render(Canvas canvas) {}
 
   void renderTree(Canvas canvas) {
+    final context = renderContext;
+    if (context != null) {
+      _renderContexts.add(context);
+    }
+
     render(canvas);
     final children = _children;
     if (children != null) {
       for (final child in children) {
+        final hasContext = _renderContexts.isNotEmpty;
+        if (hasContext) {
+          child._renderContexts.addAll(_renderContexts);
+        }
         child.renderTree(canvas);
+        if (hasContext) {
+          child._renderContexts.removeRange(
+            _renderContexts.length,
+            child._renderContexts.length,
+          );
+        }
       }
     }
 
     // Any debug rendering should be rendered on top of everything
     if (debugMode) {
       renderDebugMode(canvas);
+    }
+
+    if (context != null) {
+      _renderContexts.removeLast();
     }
   }
 
@@ -615,9 +674,9 @@ class Component {
   FutureOr<void> _addChild(Component child) {
     final game = findGame() ?? child.findGame();
     if ((!isMounted && !child.isMounted) || game == null) {
-      child._parent?.children.remove(child);
+      child._parent?._internalChildren.remove(child);
       child._parent = this;
-      children.add(child);
+      _internalChildren.add(child);
     } else if (child._parent != null) {
       if (child.isRemoving) {
         game.dequeueRemove(child);
@@ -630,7 +689,7 @@ class Component {
     } else {
       child._parent = this;
       // This will be reconciled during the mounting stage
-      children.add(child);
+      _internalChildren.add(child);
     }
     if (!child.isLoaded && !child.isLoading && (game?.hasLayout ?? false)) {
       return child._startLoading();
@@ -679,7 +738,7 @@ class Component {
           root.enqueueRemove(child, this);
           child._setRemovingBit();
         }
-      } else {
+      } else if (!child.isRemoved) {
         root.dequeueAdd(child, this);
         child._parent = null;
       }
@@ -807,8 +866,8 @@ class Component {
   /// The smaller the priority, the sooner your component will be
   /// updated/rendered.
   /// It can be any integer (negative, zero, or positive).
-  /// If two components share the same priority, they will probably be drawn in
-  /// the order they were added.
+  /// If two components share the same priority, they will be updated and
+  /// rendered in the order they were added.
   ///
   /// Note that setting the priority is relatively expensive if the component is
   /// already added to a component tree since all siblings have to be re-added
@@ -818,9 +877,10 @@ class Component {
   set priority(int newPriority) {
     if (_priority != newPriority) {
       _priority = newPriority;
+      final parent = _parent;
       final game = findGame();
-      if (game != null && _parent != null) {
-        game.enqueueRebalance(_parent!);
+      if (game != null && parent != null) {
+        game.enqueuePriorityChange(parent, this);
       }
     }
   }
@@ -843,7 +903,7 @@ class Component {
         // This case happens when the child is added to a parent that is being
         // removed in the same tick.
         _parent = parent;
-        parent.children.add(this);
+        parent._internalChildren.add(this);
         return LifecycleEventStatus.done;
       }
       return LifecycleEventStatus.block;
@@ -855,7 +915,7 @@ class Component {
     if (_parent == null) {
       parent._children?.remove(this);
     } else {
-      _remove();
+      _remove(parent);
       assert(_parent == null);
     }
     return LifecycleEventStatus.done;
@@ -863,8 +923,9 @@ class Component {
 
   @internal
   LifecycleEventStatus handleLifecycleEventMove(Component newParent) {
-    if (_parent != null) {
-      _remove();
+    final parent = _parent;
+    if (parent != null) {
+      _remove(parent);
     }
     if (newParent.isMounted) {
       _parent = newParent;
@@ -916,7 +977,11 @@ class Component {
     _setMountingBit();
     onGameResize(_parent!.findGame()!.canvasSize);
     if (_parent is ReadOnlySizeProvider) {
-      onParentResize((_parent! as ReadOnlySizeProvider).size);
+      if (_parent is Viewport) {
+        onParentResize((_parent! as Viewport).virtualSize);
+      } else {
+        onParentResize((_parent! as ReadOnlySizeProvider).size);
+      }
     }
     if (isRemoved) {
       _clearRemovedBit();
@@ -931,7 +996,7 @@ class Component {
     _setMountedBit();
     _mountCompleter?.complete();
     _mountCompleter = null;
-    _parent!.children.add(this);
+    _parent!._internalChildren.add(this);
     _reAddChildren();
     _parent!.onChildrenChanged(this, ChildrenChangeType.added);
     _clearMountingBit();
@@ -995,10 +1060,8 @@ class Component {
     _removeCompleter = null;
   }
 
-  void _remove() {
-    assert(_parent != null, 'Trying to remove a component with no parent');
-
-    _parent!.children.remove(this);
+  void _remove(Component parent) {
+    parent._internalChildren.remove(this);
     propagateToChildren(
       (Component component) {
         component
@@ -1009,12 +1072,12 @@ class Component {
           .._setRemovedBit()
           .._removeCompleter?.complete()
           .._removeCompleter = null
-          .._parent!.onChildrenChanged(component, ChildrenChangeType.removed)
-          .._parent = null;
+          .._parent!.onChildrenChanged(component, ChildrenChangeType.removed);
         return true;
       },
       includeSelf: true,
     );
+    _parent = null;
   }
 
   void _unregisterKey() {
@@ -1024,6 +1087,20 @@ class Component {
         game.unregisterKey(key!);
       }
     }
+  }
+
+  //#endregion
+
+  //#region Context
+
+  final QueueList<ComponentRenderContext> _renderContexts = QueueList();
+
+  /// Override this method if you want your component to provide a custom
+  /// render context to all its children (recursively).
+  ComponentRenderContext? get renderContext => null;
+
+  T? findRenderContext<T extends ComponentRenderContext>() {
+    return _renderContexts.whereType<T>().lastOrNull;
   }
 
   //#endregion
@@ -1097,7 +1174,5 @@ class Component {
 
   //#endregion
 }
-
-typedef ComponentSetFactory = ComponentSet Function();
 
 enum ChildrenChangeType { added, removed }

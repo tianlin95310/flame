@@ -11,28 +11,30 @@ environment:
   flutter: ">=3.27.1"
 
 dependencies:
+  crystal_ball: ^0.1.0
   dashbook: ^0.1.16
-  flame: ^1.24.0
-  flame_audio: ^2.10.8
-  flame_forge2d: ^0.18.2+5
-  flame_isolate: ^0.6.2+5
-  flame_lottie: ^0.4.2+5
-  flame_noise: ^0.3.2+5
-  flame_spine: ^0.2.2+5
-  flame_svg: ^1.11.5
-  flame_tiled: ^2.0.0
+  flame: ^1.30.0
+  flame_audio: ^2.11.7
+  flame_forge2d: ^0.19.0+3
+  flame_isolate: ^0.6.2+13
+  flame_lottie: ^0.4.2+13
+  flame_noise: ^0.3.2+13
+  flame_spine: ^0.2.2+13
+  flame_svg: ^1.11.13
+  flame_tiled: ^3.0.4
   flutter:
     sdk: flutter
-  google_fonts: ^4.0.4
-  jenny: ^1.3.2
+  google_fonts: ^6.2.1
+  jenny: ^1.4.0
   meta: ^1.12.0
   padracing: ^1.0.0
-  provider: ^6.0.5
+  provider: ^6.1.2
   rogue_shooter: ^0.1.0
   trex_game: ^0.1.0
+  web: ^1.1.0
 
 dev_dependencies:
-  flame_lint: ^1.2.1
+  flame_lint: ^1.4.0
   test: any
 
 flutter:
@@ -52,6 +54,4 @@ flutter:
     - assets/audio/music/
     - assets/audio/sfx/
     - assets/yarn/
-    - assets/images/demo/singleSkill/
-    - assets/images/demo/models/jian02/
-    - assets/images/demo/models/jian10/
+    

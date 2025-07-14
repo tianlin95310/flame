@@ -432,6 +432,43 @@ class MyComponent extends PositionComponent with HasVisibility {
 ```
 
 
+### Render Contexts
+
+If you want a parent component to pass render-specific properties down its children tree, you
+can override the `renderContext` property on the parent component. You can return a custom
+class that inherits from `RenderContext`, and then use `findRenderContext` on the children
+while rendering. Render Contexts are stored as a stack and propagated whenever the render
+tree is navigated for rendering.
+
+For example:
+
+```dart
+class IntContext extends ComponentRenderContext {
+  int value;
+
+  IntContext(this.value);
+}
+
+class ParentWithContext extends Component {
+  @override
+  IntContext renderContext = IntContext(42);
+}
+
+class ChildReadsContext extends Component {
+  @override
+  void render(Canvas canvas) {
+    final context = findRenderContext<IntContext>();
+    // context.value available
+  }
+}
+```
+
+Each component will have access to the context of any parent that is above it in the
+component tree. If multiple components add the contexts matching the selected type
+`T`, the "closest" one will be returned (though typically you would create a unique
+context type for each component).
+
+
 ## PositionComponent
 
 This class represents a positioned object on the screen, being a floating rectangle, a rotating
@@ -705,6 +742,17 @@ final animationTicker = SpriteAnimationTicker(animation)
   };
 ```
 
+To reset the animation to the first frame when the component is removed, you can set
+`resetOnRemove` to `true`:
+
+```dart
+SpriteAnimationComponent(
+  animation: animation,
+  size: Vector2.all(64.0),
+  resetOnRemove: true,
+);
+```
+
 
 ## SpriteAnimationGroupComponent
 
@@ -831,6 +879,14 @@ method will be called with the `amount=4`, since the counting starts at 0 for th
 The `factory` with a single component is for backward compatibility, so you should use the
 `multiFactory` if in doubt. A single component `factory` will be wrapped internally to return a
 single item list and then used as the `multiFactory`.
+
+If you only want to spawn a certain amount of components, you can use the `spawnCount` argument,
+and once the limit is reached the `SpawnComponent` will stop spawning and remove itself.
+
+By default, the `SpawnComponent` will spawn components to its parent, but if you want to spawn
+components to another component you can set the `target` argument. Remember that it should be a
+`Component` that has a size if you don't use the `area` or `selfPositioning` arguments.
+
 
 ```dart
 SpawnComponent(
@@ -1329,7 +1385,7 @@ class Player extends SpriteComponent with Notifier {
 Then our hud component could look like:
 
 ```dart
-class Hud extends PositionComponent with HasGameRef {
+class Hud extends PositionComponent with HasGameReference {
 
   @override
   void onLoad() {

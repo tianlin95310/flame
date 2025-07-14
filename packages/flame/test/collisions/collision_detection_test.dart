@@ -417,6 +417,23 @@ void main() {
         reason: 'Wrong number of intersections',
       );
     });
+
+    test('Rectangle should intersect with tilted polygon', () {
+      final polygonA = RectangleComponent.square(
+        size: 5,
+        position: Vector2(-25, 0),
+        anchor: Anchor.center,
+      );
+      const bottomDisplacement = 1 / 18;
+      final polygonB = PolygonComponent([
+        Vector2(-25, -25),
+        Vector2(55, -25),
+        Vector2(55 + bottomDisplacement, 25),
+        Vector2(-25 + bottomDisplacement, 25),
+      ]);
+      final intersections = geometry.intersections(polygonA, polygonB);
+      expect(intersections, isNotEmpty);
+    });
   });
 
   group('Rectangle intersections tests', () {
@@ -1176,7 +1193,7 @@ void main() {
         // Extended cast
         collisionSystem.collisionDetection.raycast(
           ray,
-          maxDistance: Vector2.all(10).length,
+          maxDistance: Vector2.all(nextFloat32(10)).length,
           out: result,
         );
         expect(result.hitbox?.parent, world.children.first);
