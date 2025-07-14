@@ -45,9 +45,9 @@ class ShapeSpriteDraggable extends ShapeSprite with DragCallbacks {
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    Vector2 diff = event.canvasPosition - start;
+    Vector2 diff = event.canvasEndPosition - start;
     position += diff;
-    start = event.canvasPosition;
+    start = event.canvasEndPosition;
   }
 
   @override

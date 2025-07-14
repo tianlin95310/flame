@@ -91,13 +91,13 @@ class ScrollComponentAnchorCenter extends PositionComponent with DragCallbacks {
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-    Vector2 diff = event.canvasPosition - start;
+    Vector2 diff = event.canvasEndPosition - start;
     if (axis == Axis.vertical) {
       camera.moveBy(Vector2(0, -diff.y * 2), speed: 500);
     } else {
       camera.moveBy(Vector2(-diff.x * 2, 0), speed: 500);
     }
-    start = event.canvasPosition;
+    start = event.canvasEndPosition;
   }
 
   @override
@@ -220,13 +220,13 @@ class ScrollComponentOneCol extends PositionComponent with DragCallbacks {
       return;
     }
     // super.onDragUpdate(event);
-    Vector2 diff = event.canvasPosition - start;
+    Vector2 diff = event.canvasEndPosition - start;
     if (axis == Axis.vertical) {
       camera.moveBy(Vector2(0, -diff.y * 2), speed: 500);
     } else {
       camera.moveBy(Vector2(-diff.x * 2, 0), speed: 500);
     }
-    start = event.canvasPosition;
+    start = event.canvasEndPosition;
   }
 
   @override
@@ -352,13 +352,13 @@ class ScrollComponent extends PositionComponent with DragCallbacks {
       return;
     }
     // super.onDragUpdate(event);
-    Vector2 diff = event.canvasPosition - start;
+    Vector2 diff = event.canvasEndPosition - start;
     if (axis == Axis.vertical) {
       camera.moveBy(Vector2(0, -diff.y * 2), speed: 500);
     } else {
       camera.moveBy(Vector2(-diff.x * 2, 0), speed: 500);
     }
-    start = event.canvasPosition;
+    start = event.canvasEndPosition;
   }
 
   @override

@@ -22,10 +22,10 @@ class DraggableMap extends SpriteComponent with DragCallbacks {
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    Vector2 diff = event.canvasPosition - start;
+    Vector2 diff = event.canvasEndPosition - start;
     camera.moveBy(-diff * 2, speed: 200);
     print('diff = $diff');
-    start = event.canvasPosition;
+    start = event.canvasEndPosition;
   }
 
   @override
